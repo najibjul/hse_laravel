@@ -1,0 +1,42 @@
+@import 'tailwindcss';
+@import '../assets/fonts/tabler-icons.min.css';
+@import '../assets/fonts/feather.css';
+@import '../assets/fonts/fontawesome.css';
+@import '../assets/fonts/material.css';
+@import '../assets/css/style.css';
+@import '../assets/css/style-preset.css';
+
+.form-control:focus {
+    border-color: #52c41a;
+    box-shadow: 0 0 0 1px rgba(82, 196, 26, 0.25);
+}
+
+.form-control:focus.search {
+    border-color: #ecce4b;
+    box-shadow: 0 0 0 1px rgba(82, 196, 26, 0.25);
+}
+
+.pc-item.active {
+    background-color: #52c41a !important; /* hijau */
+    color: white !important;
+    border-right: none !important;
+    margin-right: -2px;
+}
+
+.pc-item.active .pc-link {
+    color: white !important;
+    border-right: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.nav-link {
+    color: black !important;
+}
+
+.nav-link.active {
+    color: #52c41a !important;
+}
+
+
+
