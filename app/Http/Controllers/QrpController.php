@@ -21,29 +21,39 @@ class QrpController extends Controller
             $search = null;
         }
 
+
+        $agent = new Agent();
+
         session()->put('checkingCategory', 'man');
 
         $dailyChecks = DailyCheck::when(auth()->user()->role_id == 3, function ($q) {
-            $q->where('user_id', auth()->user()->id)
-                ->when(auth()->user()->deptHead, function ($q) {
-                    $q->orWhereHas('qrpDetail', function ($q) {
-                        $q->where('dept_head_id', auth()->user()->id);
+            $q->where(function ($q) {
+
+                $q->where('user_id', auth()->user()->id)
+                    ->when(auth()->user()->deptHead, function ($q) {
+                        return $q->orWhereHas('qrpDetail', function ($q) {
+                            return $q->where('dept_head_id', auth()->user()->id);
+                        });
                     });
                 });
             })
-            ->when($search, function($q) use($search){
-                $q->whereHas('user', function($q) use($search){
-                    $q->where('name', 'like', '%'. $search .'%')->orWhere('nip', 'like', '%'. $search .'%');
-                })
-                ->orWhere('activity', 'like', '%'. $search . '%')
-                ->orWhere('area', 'like', '%'. $search . '%')
-                ->orWhere('check_status', 'like', '%'. $search . '%')
-                ->orWhere('checking_category', 'like', '%'. $search . '%');
+            ->when($search, function ($q) use ($search) {
+                $q->where(function ($q) use ($search) {
+                    $q->whereHas('user', function ($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%')
+                        ->orwhere('nip', 'like', '%' . $search . '%');
+                    })
+                    ->orWhere('activity', 'like', '%'. $search . '%')
+                    ->orWhere('area', 'like', '%'. $search . '%')
+                    ->orWhere('check_status', 'like', '%'. $search . '%')
+                    ->orWhere('checking_category', 'like', '%'. $search . '%');
+                });
+
             })
             ->latest()
             ->paginate(10);
 
-        return view('qrp.daily-checking', compact('dailyChecks', 'search'));
+        return view('qrp.daily-checking', compact('dailyChecks', 'search', 'agent'));
     }
 
     public function dailyCheckingPost(Request $request)
@@ -127,9 +137,9 @@ class QrpController extends Controller
         if ($validator->fails()) {
             return back()->withInput()->withErrors($validator);
         }
-        
+
         DB::beginTransaction();
-        
+
         try {
             if ($request->dataUri != "") {
                 $dataUri = $request->dataUri;
@@ -188,8 +198,9 @@ class QrpController extends Controller
 
     public function qrpFormDetail($id)
     {
+        $agent = new Agent();
         $dailyCheck = DailyCheck::find(decrypt($id));
-        return view('qrp.qrp-form-detail', compact('dailyCheck'));
+        return view('qrp.qrp-form-detail', compact('dailyCheck', 'agent'));
     }
 
     public function dhApproval($id, Request $request)

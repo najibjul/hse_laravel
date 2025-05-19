@@ -1,7 +1,6 @@
-@extends('layouts.app')
+@extends('layouts.app', ['title' => 'Daily Checking'])
 @section('content')
-
-    @if ($isDesktop)
+    @if ($agent->isDesktop())
         <div class="page-header">
             <div class="page-block">
                 <div class="row align-items-center">
@@ -105,17 +104,22 @@
                 </div>
             </div>
         </div>
-    @elseif($isMobile)
+    @elseif($agent->isMobile())
 
+    <div class="mb-3">
+        <h4>DAILY CHECKING</h4>
+    </div>
+        <form action="{{ route('qrp.daily-checking') }}" method="GET">
         <div class="d-flex gap-2 mb-4">
-            <input type="text" name="search" class="form-control search rounded-pill shadow" placeholder="Cari...">
-            <button class="btn btn-warning rounded-pill shadow" type="submit">
+            <input type="text" name="search" class="form-control search rounded-pill shadow" value="{{ $search }}" placeholder="Cari...">
+            <button type="submit" class="btn btn-warning rounded-pill shadow" type="submit">
                 <i class="ti ti-search"></i>
             </button>
-            <button class="btn btn-success rounded-pill shadow" data-bs-toggle="modal" data-bs-target="#addCheckingModal">
+            <button type="button" class="btn btn-success rounded-pill shadow" data-bs-toggle="modal" data-bs-target="#addCheckingModal">
                 <i class="ti ti-plus"></i>
             </button>
         </div>
+        </form>
 
         @foreach($dailyChecks as $dailyCheck)
             <a href="{{ $dailyCheck->check_status == 'NG' ? route('qrp.qrp-form-detail', encrypt($dailyCheck->id)) : 'javascript:void(0)' }}" @if($dailyCheck->check_status == 'OK') onclick="statusOk(event)" @endif >
@@ -135,6 +139,8 @@
                 </div>
             </a>
         @endforeach
+
+        {{ $dailyChecks->links('vendor.pagination.bootstrap-5') }}
 
     @endif
 

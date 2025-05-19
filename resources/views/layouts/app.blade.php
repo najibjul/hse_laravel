@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Home | Mantis Bootstrap 5 Admin Template</title>
+    <title>{{ isset($title) ? $title . ' - HSE' : 'HSE'}}</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -371,8 +371,6 @@
 
     <div class="pc-container">
         <div class="pc-content">
-
-
             @yield('content')
         </div>
     </div>
@@ -381,33 +379,37 @@
     <footer class="pc-footer">
         <div class="footer-wrapper container-fluid">
             <div class="row">
-                <div class="col-sm my-1">
+                <!-- <div class="col-sm my-1">
                     <p class="m-0">Mantis &#9829; crafted by Team <a href="https://themeforest.net/user/codedthemes"
                             target="_blank">Codedthemes</a> Distributed by <a
                             href="https://themewagon.com/">ThemeWagon</a>.</p>
-                </div>
+                </div> -->
                 <div class="col-auto my-1">
                     <ul class="list-inline footer-link mb-0">
-                        <li class="list-inline-item"><a href="../index.html">Home</a></li>
+                        <li class="list-inline-item"><a href="javascript:void(0)">{{ isset($title) ? $title  : ''}}</a></li>
                     </ul>
                 </div>
             </div>
         </div>
     </footer>
-
-    <script src="{{ asset('assets/js/plugins/simplebar.min.js') }}"></script>
-    <script src="{{ asset('assets/js/fonts/custom-font.js') }}"></script>
-    <script src="{{ asset('assets/js/pcoded.js') }}"></script>
-
+    
+    <script  src="{{ asset('assets/js/plugins/simplebar.min.js') }}"></script>
+    <script  src="{{ asset('assets/js/fonts/custom-font.js') }}"></script>
+    <script  src="{{ asset('assets/js/plugins/feather.min.js') }}"></script>
+    <script  src="{{ asset('assets/js/pcoded.js') }}"></script>
+    <!-- <script  src="{{ asset('assets/js/plugins/apexcharts.min.js') }}"></script> -->
+    <!-- <script  src="{{ asset('assets/js/pages/dashboard-default.js') }}"></script> -->
+    
     <script>
         layout_change('light');
         change_box_container('false');
         layout_rtl_change('false');
         preset_change("preset-1");
         font_change("Public-Sans");
-    </script>
+        </script>
 
-    @stack('scripts')
+@stack('scripts')
+
 
 </body>
 

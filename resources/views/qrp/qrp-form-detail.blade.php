@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('content')
+    @if(!$agent->isMobile())
     <div class="page-header">
         <div class="page-block">
             <div class="row align-items-center">
@@ -16,17 +17,18 @@
             </div>
         </div>
     </div>
+    @endif
 
     <div class="card">
         <div class="card-header">
-            <div class="d-flex justify-content-between">
                 <h4>Detail</h4>
-                <h4 class="mt-1">
-                    <span class="{{ $dailyCheck->qrpDetail->qrpStatus->class }}">{{ $dailyCheck->qrpDetail->qrpStatus->name }}</span>
-                </h4>
-            </div>
+                
         </div>
         <div class="card-body">
+            <h4 class="mt-1 text-end">
+                    <span
+                        class="{{ $dailyCheck->qrpDetail->qrpStatus->class }}">{{ $dailyCheck->qrpDetail->qrpStatus->name }}</span>
+                </h4>
             <div class="form-group ">
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-6 mb-4">
@@ -45,12 +47,13 @@
                 <div class="row">
                     <div class="col-12 col-md-6 col-lg-6 mb-4">
                         <label class="form-label">Deskripsi temuan</label>
-                        <textarea name="description" class="form-control" disabled oninput="autoGrowDescription(this)" id="description"
-                            placeholder="ketik disini">{{ $dailyCheck->qrpDetail->description }}</textarea>
+                        <textarea name="description" class="form-control" disabled oninput="autoGrowDescription(this)"
+                            id="description" placeholder="ketik disini">{{ $dailyCheck->qrpDetail->description }}</textarea>
                     </div>
                     <div class="col-12 col-md-6 col-lg-6 mb-4">
                         <label class="form-label">Rekomendasi</label>
-                        <textarea name="description" class="form-control" disabled id="recomendation" placeholder="ketik disini"
+                        <textarea name="description" class="form-control" disabled id="recomendation"
+                            placeholder="ketik disini"
                             oninput="autoGrowRecomendation(this)">{{ $dailyCheck->qrpDetail->recomendation }}</textarea>
                     </div>
                 </div>
@@ -115,17 +118,18 @@
                                         </form>
                                     </div>
                                     <div class="tab-pane fade my-3" id="galeri" role="tabpanel" aria-labelledby="galeri-tab">
-                                    <form action="{{ route('qrp.upload-close-galery', $dailyCheck->id) }}" method="POST"
+                                        <form action="{{ route('qrp.upload-close-galery', $dailyCheck->id) }}" method="POST"
                                             enctype="multipart/form-data">
                                             @csrf
-                                        <input type="file" required class="form-control @error('galery') is-invalid @enderror" name="galery">
-                                        <button type="submit" class="btn btn-success mt-3">Simpan</button>
+                                            <input type="file" required class="form-control @error('galery') is-invalid @enderror"
+                                                name="galery">
+                                            <button type="submit" class="btn btn-success mt-3">Simpan</button>
                                         </form>
                                     </div>
                                 </div>
                             @endif
                         @endif
-                        
+
                         @error('dataUri')
                             <div class="form-text text-danger mb-3">{{ $message }}</div>
                         @enderror
@@ -186,8 +190,7 @@
                         </div>
                     </div>
 
-                    <div class="modal fade" id="cancel" tabindex="-1" aria-labelledby="exampleModalLabel"
-                        aria-hidden="true">
+                    <div class="modal fade" id="cancel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -198,7 +201,8 @@
                                     @csrf
                                     <div class="modal-body">
                                         Berikan rekomendasi & alasan?
-                                        <textarea name="recomendation" class="form-control @error('recomendation') is-invalid @enderror ">{{ $dailyCheck->qrpDetail->recomendation }}</textarea>
+                                        <textarea name="recomendation"
+                                            class="form-control @error('recomendation') is-invalid @enderror ">{{ $dailyCheck->qrpDetail->recomendation }}</textarea>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kembali</button>
@@ -212,15 +216,14 @@
             @endif
 
             @if (auth()->user()->deptHead and auth()->user()->department_id == $dailyCheck->user->department_id and $dailyCheck->qrpDetail->qrp_status_id == 4)
-            <div class="form-group mb-4">
+                <div class="form-group mb-4">
                     <div class="d-flex justify-content-center gap-3">
                         <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#open">TOLAK OPEN</button>
                         <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#close">CLOSE QRP<i
                                 class="ti ti-chevron-right"></i></button>
                     </div>
 
-                    <div class="modal fade" id="open" tabindex="-1" aria-labelledby="exampleModalLabel"
-                        aria-hidden="true">
+                    <div class="modal fade" id="open" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -246,8 +249,7 @@
                         </div>
                     </div>
 
-                    <div class="modal fade" id="close" tabindex="-1" aria-labelledby="exampleModalLabel"
-                        aria-hidden="true">
+                    <div class="modal fade" id="close" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -257,7 +259,7 @@
                                 <form action="{{ route('qrp.close', $dailyCheck->id) }}" method="POST">
                                     @csrf
                                     <div class="modal-body">
-                                        CLose laporan QRP?
+                                        Close laporan QRP?
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kembali</button>
@@ -275,14 +277,17 @@
 
 @push('scripts')
     <script src="{{ asset('assets/webcam/webcam.min.js') }}"></script>
-
     <script>
         Webcam.set({
-            width: 320,
-            height: 240,
+            width: 240,
+            height: 320,
             image_format: 'jpeg',
-            jpeg_quality: 90
+            jpeg_quality: 90,
+            constraints: {
+                facingMode: "environment"
+            }
         });
+
         if (document.getElementById('my_camera')) {
             Webcam.attach('#my_camera');
         }
@@ -332,9 +337,21 @@
         }
 
         document.addEventListener("DOMContentLoaded", function () {
+
+
+            navigator.mediaDevices.enumerateDevices()
+                .then(devices => {
+                    devices.forEach(device => {
+                        if (device.kind === 'videoinput') {
+                            console.log(device.label, device.deviceId);
+                        }
+                    });
+                });
+
+
             const recomendation = document.getElementById("recomendation");
             const description = document.getElementById("description");
-            
+
             autoGrowDescription(description);
             autoGrowRecomendation(recomendation);
 
@@ -370,7 +387,7 @@
                     confirmButtonColor: "#dc3545"
                 });
             @endif
-        });
+                });
     </script>
 @endpush
 
