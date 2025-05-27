@@ -10,4 +10,9 @@ class Depthead extends Model
         'department_id',
         'user_id'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

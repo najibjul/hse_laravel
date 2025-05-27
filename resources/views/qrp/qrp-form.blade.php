@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('layouts.app', ['title' => 'QRP Form'])
 @section('content')
-    <div class="page-header">
+    <div class="page-header d-lg-block d-none">
         <div class="page-block">
             <div class="row align-items-center">
                 <div class="col-md-12">
@@ -8,9 +8,9 @@
                         <h5 class="m-b-10">QRP Form</h5>
                     </div>
                     <ul class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('qrp.daily-checking') }}">Quick Risk Prediction</a>
+                        <li class="breadcrumb-item"><a href="javascript: void(0)">Quick Risk Prediction</a>
                         </li>
-                        <li class="breadcrumb-item"><a href="javascript: void(0)">Daily Checking</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('qrp.daily-checking') }}">Daily Checking</a></li>
                         <li class="breadcrumb-item" aria-current="page">QRP Form</li>
                     </ul>
                 </div>
@@ -18,7 +18,7 @@
         </div>
     </div>
 
-    <div class="card">
+    <div class="card ">
         <div class="card-header">
             <h4>QRP Form</h4>
         </div>

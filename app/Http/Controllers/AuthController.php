@@ -35,4 +35,13 @@ class AuthController extends Controller
         return back();
 
     }
+
+    public function logout() 
+    {
+        $user = Auth::user();
+        $user->setRememberToken(null);
+        $user->save();
+        Auth::logout();
+        return redirect()->route('login');
+    }
 }

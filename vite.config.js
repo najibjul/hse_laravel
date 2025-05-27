@@ -12,6 +12,11 @@ export default defineConfig({
             ],
             refresh: true,
         }),
-        tailwindcss(),
+ 
     ],
+    resolve: {
+    alias: {
+      jquery: 'jquery/src/jquery', // pastikan ini ada
+    },
+  },
 });

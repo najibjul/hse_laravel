@@ -9,4 +9,9 @@ class Department extends Model
     protected $fillable = [
         'department_name'
     ];
+
+    public function depthead()
+    {
+        return $this->hasOne(Depthead::class);
+    }
 }

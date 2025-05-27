@@ -43,9 +43,6 @@
                             </button>
                         </div>
                     </form>
-
-
-
                 </div>
                 <div class="table-responsive">
                     <table class="table">
@@ -55,7 +52,7 @@
                                 @if(auth()->user()->role_id != 3 or auth()->user()->deptHead)
                                     <th>User</th>
                                 @endif
-                                <th>Aktifitas</th>
+                                <th>Aktifitas / Problem</th>
                                 <th>Area</th>
                                 <th>Tanggal</th>
                                 <th>Kategori</th>
@@ -71,7 +68,7 @@
                                     @if(auth()->user()->role_id != 3 or auth()->user()->deptHead)
                                         <td>{{ $dailyCheck->user->name }} ({{ $dailyCheck->user->nip }})</td>
                                     @endif
-                                    <td>{{ $dailyCheck->activity }}</td>
+                                    <td>{{ $dailyCheck->activity ? $dailyCheck->activity : $dailyCheck->qrpDetail->description }}</td>
                                     <td>{{ $dailyCheck->area }}</td>
                                     <td>{{ \Carbon\Carbon::parse($dailyCheck->created_at)->format('d M Y H:i') }}</td>
                                     <td>
@@ -111,11 +108,11 @@
     </div>
         <form action="{{ route('qrp.daily-checking') }}" method="GET">
         <div class="d-flex gap-2 mb-4">
-            <input type="text" name="search" class="form-control search rounded-pill shadow" value="{{ $search }}" placeholder="Cari...">
-            <button type="submit" class="btn btn-warning rounded-pill shadow" type="submit">
+            <input type="text" name="search" class="form-control search rounded-pill" value="{{ $search }}" placeholder="Cari...">
+            <button type="submit" class="btn btn-warning rounded-pill" type="submit">
                 <i class="ti ti-search"></i>
             </button>
-            <button type="button" class="btn btn-success rounded-pill shadow" data-bs-toggle="modal" data-bs-target="#addCheckingModal">
+            <button type="button" class="btn btn-success rounded-pill" data-bs-toggle="modal" data-bs-target="#addCheckingModal">
                 <i class="ti ti-plus"></i>
             </button>
         </div>
@@ -123,10 +120,10 @@
 
         @foreach($dailyChecks as $dailyCheck)
             <a href="{{ $dailyCheck->check_status == 'NG' ? route('qrp.qrp-form-detail', encrypt($dailyCheck->id)) : 'javascript:void(0)' }}" @if($dailyCheck->check_status == 'OK') onclick="statusOk(event)" @endif >
-                <div class="card shadow card-hover" style="border-radius: 15px;">
+                <div class="card card-hover" style="border-radius: 15px;">
                     <div class="card-body ">
                         <div><i class="ti ti-user"></i> {{ $dailyCheck->user->name }} ({{ $dailyCheck->user->nip }})</div>
-                        <div><i class="ti ti-run"></i> {{ $dailyCheck->activity ? $dailyCheck->activity : '-' }}</div>
+                        <div><i class="ti ti-alert-circle"></i> {{ $dailyCheck->activity ? $dailyCheck->activity : $dailyCheck->qrpDetail->description }}</div>
                         <div><i class="ti ti-building-community"></i> {{ $dailyCheck->area }}</div>
                         <div><i class="ti ti-calendar-event"></i>
                             {{ \Carbon\Carbon::parse($dailyCheck->created_at)->translatedFormat('d M Y H:i') }}</div>
@@ -283,7 +280,7 @@
 
             @if(session()->has('error'))
                 Swal.fire({
-                    title: "Berhasil",
+                    title: "Error",
                     text: `{{ session('error') }}`,
                     icon: "error",
                     confirmButtonColor: "#dc3545"

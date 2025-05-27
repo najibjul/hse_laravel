@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', ['title' => 'Detail'])
 @section('content')
     @if(!$agent->isMobile())
     <div class="page-header">
@@ -22,7 +22,6 @@
     <div class="card">
         <div class="card-header">
                 <h4>Detail</h4>
-                
         </div>
         <div class="card-body">
             <h4 class="mt-1 text-end">

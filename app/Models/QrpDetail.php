@@ -20,16 +20,24 @@ class QrpDetail extends Model
         'qrp_status_id'
     ];
 
-    public function deptHead(){
-        return $this->belongsTo(User::class,'dept_head_id','id');
+    public function deptHead()
+    {
+        return $this->belongsTo(User::class, 'dept_head_id', 'id');
     }
 
-    public function admin(){
-        return $this->belongsTo(User::class,'admin_id','id');
+    public function admin()
+    {
+        return $this->belongsTo(User::class, 'admin_id', 'id');
     }
-    
-    public function qrpStatus(){
+
+    public function qrpStatus()
+    {
         return $this->belongsTo(QrpStatus::class);
-        
     }
+
+    public function dailyCheck()
+    {
+        return $this->belongsTo(DailyCheck::class);
+    }
+
 }

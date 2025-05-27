@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\DailyCheck;
 use App\Models\Depthead;
+use App\Models\Notification;
 use App\Models\QrpDetail;
-use DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Jenssegers\Agent\Agent;
-use Storage;
-use Validator;
 
 class QrpController extends Controller
 {
@@ -26,13 +28,13 @@ class QrpController extends Controller
 
         session()->put('checkingCategory', 'man');
 
-        $dailyChecks = DailyCheck::when(auth()->user()->role_id == 3, function ($q) {
+        $dailyChecks = DailyCheck::when(Auth::user()->role_id == 3, function ($q) {
             $q->where(function ($q) {
 
-                $q->where('user_id', auth()->user()->id)
-                    ->when(auth()->user()->deptHead, function ($q) {
+                $q->where('user_id', Auth::user()->id)
+                    ->when(Auth::user()->deptHead, function ($q) {
                         return $q->orWhereHas('qrpDetail', function ($q) {
-                            return $q->where('dept_head_id', auth()->user()->id);
+                            return $q->where('dept_head_id', Auth::user()->id);
                         });
                     });
                 });
@@ -71,7 +73,7 @@ class QrpController extends Controller
 
         try {
             DailyCheck::create([
-                'user_id' => auth()->user()->id,
+                'user_id' => Auth::user()->id,
                 'activity' => $request->activity,
                 'area' => $request->area,
                 'status' => 'OK'
@@ -159,7 +161,7 @@ class QrpController extends Controller
                 $file->storeAs('image', $filename, 'public');
             }
 
-            $deptHead = Depthead::where('department_id', auth()->user()->department_id)->first();
+            $deptHead = Depthead::where('department_id', Auth::user()->department_id)->first();
 
             if (!$deptHead) {
                 DB::rollBack();
@@ -168,20 +170,26 @@ class QrpController extends Controller
             }
 
             $dailyCheck = DailyCheck::create([
-                'user_id' => auth()->user()->id,
+                'user_id' => Auth::user()->id,
                 'area' => $request->area,
                 'checking_category' => session('checkingCategory'),
                 'check_status' => 'NG'
             ]);
 
-
-            $a = QrpDetail::create([
+            QrpDetail::create([
                 'daily_check_id' => $dailyCheck->id,
                 'description' => $request->description,
                 'before' => $filename,
                 'recomendation' => $request->recomendation,
                 'qrp_status_id' => 1,
                 'dept_head_id' => $deptHead->user_id
+            ]);
+
+            Notification::create([
+                'daily_check_id' => $dailyCheck->id,
+                'from_user_id' => Auth::user()->id,
+                'to_user_id' => $deptHead->user_id,
+                'message' => 'Anda memiliki tugas untuk konfirmasi QRP'
             ]);
 
             DB::commit();

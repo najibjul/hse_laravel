@@ -23,7 +23,8 @@ class User extends Authenticatable
         'password',
         'phone_number',
         'department_id',
-        'role_id'
+        'role_id',
+        'nip'
     ];
 
     /**
@@ -51,5 +52,13 @@ class User extends Authenticatable
 
     public function deptHead () {
         return $this->hasOne(Depthead::class, 'user_id', 'id');
+    }
+
+    public function department () {
+        return $this->belongsTo(Department::class);
+    }
+
+    public function role () {
+        return $this->belongsTo(Role::class);
     }
 }

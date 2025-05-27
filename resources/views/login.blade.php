@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Login | Mantis Bootstrap 5 Admin Template</title>
+    <title>Login - HSE</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -42,7 +42,7 @@
                             <div class="d-flex mt-1 justify-content-between">
                                 <div class="form-check">
                                     <input class="form-check-input input-success" type="checkbox" id="customCheckc1"
-                                        checked="" name="remember">
+                                        name="remember">
                                     <label class="form-check-label text-muted" for="customCheckc1">Keep me sign
                                         in</label>
                                 </div>
