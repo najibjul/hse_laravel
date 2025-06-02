@@ -17,7 +17,7 @@ class NotificationController extends Controller
             $notification = Notification::find($id);
             $target = $notification->target;
             $target_id = $notification->target_id;
-            
+
             $notification->delete();
 
             DB::commit();
@@ -25,7 +25,7 @@ class NotificationController extends Controller
             if ($target == "qrp") {
                 return redirect()->route('qrp.qrp-form-detail', encrypt($target_id));
             }
-            
+
         } catch (\Throwable $th) {
             DB::rollBack();
             return back()->withErrors('error', $th->getMessage());

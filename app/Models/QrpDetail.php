@@ -39,7 +39,7 @@ class QrpDetail extends Model
     {
         return $this->belongsTo(DailyCheck::class);
     }
-    
+
     public function category()
     {
         return $this->belongsTo(Category::class);

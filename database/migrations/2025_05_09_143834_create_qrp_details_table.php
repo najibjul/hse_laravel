@@ -19,7 +19,7 @@ return new class extends Migration
 
             $table->string('before');
             $table->json('recomendation');
-            
+
             $table->unsignedBigInteger('adh_id')->nullable();
             $table->foreign('adh_id')->references('id')->on('users');
             $table->dateTime('adh_approve_date')->nullable();
@@ -27,7 +27,7 @@ return new class extends Migration
             $table->unsignedBigInteger('dh_id')->nullable();
             $table->foreign('dh_id')->references('id')->on('users');
             $table->dateTime('dh_approve_date')->nullable();
-            
+
             $table->unsignedBigInteger('ph_id')->nullable();
             $table->foreign('ph_id')->references('id')->on('users');
             $table->dateTime('ph_approve_date')->nullable();

@@ -27,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
                 $notifications =  Notification::where('user_id', Auth::user()->id)->orderByDesc('id')->get();
                 $totalNotification = $notifications->count();
                 $view->with(['notifications'=> $notifications , 'totalNotification' => $totalNotification ]);
-                
+
             } else {
                 $view->with(['notifications'=> [] , 'totalNotification' => 0 ]);
             }

@@ -415,6 +415,7 @@ class QrpController extends Controller
 
     public function qrpFormDetail($id)
     {
+        $adhs = User::where('department_id', Auth::user()->department_id)->where('position_id', 3)->get();
         $agent = new Agent();
         $dailyCheck = DailyCheck::find(decrypt($id));
 

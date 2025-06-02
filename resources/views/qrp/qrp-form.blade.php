@@ -112,7 +112,7 @@
                                     <div class="d-flex justify-content-center align-item-center pt-3" >
                                         <div id="my_camera"></div>
                                     </div>
-                                        
+
                                     <div id="pre_take_buttons">
                                         <button type="button" class="btn btn-success mt-3" onClick="preview_snapshot()">
                                             <i class="ti ti-camera"></i> Ambil gambar
@@ -161,6 +161,21 @@
                             @enderror
                         </div>
                     </div>
+                    <div class="col-12 col-md-6">
+                        <div class="form-group mb-4">
+                            <label class="form-label">Asst. Dept. Head</label>
+                            <select id="adh" class="form-control @error('adh') is-invalid @enderror" name="adh">
+                            </select>
+                            @error('adh')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+
+                        </div>
+                    </div>
+                </div>
+
+
+
 
 
                     <button type="button" class="btn btn-success btn-lg rounded-pill w-100" data-bs-toggle="modal"

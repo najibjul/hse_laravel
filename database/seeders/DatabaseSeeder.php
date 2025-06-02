@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Sedang dikerjakan',
             'class' => 'badge bg-primary text-white text-uppercase'
         ]);
-        
+
         QrpStatus::create([
             'name' => 'Cancel',
             'class' => 'badge bg-warning text-dark text-uppercase'
@@ -57,7 +57,7 @@ class DatabaseSeeder extends Seeder
         Role::create([
             'role_name' => 'Admin Department'
         ]);
-        
+
         Role::create([
             'role_name' => 'User'
         ]);
@@ -65,15 +65,15 @@ class DatabaseSeeder extends Seeder
         Role::create([
             'role_name' => 'Admin HSE'
         ]);
-        
+
         // Department::create([
         //     'department_name' => 'EDP'
         // ]);
-        
+
         // Department::create([
         //     'department_name' => 'Engineering BCHI'
         // ]);
-        
+
         // Department::create([
         //     'department_name' => 'Produksi A'
         // ]);
@@ -85,7 +85,7 @@ class DatabaseSeeder extends Seeder
         // Position::create([
         //     'position_name' => 'Plant Head / HoD'
         // ]);
-        
+
         // Position::create([
         //     'position_name' => 'Dept. Head'
         // ]);
@@ -105,7 +105,7 @@ class DatabaseSeeder extends Seeder
         // Position::create([
         //     'position_name' => 'Asst. Plant Head'
         // ]);
-        
+
         // User::factory(10)->create();
 
         Category::create([
@@ -135,13 +135,13 @@ class DatabaseSeeder extends Seeder
         Rank::create([
             'rank_name' => 'C',
             'due_day' => 5,
-            'rank_description' => "Potensi bahaya yang dapat menyebabkan kecelakaan ringan (first aid) dan harus dilakukan perbaikan maksimal 5X24 Jam."        
+            'rank_description' => "Potensi bahaya yang dapat menyebabkan kecelakaan ringan (first aid) dan harus dilakukan perbaikan maksimal 5X24 Jam."
         ]);
 
         Factor::create([
             'factor_name' => 'MAN'
         ]);
-        
+
         Factor::create([
             'factor_name' => 'MACHINE'
         ]);
