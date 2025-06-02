@@ -28,9 +28,9 @@ class UserFactory extends Factory
             'nip' => fake()->numberBetween(100000, 999999),
             'email' => fake()->unique()->safeEmail(),
             'password' => static::$password ??= Hash::make('password'),
-            'phone_number' => fake()->phoneNumber(),
             'role_id' => fake()->numberBetween(1, 3),
-            'department_id' => fake()->numberBetween(1, 3)
+            'department_id' => fake()->numberBetween(1, 3),
+            'position_id' => fake()->numberBetween(1, 3)
         ];
     }
 

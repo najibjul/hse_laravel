@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('daily_check_id');
-            $table->foreign('daily_check_id')->references('id')->on('daily_checks');
-            $table->unsignedBigInteger('from_user_id');
-            $table->foreign('from_user_id')->references('id')->on('users');
-            $table->unsignedBigInteger('to_user_id');
-            $table->foreign('to_user_id')->references('id')->on('users');
-            $table->string('message')->nullable();
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->text('title');
+            $table->text('body');
+            $table->text('target');
+            $table->integer('target_id');
+            $table->tinyInteger('is_read');
             $table->timestamps();
         });
     }

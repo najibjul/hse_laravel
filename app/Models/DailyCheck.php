@@ -10,7 +10,7 @@ class DailyCheck extends Model
         'user_id',
         'activity',
         'area',
-        'checking_category',
+        'factor_id',
         'check_status'
     ];
 
@@ -20,5 +20,11 @@ class DailyCheck extends Model
 
     public function qrpDetail(){
         return $this->hasOne(QrpDetail::class);
+    }
+
+    public function factor()
+    {
+        return $this->belongsTo(Factor::class);
+        
     }
 }

@@ -18,5 +18,8 @@ export default defineConfig({
     alias: {
       jquery: 'jquery/src/jquery', // pastikan ini ada
     },
+    server: {
+      cors: true
+    }
   },
 });

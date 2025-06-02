@@ -21,10 +21,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'phone_number',
         'department_id',
         'role_id',
-        'nip'
+        'nip',
+        'position_id'
     ];
 
     /**
@@ -51,7 +51,7 @@ class User extends Authenticatable
     }
 
     public function deptHead () {
-        return $this->hasOne(Depthead::class, 'user_id', 'id');
+        return $this->hasOne(Department::class, 'dept_head_id', 'id');
     }
 
     public function department () {

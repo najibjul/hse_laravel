@@ -17,7 +17,9 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->string('activity')->nullable();
             $table->string('area');
-            $table->string('checking_category')->nullable();
+            $table->unsignedBigInteger('factor_id');
+            $table->foreign('factor_id')->references('id')->on('factors');
+
             $table->enum('check_status', ['OK', 'NG']);
             $table->timestamps();
 

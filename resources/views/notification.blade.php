@@ -13,6 +13,6 @@
     </a>
     @empty
         <div class="flex-grow-1 ms-1 text-center">
-                Tidak ada pemberitahuan
+                Tidak ada pesan
             </div>
     @endforelse

@@ -18,14 +18,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/daily-checking', [QrpController::class, 'dailyChecking'])->name('qrp.daily-checking');
-    Route::get('/change-category', [QrpController::class, 'changeCategory'])->name('qrp.change-category');
+    Route::get('/change-factor', [QrpController::class, 'changeFactor'])->name('qrp.change-factor');
     Route::post('/daily-checking', [QrpController::class, 'dailyCheckingPost'])->name('qrp.daily-checking-post');
 
     Route::get('/qrp-form', [QrpController::class, 'qrpForm'])->name('qrp.qrp-form');
+    Route::get('/qrp-form/search-adh', [QrpController::class, 'searchAdh'])->name('qrp.qrp-form.search-adh');
     Route::post('/qrp-form', [QrpController::class, 'qrpFormPost'])->name('qrp.qrp-form-post');
 
     Route::get('/qrp-form/detail/{id}', [QrpController::class, 'qrpFormDetail'])->name('qrp.qrp-form-detail');
-    Route::post('/qrp-form/dh-approval/{id}', [QrpController::class, 'dhApproval'])->name('qrp.dh-approval');
+    Route::delete('/qrp-form/detail/{id}', [QrpController::class, 'qrpFormDelete'])->name('qrp.qrp-form-detail.destroy');
+    Route::get('/qrp-form/detail/{id}/edit', [QrpController::class, 'qrpFormDetailEdit'])->name('qrp.qrp-form-detail.edit');
+
+    
+    Route::post('/qrp-form/approval/{id}', [QrpController::class, 'approval'])->name('qrp.approval');
     Route::post('/qrp-form/dh-cancel/{id}', [QrpController::class, 'dhCancel'])->name('qrp.dh-cancel');
     Route::post('/qrp-form/upload-close/{id}', [QrpController::class, 'uploadClose'])->name('qrp.upload-close');
     Route::post('/qrp-form/upload-close-galery/{id}', [QrpController::class, 'uploadCloseGalery'])->name('qrp.upload-close-galery');

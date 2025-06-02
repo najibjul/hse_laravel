@@ -53,7 +53,7 @@
                             <tr>
                                 <th>{{ $loop->iteration + ($departments->currentPage() - 1) * $departments->perPage() }}</th>
                                 <td>{{ $department->department_name }}</td>
-                                <td>{{ $department->depthead?->user?->name }} @if ($department->depthead?->user?->nip) ({{ $department->depthead?->user?->nip }}) @endif</td>
+                                <td>{{ $department->depthead?->name }} @if ($department->depthead?->nip) ({{ $department->depthead?->nip }}) @endif</td>
                                 <td>
                                     <div class="d-flex gap-2 justify-content-center">
                                         <a href="{{ route('admin.departments.edit', encrypt($department->id)) }}">

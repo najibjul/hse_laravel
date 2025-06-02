@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('departments', function (Blueprint $table) {
+        Schema::create('ranks', function (Blueprint $table) {
             $table->id();
-            $table->string('department_name')->unique();
-            $table->unsignedBigInteger('dept_head_id')->nullable();
-            $table->foreign('dept_head_id')->references('id')->on('users');
+            $table->text('rank_name');
+            $table->integer('due_day');
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('departments');
+        Schema::dropIfExists('ranks');
     }
 };

@@ -88,7 +88,7 @@
 
                 $('#depthead').select2({
                     theme: 'bootstrap-5',
-                    placeholder: 'Search item code...',
+                    placeholder: 'Search Dept. Head...',
                     ajax: {
                         url: url,
                         dataType: 'json',

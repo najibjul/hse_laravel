@@ -9,14 +9,22 @@ class QrpDetail extends Model
     protected $fillable = [
         'daily_check_id',
         'description',
+        'category_id',
         'before',
         'recomendation',
-        'dept_head_id',
-        'approved_dept_head_at',
-        'admin_id',
-        'approved_admin_at',
+        'rank_id',
+        'due_date',
+        'adh_id',
+        'adh_approve_date',
+        'dh_id',
+        'dh_approve_date',
+        'ph_id',
+        'ph_approve_date',
+        'hse_id',
+        'hse_approve_date',
         'after',
         'after_uploaded_at',
+        'closed_at',
         'qrp_status_id'
     ];
 
@@ -38,6 +46,21 @@ class QrpDetail extends Model
     public function dailyCheck()
     {
         return $this->belongsTo(DailyCheck::class);
+    }
+    
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function rank()
+    {
+        return $this->belongsTo(Rank::class);
+    }
+
+    public function adh()
+    {
+        return $this->belongsTo(user::class, 'adh_id', 'id');
     }
 
 }

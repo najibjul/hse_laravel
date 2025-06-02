@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Notification;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -21,8 +22,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (auth()->check()) {
-            $notifications =  Notification::where('to_user_id', auth()->user()->id)->get();
+        if (Auth::check()) {
+            $notifications =  Notification::where('user_id', Auth::user()->id)->get();
             $totalNotification = $notifications->count();
 
             View::composer('notification', function ($view) use($notifications) {

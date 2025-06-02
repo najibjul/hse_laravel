@@ -12,6 +12,6 @@ class Department extends Model
 
     public function depthead()
     {
-        return $this->hasOne(Depthead::class);
+        return $this->belongsTo(User::class, 'dept_head_id', 'id');
     }
 }

@@ -16,17 +16,30 @@ return new class extends Migration
             $table->unsignedBigInteger('daily_check_id');
             $table->foreign('daily_check_id')->references('id')->on('daily_checks');
             $table->string('description');
+
             $table->string('before');
             $table->string('recomendation');
-            $table->unsignedBigInteger('dept_head_id')->nullable();
-            $table->foreign('dept_head_id')->references('id')->on('users');
-            $table->dateTime('dept_head_approved_at')->nullable();
-            $table->unsignedBigInteger('admin_id')->nullable();
-            $table->foreign('admin_id')->references('id')->on('users');
-            $table->dateTime('admin_approved_at')->nullable();
+            
+            $table->unsignedBigInteger('adh_id')->nullable();
+            $table->foreign('adh_id')->references('id')->on('users');
+            $table->dateTime('adh_approve_date')->nullable();
+
+            $table->unsignedBigInteger('dh_id')->nullable();
+            $table->foreign('dh_id')->references('id')->on('users');
+            $table->dateTime('dh_approve_date')->nullable();
+            
+            $table->unsignedBigInteger('ph_id')->nullable();
+            $table->foreign('ph_id')->references('id')->on('users');
+            $table->dateTime('ph_approve_date')->nullable();
+
+            $table->unsignedBigInteger('hse_id')->nullable();
+            $table->foreign('hse_id')->references('id')->on('users');
+            $table->dateTime('hse_approve_date')->nullable();
+
             $table->string('after')->nullable();
             $table->unsignedBigInteger('qrp_status_id');
             $table->foreign('qrp_status_id')->references('id')->on('qrp_statuses');
+
             $table->timestamps();
         });
     }

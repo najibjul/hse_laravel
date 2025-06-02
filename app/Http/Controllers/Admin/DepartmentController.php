@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Department;
-use App\Models\Depthead;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -101,21 +100,10 @@ class DepartmentController
 
         try {
             Department::where('id', $id)->update([
-                'department_name' => $request->department_name
+                'department_name' => $request->department_name,
+                'dept_head_id' => $request->department_head
             ]);
 
-            $depthead = Depthead::where('department_id', $id)->first();
-
-            if ($depthead) {
-                $depthead->update([
-                    'user_id' => $request->department_head
-                ]);
-            } else {
-                Depthead::create([
-                    'department_id' => $id,
-                    'user_id' => $request->department_head
-                ]);
-            }
             DB::commit();
             session()->flash('success', 'Department berhasil diupdate');
             return redirect()->route('admin.departments.index');

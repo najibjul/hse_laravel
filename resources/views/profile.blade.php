@@ -74,27 +74,3 @@
     </div>
 @endsection
 
-@push('scripts')
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-
-            @if(session()->has('success'))
-                Swal.fire({
-                    title: "Berhasil",
-                    text: `{{ session('success') }}`,
-                    icon: "success",
-                    confirmButtonColor: "#198754",
-                });
-            @endif
-
-            @if(session()->has('error'))
-                Swal.fire({
-                    title: "Error",
-                    text: `{{ session('error') }}`,
-                    icon: "error",
-                    confirmButtonColor: "#dc3545"
-                });
-            @endif
-            });
-    </script>
-@endpush
