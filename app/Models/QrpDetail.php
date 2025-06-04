@@ -8,6 +8,7 @@ class QrpDetail extends Model
 {
     protected $fillable = [
         'daily_check_id',
+        'department_id',
         'description',
         'category_id',
         'before',
@@ -61,6 +62,26 @@ class QrpDetail extends Model
     public function adh()
     {
         return $this->belongsTo(user::class, 'adh_id', 'id');
+    }
+
+    public function dh()
+    {
+        return $this->belongsTo(user::class, 'dh_id', 'id');
+    }
+
+    public function ph()
+    {
+        return $this->belongsTo(user::class, 'ph_id', 'id');
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
 }

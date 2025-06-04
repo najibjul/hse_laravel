@@ -87,7 +87,7 @@
                             <input type="text" name="dataUri" id="dataUri" hidden>
 
                             <ul class="nav nav-tabs" id="myTab" role="tablist">
-                                <li class="nav-item" role="presentation">
+                                <li class="nav-item" id="fotoLangsung" role="presentation">
                                     <button class="nav-link active" id="direct-tab" data-bs-toggle="tab"
                                         data-bs-target="#direct" type="button" role="tab" aria-controls="direct"
                                         aria-selected="true">Foto langsung</button>
@@ -190,6 +190,13 @@
     <script src="{{ asset('assets/webcam/webcam.min.js') }}"></script>
 
     <script>
+        Webcam.on('error', function(err) {
+            $('#fotoLangsung').addClass('d-none');
+            $('#galeri-tab').addClass('active');
+            $('#direct').removeClass('show active');
+            $('#galeri').addClass('show active');
+        });
+
         Webcam.set({
             width: 240,
             height: 320,

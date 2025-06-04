@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('description');
 
             $table->string('before');
-            $table->string('recomendation');
+            $table->json('recomendation');
             
             $table->unsignedBigInteger('adh_id')->nullable();
             $table->foreign('adh_id')->references('id')->on('users');

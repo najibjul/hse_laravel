@@ -25,14 +25,14 @@
                 <div class="row mb-4">
                     <form action="{{ route('qrp.daily-checking') }}" method="get">
                         <div class="d-flex justify-content-end">
-                            <input type="text" class="form-control search w-auto me-1" name="search" placeholder="Cari ..."
+                            <input type="text" class="form-control  search w-auto me-1" name="search" placeholder="Cari ..."
                                 value="{{ $search }}">
 
-                            <button type="submit" class="btn btn-warning me-3">
+                            <button type="submit" class="btn btn-warning me-3 ">
                                 <i class="ti ti-search"></i>
                             </button>
 
-                            <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                            <button type="button" class="btn btn-success " data-bs-toggle="modal"
                                 data-bs-target="#addCheckingModal">
                                 <div class="d-block d-md-none d-lg-none">
                                     <div class="ti ti-plus"></div>
@@ -55,7 +55,7 @@
                                 <th>Aktifitas / Problem</th>
                                 <th>Area</th>
                                 <th>Tanggal</th>
-                                <th>Kategori</th>
+                                <th>Faktor</th>
                                 <th>Status Cek</th>
                                 <th>Status QRP</th>
                                 <th></th>
@@ -73,7 +73,7 @@
                                     <td>{{ \Carbon\Carbon::parse($dailyCheck->created_at)->format('d M Y H:i') }}</td>
                                     <td>
                                         <div class="text-uppercase">
-                                            {{ $dailyCheck->checking_category }}
+                                            {{ $dailyCheck->factor?->factor_name }}
                                         </div>
                                     </td>
                                     <td>
@@ -86,7 +86,7 @@
                                     </td>
                                     <td>
                                         <a href="{{ route('qrp.qrp-form-detail', encrypt($dailyCheck->id)) }}"
-                                            class="btn btn-warning {{ $dailyCheck->check_status == 'OK' ? 'd-none' : '' }}">Detail</a>
+                                            class="btn btn-warning  {{ $dailyCheck->check_status == 'OK' ? 'd-none' : '' }}">Detail</a>
                                     </td>
                                 </tr>
                             @empty
@@ -108,11 +108,11 @@
     </div>
         <form action="{{ route('qrp.daily-checking') }}" method="GET">
         <div class="d-flex gap-2 mb-4">
-            <input type="text" name="search" class="form-control search rounded-pill" value="{{ $search }}" placeholder="Cari...">
-            <button type="submit" class="btn btn-warning rounded-pill" type="submit">
+            <input type="text" name="search" class="form-control  search rounded-pill" value="{{ $search }}" placeholder="Cari...">
+            <button type="submit" class="btn  btn-warning rounded-pill" type="submit">
                 <i class="ti ti-search"></i>
             </button>
-            <button type="button" class="btn btn-success rounded-pill" data-bs-toggle="modal" data-bs-target="#addCheckingModal">
+            <button type="button" class="btn  btn-success rounded-pill" data-bs-toggle="modal" data-bs-target="#addCheckingModal">
                 <i class="ti ti-plus"></i>
             </button>
         </div>
@@ -120,7 +120,7 @@
 
         @foreach($dailyChecks as $dailyCheck)
             <a href="{{ $dailyCheck->check_status == 'NG' ? route('qrp.qrp-form-detail', encrypt($dailyCheck->id)) : 'javascript:void(0)' }}" @if($dailyCheck->check_status == 'OK') onclick="statusOk(event)" @endif >
-                <div class="card card-hover" style="border-radius: 15px;">
+                <div class="card card-hover " style="border-radius: 15px;">
                     <div class="card-body ">
                         <div><i class="ti ti-user"></i> {{ $dailyCheck->user->name }} ({{ $dailyCheck->user->nip }})</div>
                         <div><i class="ti ti-alert-circle"></i> {{ $dailyCheck->activity ? $dailyCheck->activity : $dailyCheck->qrpDetail->description }}</div>
@@ -288,7 +288,7 @@
 <style>
     .card-hover:hover {
     transform: scale(1.03);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    box-: 0 10px 20px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
 }
 </style>
