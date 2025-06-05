@@ -9,7 +9,7 @@
                             <h5 class="m-b-10">Detail</h5>
                         </div>
                         <ul class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="javascript: void(0)">Quick Risk Prediction</a></li>
+                            <li class="breadcrumb-item"><a href="javascript: void(0)">Safety Comitee</a></li>
                             <li class="breadcrumb-item"><a href="{{ route('qrp.daily-checking') }}">Daily Checking</a></li>
                             <li class="breadcrumb-item" aria-current="page">Detail</li>
                         </ul>
@@ -78,9 +78,15 @@
                     <label class="form-label fw-bold">Rekomendasi</label>
                     <br>
                     @foreach (json_decode($dailyCheck->qrpDetail->recomendation, true) as $recomendation)
-                        • {!! $recomendation['user'] !!} <br>
-                        {!! nl2br($recomendation['recomendation']) !!}
-                        <br><br>
+                        <label for="label-form" class="">
+                            • {!! $recomendation['user'] !!}
+                        </label>
+                        <div class="font-italic text-secondary mb-4">
+                            <i>
+                                {!! nl2br($recomendation['recomendation']) !!}
+                            </i>
+                        </div>
+                        
                     @endforeach
                 </div>
                 <div class="col-12 col-md-6 col-lg-6 mb-4">
@@ -208,10 +214,9 @@
                                                     <i class="ti ti-arrow-back-up"></i> Ambil ulang gambar
                                                 </button>
                                                 <div>
-                                                    <button class="btn btn-success mt-3"><i
-                                                            class="ti ti-device-floppy"></i>
-                                                        Simpan
-                                                        gambar penyelesaian</button>
+                                                    <button type="submit" class="btn btn-success mt-3">
+                                                        <i class="ti ti-device-floppy"></i> Simpan gambar penyelesaian
+                                                    </button>
                                                 </div>
                                             </div>
                                         </form>
@@ -295,7 +300,7 @@
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Hapus QRP</h5>
+                                <h5 class="modal-title" id="exampleModalLabel">Hapus Safety Comitee</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
@@ -303,7 +308,7 @@
                                 @csrf
                                 @method('DELETE')
                                 <div class="modal-body">
-                                    Hapus data QRP?
+                                    Hapus data safety comitee?
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary"

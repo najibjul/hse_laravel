@@ -19,7 +19,6 @@ return new class extends Migration
             $table->text('body');
             $table->text('target');
             $table->integer('target_id');
-            $table->tinyInteger('is_read');
             $table->timestamps();
         });
     }

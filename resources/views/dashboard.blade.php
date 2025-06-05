@@ -31,7 +31,7 @@
 
     <div class="mb-3 mt-4">Summary QRP</div>
     <div class="row">
-        <div class="col-6 col-xl-3">
+        <div class="col-6 col-xl-4">
             <div class="card border-0 border-top border-info border-3">
                 <div class="card-body ">
                     <h6 class="mb-2 f-w-400 text-info">Menunggu</h6>
@@ -41,7 +41,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-6 col-xl-3">
+        <div class="col-6 col-xl-4">
             <div class="card border-0 border-top border-primary border-3">
                 <div class="card-body">
                     <h6 class="mb-2 f-w-400 text-primary">Sedang Dikerjakan</h6>
@@ -50,7 +50,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-6 col-xl-3">
+        <div class="col-6 col-xl-4">
             <div class="card border-0 border-top border-success border-3">
                 <div class="card-body">
                     <h6 class="mb-2 f-w-400 text-success">Close</h6>
@@ -59,7 +59,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-6 col-xl-3">
+        {{-- <div class="col-6 col-xl-3">
             <div class="card border-0 border-top border-danger border-3">
                 <div class="card-body">
                     <h6 class="mb-2 f-w-400 text-danger">Tolak Open / Cancel</h6>
@@ -69,7 +69,7 @@
                     </p>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 
 @endsection

@@ -20,7 +20,7 @@
 </head>
 
 <body data-pc-preset="preset-1" data-pc-direction="ltr" data-pc-theme="light" id="main-font-link">
-    
+
     <div class="loader-bg">
         <div class="loader-track">
             <div class="loader-fill"></div>
@@ -45,7 +45,7 @@
 
 
                     <li class="pc-item pc-caption">
-                        <label>Quick Risk Prediction</label>
+                        <label>Safety Comitee</label>
                         <i class="ti ti-dashboard"></i>
                     </li>
                     <li class="pc-item {{ Route::is('qrp.*') ? 'active' : '' }}">
@@ -54,7 +54,7 @@
                             <span class="pc-mtext">Daily Checking</span>
                         </a>
                     </li>
-                    
+
 
                     {{-- <li class="pc-item pc-caption">
                         <label>Safety Patrol</label>
@@ -72,7 +72,7 @@
                             <span class="pc-mtext">Temuan Patrol</span>
                         </a>
                     </li> --}}
-                    
+
 
                     @if (auth()->user()->role_id == 2 or auth()->user()->role_id == 1)
                         <li class="pc-item pc-caption">
@@ -120,7 +120,13 @@
                     <li class="dropdown pc-h-item">
                         <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#"
                             role="button" aria-haspopup="false" aria-expanded="false">
-                            <i class="ti ti-mail"></i>
+                            <i class="ti ti-mail">
+                                @if ($totalNotification > 0)
+                                    <span class="badge bg-success rounded small"
+                                        style="position: fixed; margin-top: -13px;  margin-left: -15px;">
+                                        {{ $totalNotification }}</span>
+                                @endif
+                            </i>
                         </a>
                         <div class="dropdown-menu dropdown-notification dropdown-menu-end pc-h-dropdown">
                             <div class="dropdown-header d-flex align-items-center justify-content-between">
@@ -132,15 +138,43 @@
                             <div class="dropdown-header px-0 text-wrap header-notification-scroll position-relative"
                                 style="max-height: calc(100vh - 215px)">
                                 <div class="list-group list-group-flush w-100">
-                                    @include('notification')
+                                    @forelse ($notifications as $notification)
+                                        <form id="notificationUpdate{{ $notification->id }}" method="POST"
+                                            action="{{ route('notification.update', $notification->id) }}"
+                                            class="d-none">
+                                            @csrf
+                                            @method('patch')
+                                        </form>
+
+                                        <a href="#"
+                                            onclick="event.preventDefault(); document.getElementById(`notificationUpdate{{ $notification->id }}`).submit();"
+                                            class="list-group-item list-group-item-action">
+                                            <div class="d-flex">
+                                                <div class="flex-shrink-0">
+                                                    <img src=" {{ asset('assets/images/user/avatar-2.jpg') }}"
+                                                        alt="user-image" class="user-avtar">
+                                                </div>
+                                                <div class="flex-grow-1 ms-1">
+                                                    {{-- <span class="float-end text-muted">3:00 AM</span> --}}
+                                                    <p class="text-body mb-1">{{ $notification->title }}</p>
+                                                    <span class="text-muted">{{ $notification->body }}</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    @empty
+                                        <div class="flex-grow-1 ms-1 text-center">
+                                            Tidak ada pesan
+                                        </div>
+                                    @endforelse
+
                                 </div>
                             </div>
-                            @include('total-notification')
                         </div>
                     </li>
                     <li class="dropdown pc-h-item header-user-profile">
-                        <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#"
-                            role="button" aria-haspopup="false" data-bs-auto-close="outside" aria-expanded="false">
+                        <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown"
+                            href="#" role="button" aria-haspopup="false" data-bs-auto-close="outside"
+                            aria-expanded="false">
                             <img src="{{ asset('assets/images/user/avatar-2.jpg') }}" alt="user-image"
                                 class="user-avtar">
                             <span>{{ auth()->user()->name }}</span>
@@ -199,7 +233,7 @@
         <div class="footer-wrapper container-fluid">
             <div class="row">
                 <div class="col-sm my-1">
-                    <p class="m-0">HSE Department ©️ {{ now()->format('Y') }}</p>
+                    <p class="m-0">Copyright ©️ EDP {{ now()->format('Y') }}</p>
                 </div>
             </div>
         </div>
@@ -210,36 +244,34 @@
     <script src="{{ asset('assets/js/plugins/feather.min.js') }}"></script>
     <script src="{{ asset('assets/js/pcoded.js') }}"></script>
 
-    <script>
-        
-    </script>
+    <script></script>
 
     <script>
-         document.addEventListener("DOMContentLoaded", function () {
-        @if (session()->has('success'))
-            Swal.fire({
-                title: "Berhasil",
-                text: `{{ session('success') }}`,
-                icon: "success",
-                confirmButtonColor: "#52c41a",
-            });
-        @endif
+        document.addEventListener("DOMContentLoaded", function() {
+            @if (session()->has('success'))
+                Swal.fire({
+                    title: "Berhasil",
+                    text: `{{ session('success') }}`,
+                    icon: "success",
+                    confirmButtonColor: "#52c41a",
+                });
+            @endif
 
-        @if (session()->has('error'))
-            Swal.fire({
-                title: "Error",
-                text: `{{ session('error') }}`,
-                icon: "error",
-                confirmButtonColor: "#ff4d4f"
-            });
-        @endif
+            @if (session()->has('error'))
+                Swal.fire({
+                    title: "Error",
+                    text: `{{ session('error') }}`,
+                    icon: "error",
+                    confirmButtonColor: "#ff4d4f"
+                });
+            @endif
 
-        layout_change('light');
-        change_box_container('false');
-        layout_rtl_change('false');
-        preset_change("preset-1");
-        font_change("Public-Sans");
-         })
+            layout_change('light');
+            change_box_container('false');
+            layout_rtl_change('false');
+            preset_change("preset-1");
+            font_change("Public-Sans");
+        })
     </script>
 
     @stack('scripts')

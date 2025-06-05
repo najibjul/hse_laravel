@@ -48,6 +48,7 @@
                             <th>Email</th>
                             <th>Departemen</th>
                             <th>Role</th>
+                            <th>Jabatan</th>
                             <th>Opsi</th>
                         </tr>
                     </thead>
@@ -60,6 +61,7 @@
                                 <td>{{ $user->email }}</td>
                                 <td>{{ $user->department->department_name }}</td>
                                 <td>{{ $user->role->role_name }}</td>
+                                <td>{{ $user->position->position_name }}</td>
                                 <td>
                                     <div class="d-flex gap-2 justify-content-center">
                                         <a href="{{ route('admin.users.edit', encrypt($user->id)) }}">

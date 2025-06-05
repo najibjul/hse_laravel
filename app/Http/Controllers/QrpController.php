@@ -38,13 +38,6 @@ class QrpController extends Controller
                     $q->where('department_id', Auth::user()->department_id);
                 });
             });
-            // $q->where(function ($q) {
-            //         ->when(Auth::user()->deptHead, function ($q) {
-            //             return $q->orWhereHas('qrpDetail', function ($q) {
-            //                 return $q->where('dept_head_id', Auth::user()->id);
-            //             });
-            //         });
-            // });
         })
             ->when($search, function ($q) use ($search) {
                 $q->where(function ($q) use ($search) {
@@ -197,7 +190,7 @@ class QrpController extends Controller
 
                 if (preg_match('/^data:image\/(\w+);base64,/', $dataUri, $type)) {
                     $data = substr($dataUri, strpos($dataUri, ',') + 1);
-                    $ext = strtolower($type[1]); // jpg, png, gif, etc.
+                    $ext = strtolower($type[1]);
                     $data = base64_decode($data);
                 }
 
@@ -239,16 +232,16 @@ class QrpController extends Controller
 
             Notification::create([
                 'user_id' => $request->adh,
-                'title' => 'Approve QRP',
-                'body' => 'Anda memiliki tugas untuk approve QRP',
+                'title' => 'Approve safety comitee',
+                'body' => 'Anda memiliki tugas untuk approve safety comitee',
                 'target' => 'qrp',
                 'target_id' => $dailyCheck->id,
-                'is_read' => false
+                
             ]);
 
             DB::commit();
 
-            session()->flash('success', 'Data QRP berhasil dibuat');
+            session()->flash('success', 'Laporan berhasil dibuat');
             return redirect()->route('qrp.qrp-form-detail', encrypt($dailyCheck->id));
         } catch (\Exception $error) {
             DB::rollBack();
@@ -349,7 +342,7 @@ class QrpController extends Controller
 
                 if (preg_match('/^data:image\/(\w+);base64,/', $dataUri, $type)) {
                     $data = substr($dataUri, strpos($dataUri, ',') + 1);
-                    $ext = strtolower($type[1]); // jpg, png, gif, etc.
+                    $ext = strtolower($type[1]); 
                     $data = base64_decode($data);
                 }
 
@@ -410,8 +403,6 @@ class QrpController extends Controller
 
         DB::beginTransaction();
 
-        //buat rekomendasi
-
         try {
             $qrpDetail = QrpDetail::where('daily_check_id', $id)->first();
             $oldRecomendation = json_decode($qrpDetail->recomendation);
@@ -435,7 +426,7 @@ class QrpController extends Controller
             }
 
             DB::commit();
-            session()->flash('success', 'Data QRP berhasil diupdate');
+            session()->flash('success', 'Laporan berhasil diupdate');
             return redirect()->route('qrp.qrp-form-detail', encrypt($id));
         } catch (\Exception $error) {
             DB::rollBack();
@@ -475,7 +466,7 @@ class QrpController extends Controller
                 'body' => 'Kerjakan sesuai rekomendasi',
                 'target' => 'qrp',
                 'target_id' => $dailyCheck->id,
-                'is_read' => false
+                
             ]);
 
             DB::commit();
@@ -509,7 +500,7 @@ class QrpController extends Controller
             ]);
 
             DB::commit();
-            session()->flash('success', 'Data QRP berhasil dicancel');
+            session()->flash('success', 'Laporan berhasil dicancel');
             return redirect()->route('qrp.qrp-form-detail', encrypt($id));
         } catch (\Exception $error) {
             DB::rollBack();
@@ -535,7 +526,7 @@ class QrpController extends Controller
 
             if (preg_match('/^data:image\/(\w+);base64,/', $dataUri, $type)) {
                 $data = substr($dataUri, strpos($dataUri, ',') + 1);
-                $ext = strtolower($type[1]); // jpg, png, gif, etc.
+                $ext = strtolower($type[1]); 
                 $data = base64_decode($data);
             }
 
@@ -550,13 +541,21 @@ class QrpController extends Controller
 
             $dailyCheck = DailyCheck::find($id);
 
+            if ($dailyCheck->qrpDetail->adh_id && !$dailyCheck->qrpDetail->dh_id) {
+                $user = $dailyCheck->qrpDetail->adh_id;
+            } elseif ($dailyCheck->qrpDetail->dh_id && !$dailyCheck->qrpDetail->ph_id) {
+                $user = $dailyCheck->qrpDetail->dh_id;
+            } elseif ($dailyCheck->qrpDetail->ph_id) {
+                $user = $dailyCheck->qrpDetail->ph_id;
+            }
+
             Notification::create([
-                'user_id' => $dailyCheck->user_id,
+                'user_id' => $user,
                 'title' => 'Pekerjaan telah dilakukan',
                 'body' => 'Pastikan penyelesaian sesuai dengan rekomendasi',
                 'target' => 'qrp',
                 'target_id' => $dailyCheck->id,
-                'is_read' => false
+                
             ]);
 
             DB::commit();
@@ -586,7 +585,7 @@ class QrpController extends Controller
 
             if (preg_match('/^data:image\/(\w+);base64,/', $dataUri, $type)) {
                 $data = substr($dataUri, strpos($dataUri, ',') + 1);
-                $ext = strtolower($type[1]); // jpg, png, gif, etc.
+                $ext = strtolower($type[1]);
                 $data = base64_decode($data);
             }
 
@@ -639,13 +638,20 @@ class QrpController extends Controller
 
             $dailyCheck = DailyCheck::find($id);
 
+            if ($dailyCheck->qrpDetail->adh_id && !$dailyCheck->qrpDetail->dh_id) {
+                $user = $dailyCheck->qrpDetail->adh_id;
+            } elseif ($dailyCheck->qrpDetail->dh_id && !$dailyCheck->qrpDetail->ph_id) {
+                $user = $dailyCheck->qrpDetail->dh_id;
+            } elseif ($dailyCheck->qrpDetail->ph_id) {
+                $user = $dailyCheck->qrpDetail->ph_id;
+            }
+
             Notification::create([
-                'user_id' => $dailyCheck->user_id,
+                'user_id' => $user,
                 'title' => 'Pekerjaan telah dilakukan',
                 'body' => 'Pastikan penyelesaian sesuai dengan rekomendasi',
                 'target' => 'qrp',
-                'target_id' => $dailyCheck->id,
-                'is_read' => false
+                'target_id' => $dailyCheck->id,                
             ]);
 
             DB::commit();
@@ -715,7 +721,7 @@ class QrpController extends Controller
                 'body' => 'Pekerjaan telah selesai',
                 'target' => 'qrp',
                 'target_id' => $dailyCheck->id,
-                'is_read' => false
+                
             ]);
 
             DB::commit();
@@ -765,7 +771,7 @@ class QrpController extends Controller
                 'body' => 'Mohon ulangi sesuai rekomendasi',
                 'target' => 'qrp',
                 'target_id' => $id,
-                'is_read' => false
+                
             ]);
 
             Storage::disk('public')->delete("image/{$after}");
@@ -800,6 +806,7 @@ class QrpController extends Controller
                     'dh_id' => $request->riseup
                 ]);
             }
+            
             if (!$dailyCheck->qrpDetail->ph_id && $dailyCheck->qrpDetail->dh_id ) {
                 QrpDetail::where('daily_check_id', $id)->update([
                     'ph_id' => $request->riseup
@@ -808,11 +815,11 @@ class QrpController extends Controller
 
             Notification::create([
                 'user_id' => $request->riseup,
-                'title' => 'Approve QRP',
-                'body' => 'Anda memiliki tugas untuk approve QRP',
+                'title' => 'Approve safety comitee',
+                'body' => 'Anda memiliki tugas untuk approve safety comitee',
                 'target' => 'qrp',
                 'target_id' => $id,
-                'is_read' => false
+                
             ]);
 
             DB::commit();

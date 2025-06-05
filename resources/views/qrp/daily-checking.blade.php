@@ -10,7 +10,7 @@
                         </div>
                         <ul class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                            <li class="breadcrumb-item"><a href="javascript: void(0)">Quick Risk Prediction</a></li>
+                            <li class="breadcrumb-item"><a href="javascript: void(0)">Safety Comitee</a></li>
                             <li class="breadcrumb-item" aria-current="page">Daily Checking</li>
                         </ul>
                     </div>
@@ -22,28 +22,35 @@
                 <h4>Daily Checking</h4>
             </div>
             <div class="card-body">
-                <div class="row mb-4">
+                <div class="row mb-2">
                     <form action="{{ route('qrp.daily-checking') }}" method="get">
                         <div class="d-flex justify-content-end">
-                            <input type="text" class="form-control  search w-auto me-1" name="search" placeholder="Cari ..."
+                            <input type="text" class="form-control search w-auto me-1 rounded" name="search" placeholder="Cari ..."
                                 value="{{ $search }}">
 
-                            <button type="submit" class="btn btn-warning me-3 ">
+                            <button type="submit" class="btn btn-warning me-3  rounded">
                                 <i class="ti ti-search"></i>
                             </button>
 
-                            <button type="button" class="btn btn-success " data-bs-toggle="modal"
+                            <button type="button" class="btn btn-success  rounded" data-bs-toggle="modal"
                                 data-bs-target="#addCheckingModal">
                                 <div class="d-block d-md-none d-lg-none">
                                     <div class="ti ti-plus"></div>
                                 </div>
                                 <div class="d-none d-md-block d-lg-block">
-                                    Lakukan pengecekan
+                                    <i class="ti ti-plus"></i> Lakukan pengecekan
                                 </div>
                             </button>
+
+                            <button type="button" onclick="event.preventDefault(); document.getElementById('formExport').submit();" class="btn btn-info ms-2 rounded"><i class="ti ti-file-export"></i> Export Excel</button>
                         </div>
                     </form>
+
+                    <form id="formExport" method="POST" action="{{ route('export.store') }}">
+                        @csrf
+                    </form>
                 </div>
+                
                 <div class="table-responsive">
                     <table class="table">
                         <thead class="table-success">
@@ -57,8 +64,8 @@
                                 <th>Tanggal</th>
                                 <th>Faktor</th>
                                 <th>Status Cek</th>
-                                <th>Status QRP</th>
-                                <th></th>
+                                <th>Status Terakhir</th>
+                                <th>Opsi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -82,11 +89,11 @@
                                     </td>
                                     <td>
                                         <span
-                                            class="{{ $dailyCheck->qrpDetail?->qrpStatus->class }}">{{ $dailyCheck->qrpDetail?->qrpStatus->name }}</span>
+                                            class="{{ $dailyCheck->qrpDetail?->qrpStatus->class }} rouded">{{ $dailyCheck->qrpDetail?->qrpStatus->name }}</span>
                                     </td>
                                     <td>
                                         <a href="{{ route('qrp.qrp-form-detail', encrypt($dailyCheck->id)) }}"
-                                            class="btn btn-warning  {{ $dailyCheck->check_status == 'OK' ? 'd-none' : '' }}">Detail</a>
+                                            class="btn btn-info rounded btn-sm  {{ $dailyCheck->check_status == 'OK' ? 'd-none' : '' }}"><i class="ti ti-edit"></i></a>
                                     </td>
                                 </tr>
                             @empty

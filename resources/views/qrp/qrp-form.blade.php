@@ -1,17 +1,17 @@
-@extends('layouts.app', ['title' => 'QRP Form'])
+@extends('layouts.app', ['title' => 'Safety Comitee'])
 @section('content')
     <div class="page-header d-lg-block d-none">
         <div class="page-block">
             <div class="row align-items-center">
                 <div class="col-md-12">
                     <div class="page-header-title">
-                        <h5 class="m-b-10">QRP Form</h5>
+                        <h5 class="m-b-10">Safety Comitee</h5>
                     </div>
                     <ul class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="javascript: void(0)">Quick Risk Prediction</a>
+                        <li class="breadcrumb-item"><a href="javascript: void(0)">Safety Comitee</a>
                         </li>
                         <li class="breadcrumb-item"><a href="{{ route('qrp.daily-checking') }}">Daily Checking</a></li>
-                        <li class="breadcrumb-item" aria-current="page">QRP Form</li>
+                        <li class="breadcrumb-item" aria-current="page">Safety Comitee</li>
                     </ul>
                 </div>
             </div>
@@ -20,7 +20,7 @@
 
     <div class="card ">
         <div class="card-header">
-            <h4>QRP Form</h4>
+            <h4>Safety Comitee</h4>
         </div>
         <form method="POST" action="{{ route('qrp.qrp-form-post') }}" enctype="multipart/form-data">
             @csrf
@@ -154,9 +154,6 @@
                     </div>
                 </div>
 
-
-
-
                 <button type="button" class="btn btn-success w-100" data-bs-toggle="modal"
                     data-bs-target="#modalSave">Simpan</button>
 
@@ -165,12 +162,12 @@
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">QRP Form</h5>
+                                <h5 class="modal-title" id="exampleModalLabel">Safety Comitee</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                Simpan data QRP?
+                                Simpan data safety comitee?
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kembali</button>

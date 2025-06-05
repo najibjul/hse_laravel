@@ -4,6 +4,8 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\DepartmentController;
+use App\Http\Controllers\ExportController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QrpController;
 use Illuminate\Support\Facades\Route;
@@ -45,6 +47,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    
+    Route::patch('notification/{id}', [NotificationController::class, 'update'])->name('notification.update');
+
+    Route::post('export', [ExportController::class, 'store'])->name('export.store');
     
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 

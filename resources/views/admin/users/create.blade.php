@@ -73,6 +73,18 @@
                             <div class="text-danger">{{$message}}</div>
                         @enderror
                     </div>
+                    <div class="col-6 mb-3">
+                        <label>Position</label>
+                        <select name="position" class="form-control @error('position') is-invalid @enderror " required>
+                            <option value="">-Pilih position-</option>
+                            @foreach($positions as $position)
+                                <option value="{{ $position->id }}">{{ $position->position_name }}</option>
+                            @endforeach
+                        </select>
+                        @error('position')
+                            <div class="text-danger">{{$message}}</div>
+                        @enderror
+                    </div>
                 </div>
                 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#create"><i
                         class="ti ti-device-floppy"></i> Simpan</button>

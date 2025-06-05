@@ -8,7 +8,7 @@ class Notification extends Model
 {
     protected $fillable = ['user_id', 'title', 'body', 'target', 'target_id', 'is_read'];
 
-    public function fromUser()
+    public function user()
     {
         return $this->belongsTo(User::class);
     }

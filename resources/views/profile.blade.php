@@ -16,6 +16,7 @@
                 <p><strong>Email : </strong> {{ Auth::user()->email }}</p>
                 <p><strong>Departemen : </strong> {{ Auth::user()->department->department_name }}</p>
                 <p><strong>Role : </strong> {{ Auth::user()->role->role_name }}</p>
+                <p><strong>Jabatan : </strong> {{ Auth::user()->position->position_name }}</p>
 
                 <button type="button" class="btn btn-success mt-3" data-bs-toggle="modal" data-bs-target="#edit">
                     Ganti Password

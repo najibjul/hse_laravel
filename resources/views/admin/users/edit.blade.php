@@ -74,6 +74,18 @@
                         @enderror
                     </div>
                     <div class="col-6 mb-3">
+                        <label>Position</label>
+                        <select name="position" class="form-control @error('position') is-invalid @enderror " required>
+                            <option value="">-Pilih position-</option>
+                            @foreach($positions as $position)
+                                <option {{ $position->id == $user->position_id ? 'selected' : '' }} value="{{ $position->id }}">{{ $position->position_name }}</option>
+                            @endforeach
+                        </select>
+                        @error('position')
+                            <div class="text-danger">{{$message}}</div>
+                        @enderror
+                    </div>
+                    <div class="col-6 mb-3">
                         <label>Password</label>
                         <input type="password" class="form-control @error('password') is-invalid @enderror "
                             placeholder="Ketik untuk ganti password" name="password">

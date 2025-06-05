@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Department;
+use App\Models\Position;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -42,7 +43,8 @@ class UserController extends Controller
         $roles = Role::when(Auth::user()->role_id == 2, function($q){
             $q->whereIn('id', [2,3]);
         })->get();
-        return view('admin.users.create', compact('departments', 'roles'));
+        $positions = Position::get();
+        return view('admin.users.create', compact('departments', 'roles', 'positions'));
     }
 
     public function store(Request $request) 
@@ -52,7 +54,8 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'nip' => 'required|string|unique:users,nip',
             'department' => 'required',
-            'role' => 'required'
+            'role' => 'required',
+            'position' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -62,17 +65,18 @@ class UserController extends Controller
         DB::beginTransaction();
 
         try {
-            $user = User::create([
+            User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'nip' => $request->nip,
                 'department_id' => $request->department,
                 'role_id' => $request->role,
-                'password' => bcrypt('password'),
+                'position_id' => $request->position,
+                'password' => bcrypt('password')
             ]);
 
             DB::commit();
-            session()->flash('success', 'User berhasil disimpan');
+            session()->flash('success', 'User berhasil ditambahkan');
             return redirect()->route('admin.users.index');
 
         } catch (\Throwable $error) {
@@ -91,7 +95,9 @@ class UserController extends Controller
         $roles = Role::when(Auth::user()->role_id == 2, function($q){
             $q->whereIn('id', [2,3]);
         })->get();
-        return view('admin.users.edit', compact('user', 'departments', 'roles'));
+        $positions = Position::get();
+
+        return view('admin.users.edit', compact('user', 'departments', 'roles', 'positions'));
     }
 
     public function update($id, Request $request) 
@@ -104,7 +110,8 @@ class UserController extends Controller
             'nip' => 'required|string|unique:users,nip,'. $id,
             'department' => 'required',
             'role' => 'required',
-            'password' => 'nullable|min:8'
+            'password' => 'nullable|min:8',
+            'position' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -121,7 +128,8 @@ class UserController extends Controller
                     'email' => $request->email,
                     'nip' => $request->nip,
                     'department_id' => $request->department,
-                    'role_id' => $request->role
+                    'role_id' => $request->role,
+                    'position_id' => $request->position
                 ]);
             } else {
                 User::where('id', $id)->update([
@@ -130,6 +138,7 @@ class UserController extends Controller
                     'nip' => $request->nip,
                     'department_id' => $request->department,
                     'role_id' => $request->role,
+                    'position_id' => $request->position,
                     'password' => bcrypt($request->password)
                 ]);
             }
@@ -145,7 +154,7 @@ class UserController extends Controller
         }
     }
 
-    public function destroy ($id, Request $request) 
+    public function destroy ($id) 
     {
         $id = decrypt($id);
 
