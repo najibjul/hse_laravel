@@ -61,7 +61,7 @@ class QrpController extends Controller
                 });
             })
             ->latest()
-            ->paginate(10);
+            ->get();
 
         return view('qrp.daily-checking', compact('dailyChecks', 'search', 'agent'));
     }
@@ -116,45 +116,16 @@ class QrpController extends Controller
 
     public function qrpForm()
     {
-        if (!session('factor')) {
-            return redirect()->route('qrp.daily-checking');
-        }
-
         $factor = Factor::find(session('factor'));
         $categories = Category::get();
         $ranks = Rank::get();
+        $adhs = User::where('position_id', 3)->where('department_id', Auth::user()->department_id)->orderBy('name')->get();
 
-        return view('qrp.qrp-form', compact('factor', 'categories', 'ranks'));
-    }
-
-    public function searchAdh(Request $request)
-    {
-        if ($request->has('q')) {
-            $search = $request->q;
-        } else {
-            $search = null;
-        }
-
-        $adhs = User::where('department_id', Auth::user()->department_id)
-            ->where('position_id', 3)
-            ->when($search, function ($q) use ($search) {
-                $q->where(function ($q) use ($search) {
-                    $q->where('name', 'like', '%' . $search . '%')
-                        ->orWhere('nip', 'like', '%' . $search . '%');
-                });
-            })
-            ->select('id', 'name', 'nip')
-            ->get();
-
-        return response()->json($adhs);
+        return view('qrp.qrp-form', compact('factor', 'categories', 'ranks', 'adhs'));
     }
 
     public function qrpFormPost(Request $request)
     {
-        if (!session('factor')) {
-            return redirect()->route('qrp.daily-checking');
-        }
-
         if ($request->dataUri != "") {
             $validator = Validator::make($request->all(), [
                 'area' => 'required',
@@ -289,6 +260,7 @@ class QrpController extends Controller
     {
         $dailyCheck = DailyCheck::find(decrypt($id));
         $agent = new Agent();
+        $adhs = $adhs = User::where('position_id', 3)->where('department_id', Auth::user()->department_id)->orderBy('name')->get();
 
         if (Auth::user()->id != $dailyCheck->user_id || $dailyCheck->qrpDetail->qrp_status_id != 1) {
             session()->flash('error', 'Anda tidak berhak');
@@ -298,7 +270,7 @@ class QrpController extends Controller
         $factors = Factor::get();
         $categories = Category::get();
 
-        return view('qrp.qrp-form-detail-edit', compact('dailyCheck', 'agent', 'factors', 'categories'));
+        return view('qrp.qrp-form-detail-edit', compact('dailyCheck', 'agent', 'factors', 'categories', 'adhs'));
     }
 
     public function qrpFormUpdate($id, Request $request)

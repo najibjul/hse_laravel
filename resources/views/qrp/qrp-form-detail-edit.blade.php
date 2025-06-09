@@ -30,8 +30,8 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-12 col-md-6 mb-4">
-                        <label class="form-label">Faktor temuan</label>
-                        <select name="factor" class="form-control">
+                        <label class="form-label fw-bold">Faktor temuan</label>
+                        <select name="factor" class="form-control" required>
                             @foreach ($factors as $factor)
                                 <option value="{{ $factor->id }}"
                                     {{ $factor->id == $dailyCheck->factor_id ? 'selected' : '' }}>
@@ -42,7 +42,7 @@
                     </div>
 
                     <div class="col-12 col-md-6 mb-4">
-                        <label class="form-label">Area temuan</label>
+                        <label class="form-label fw-bold">Area temuan</label>
                         <input name="area" type="text" class="form-control @error('area') is-invalid @enderror"
                             placeholder="ketik disini" value="{{ $dailyCheck->area }}" required>
                         @error('area')
@@ -51,7 +51,7 @@
                     </div>
 
                     <div class="col-12 col-md-6 mb-4">
-                        <label class="form-label">Deskripsi temuan</label>
+                        <label class="form-label fw-bold">Deskripsi temuan</label>
                         <textarea name="description" id="description" oninput="autoGrowDescription(this)"
                             class="form-control @error('description') is-invalid @enderror" placeholder="ketik disini" required>{{ $dailyCheck->qrpDetail->description }}</textarea>
                         @error('description')
@@ -60,8 +60,8 @@
                     </div>
 
                     <div class="col-12 col-md-6 mb-4">
-                        <label class="form-label">Kategori</label>
-                        <select name="category" class="form-control">
+                        <label class="form-label fw-bold">Kategori</label>
+                        <select name="category" class="form-control" required>
                             @foreach ($categories as $category)
                                 <option value="{{ $category->id }}"
                                     {{ $category->id == $dailyCheck->qrpDetail->category_id ? 'selected' : '' }}>
@@ -74,7 +74,7 @@
                     </div>
 
                     <div class="col-12 col-md-6 mb-4">
-                        <label class="form-label">Gambar temuan</label>
+                        <label class="form-label fw-bold">Gambar temuan</label>
                         <div class="my-2">
                             <img src="{{ asset('storage/image/' . $dailyCheck->qrpDetail->before) }}"
                                 alt="{{ $dailyCheck->qrpDetail->before }}"
@@ -124,9 +124,9 @@
                     </div>
 
                     <div class="col-12 col-md-6 mb-4">
-                        <label class="form-label">Rekomendasi</label>
+                        <label class="form-label fw-bold">Rekomendasi</label>
                         <textarea name="recomendation" id="recomendation" oninput="autoGrowRecomendation(this)"
-                        class="form-control @error('recomendation') is-invalid @enderror" placeholder="ketik disini" required>@foreach (json_decode($dailyCheck->qrpDetail->recomendation, true) as $item){!! $item['recomendation'] !!}@endforeach</textarea>
+                            class="form-control @error('recomendation') is-invalid @enderror" placeholder="ketik disini" required>@foreach (json_decode($dailyCheck->qrpDetail->recomendation, true) as $item){!! $item['recomendation'] !!}@endforeach</textarea>
                         @error('recomendation')
                             <div class="form-text text-danger mb-3">{{ $message }}</div>
                         @enderror
@@ -134,14 +134,19 @@
 
                     <div class="col-12 col-md-6 mb-4">
                         <div class="form-group mb-4">
-                            <label class="form-label">Asst. Dept. Head</label>
-                            <select id="adh" class="form-control @error('adh') is-invalid @enderror" name="adh">
-                                <option value="{{ $dailyCheck->qrpDetail->adh_id }}">{{ $dailyCheck->qrpDetail->adh->name }} {{ "(" .$dailyCheck->qrpDetail->adh->nip . ")" }}</option>
+                            <label class="form-label fw-bold">Asst. Dept. Head</label>
+                            <select id="adh" class="form-control @error('adh') is-invalid @enderror required"
+                                name="adh">
+                                @foreach ($adhs as $adh)
+                                    <option value="{{ $adh->id }}"
+                                        {{ $dailyCheck->qrpDetail->adh_id == $adh->id ? 'selected' : '' }}>
+                                        {{ $adh->name }} ({{ $adh->nip }})</option>
+                                @endforeach
                             </select>
                             @error('adh')
-                                <div class="text-danger">{{ $message }}</div>
+                                <div class="form-text text-danger">{{ $message }}</div>
                             @enderror
-                            
+
                         </div>
                     </div>
                 </div>
@@ -177,31 +182,50 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ asset('assets/webcam/webcam.min.js') }}"></script>
-    <script src="{{ asset('jquery-3.7.1.min.js') }}"></script>
-    <script src="{{ asset('select2.min.js') }}"></script>
+    <script src="{{ asset('assets/webcam/webcam.min.js') }}" defer></script>
 
     <script>
-        Webcam.on('error', function(err) {
-            $('#fotoLangsung').addClass('d-none');
-            $('#galeri-tab').addClass('active');
-            $('#direct').removeClass('show active');
-            $('#galeri').addClass('show active');
+        document.addEventListener('DOMContentLoaded', function() {
+            Webcam.on('error', function(err) {
+                $('#fotoLangsung').addClass('d-none');
+                $('#galeri-tab').addClass('active');
+                $('#direct').removeClass('show active');
+                $('#galeri').addClass('show active');
+            });
+
+            Webcam.set({
+                width: 240,
+                height: 320,
+                image_format: 'jpeg',
+                jpeg_quality: 90,
+                constraints: {
+                    facingMode: "environment"
+                }
+            });
+
+            Webcam.attach('#my_camera');
+
+            const recomendation = document.getElementById("recomendation");
+            const description = document.getElementById("description");
+
+            autoGrowDescription(description);
+            autoGrowRecomendation(recomendation);
+
+            @if ($errors->any())
+                let errorList = '';
+                @foreach ($errors->all() as $error)
+                    errorList += `• {{ $error }}\n`;
+                @endforeach
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validasi Gagal!',
+                    text: 'Silakan periksa form Anda.',
+                    footer: `<pre style="text-align: left;">${errorList}</pre>`,
+                });
+            @endif
         });
 
-        Webcam.set({
-            width: 240,
-            height: 320,
-            image_format: 'jpeg',
-            jpeg_quality: 90,
-            constraints: {
-                facingMode: "environment"
-            }
-        });
-        Webcam.attach('#my_camera');
-    </script>
-
-    <script>
         function preview_snapshot() {
 
             Webcam.snap(function(data_uri) {
@@ -242,56 +266,5 @@
             element.style.height = "5px";
             element.style.height = (element.scrollHeight) + "px";
         }
-
-        document.addEventListener("DOMContentLoaded", function() {
-            const recomendation = document.getElementById("recomendation");
-            const description = document.getElementById("description");
-
-            autoGrowDescription(description);
-            autoGrowRecomendation(recomendation);
-
-            @if ($errors->any())
-                let errorList = '';
-                @foreach ($errors->all() as $error)
-                    errorList += `• {{ $error }}\n`;
-                @endforeach
-
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Validasi Gagal!',
-                    text: 'Silakan periksa form Anda.',
-                    footer: `<pre style="text-align: left;">${errorList}</pre>`,
-                });
-            @endif
-
-            let url = "{{ route('qrp.qrp-form.search-adh') }}"
-
-            $('#adh').select2({
-                theme: 'bootstrap-5',
-                placeholder: 'Cari Asst. Dept. Head...',
-                ajax: {
-                    url: url,
-                    dataType: 'json',
-                    delay: 250,
-                    processResults: function(data) {
-                        return {
-                            results: $.map(data, function(item) {
-                                return {
-                                    text: item.name + ' (' + item.nip + ')',
-                                    id: item.id
-                                }
-                            })
-                        };
-                    },
-                    cache: true
-                }
-            });
-
-        });
     </script>
-@endpush
-
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('select2.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('select2-bootstrap-5-theme.min.css') }}">
 @endpush

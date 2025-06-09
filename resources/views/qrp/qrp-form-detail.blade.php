@@ -86,7 +86,6 @@
                                 {!! nl2br($recomendation['recomendation']) !!}
                             </i>
                         </div>
-                        
                     @endforeach
                 </div>
                 <div class="col-12 col-md-6 col-lg-6 mb-4">
@@ -127,30 +126,24 @@
                                 <div class="tab-pane fade show active my-3" id="direct" role="tabpanel"
                                     aria-labelledby="direct-tab">
                                     <div id="my_camera"></div>
-                                    <form action="{{ route('qrp.upload-close-edit', $dailyCheck->id) }}" method="POST"
-                                        enctype="multipart/form-data">
-                                        @csrf
-                                        <input type="text" name="dataUri" id="dataUri" hidden>
 
-                                        <div id="pre_take_buttons">
-                                            <button type="button" class="btn btn-success mt-3"
-                                                onClick="preview_snapshot()">
-                                                <i class="ti ti-camera"></i> Ambil gambar
-                                            </button>
-                                        </div>
 
-                                        <div id="post_take_buttons" style="display:none">
-                                            <button type="button" class="btn  btn-warning mt-3"
-                                                onClick="cancel_preview()">
-                                                <i class="ti ti-arrow-back-up"></i> Ambil ulang gambar
-                                            </button>
-                                            <div>
-                                                <button class="btn btn-warning mt-3 "><i class="ti ti-device-floppy "></i>
-                                                    Update
-                                                    gambar penyelesaian</button>
-                                            </div>
+                                    <div id="pre_take_buttons">
+                                        <button type="button" class="btn btn-success mt-3" onClick="preview_snapshot()">
+                                            <i class="ti ti-camera"></i> Ambil gambar
+                                        </button>
+                                    </div>
+
+                                    <div id="post_take_buttons" style="display:none">
+                                        <button type="button" class="btn  btn-warning mt-3" onClick="cancel_preview()">
+                                            <i class="ti ti-arrow-back-up"></i> Ambil ulang gambar
+                                        </button>
+                                        <div>
+                                            <button type="button" class="btn btn-warning mt-3 " data-bs-toggle="modal"
+                                                data-bs-target="#updateClose"><i class="ti ti-device-floppy "></i>
+                                                Update gambar penyelesaian</button>
                                         </div>
-                                    </form>
+                                    </div>
                                 </div>
                                 <div class="tab-pane fade my-3" id="galeri" role="tabpanel"
                                     aria-labelledby="galeri-tab">
@@ -159,13 +152,42 @@
                                         @csrf
                                         <input type="file" required
                                             class="form-control  @error('galery') is-invalid @enderror" name="galery">
-                                        <button type="submit" class="btn btn-warning mt-3 ">Update</button>
+                                        <button type="submit" class="btn btn-warning mt-3 ">Update gambar</button>
                                     </form>
+                                </div>
+                            </div>
+
+                            <div class="modal fade" id="updateClose" tabindex="-1" aria-labelledby="exampleModalLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Update Penyelesaian</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Update foto penyelesaian?
+                                        </div>
+                                        <form action="{{ route('qrp.upload-close-edit', $dailyCheck->id) }}"
+                                            method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Tutup</button>
+                                                <input type="text" name="dataUri" id="dataUri" hidden>
+                                                <button type="submit" class="btn btn-warning">Ya</button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         @endif
                     @else
-                        @if (!$dailyCheck->qrpDetail->adh_approve_date or !$dailyCheck->qrpDetail->dh_approve_date or !$dailyCheck->qrpDetail->ph_approve_date)
+                        @if (
+                            !$dailyCheck->qrpDetail->adh_approve_date or
+                                !$dailyCheck->qrpDetail->dh_approve_date or
+                                !$dailyCheck->qrpDetail->ph_approve_date)
                             <h5 class="mt-1">
                                 <span class="badge bg-warning text-white">BELUM ADA ACTION</span>
                             </h5>
@@ -176,9 +198,8 @@
                                     !$dailyCheck->qrpDetail->dh_id or
                                     $dailyCheck->qrpDetail->dh_approve_date and
                                         $dailyCheck->user_id == auth()->user()->id and
-                                        !$dailyCheck->qrpDetail->ph_id or $dailyCheck->qrpDetail->ph_approve_date and
-                                        $dailyCheck->user_id == auth()->user()->id
-                                        )
+                                        !$dailyCheck->qrpDetail->ph_id or
+                                    $dailyCheck->qrpDetail->ph_approve_date and $dailyCheck->user_id == auth()->user()->id)
                                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                                     <li class="nav-item" role="presentation" id="fotoLangsung">
                                         <button class="nav-link active" id="direct-tab" data-bs-toggle="tab"
@@ -328,10 +349,8 @@
                     $dailyCheck->qrpDetail->dh_id == null or
                     $dailyCheck->qrpDetail->qrp_status_id == 1 and
                         $dailyCheck->qrpDetail->dh_id == auth()->user()->id and
-                        $dailyCheck->qrpDetail->ph_id == null or 
-                        $dailyCheck->qrpDetail->qrp_status_id == 1 and
-                        $dailyCheck->qrpDetail->ph_id == auth()->user()->id
-                        )
+                        $dailyCheck->qrpDetail->ph_id == null or
+                    $dailyCheck->qrpDetail->qrp_status_id == 1 and $dailyCheck->qrpDetail->ph_id == auth()->user()->id)
                 <div class="d-flex justify-content-center gap-1 mt-4">
                     {{-- <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#cancel">Cancel</button> --}}
 
@@ -343,9 +362,9 @@
                         data-bs-target="#confirmationModal">Revisi rekomendasi </button>
 
                     @if (auth()->user()->position_id != 1)
-                    <button class="btn btn-warning btn-sm " data-bs-toggle="modal" data-bs-target="#riseup">Rise
-                        Up</button>
-                        @endif
+                        <button class="btn btn-warning btn-sm " data-bs-toggle="modal" data-bs-target="#riseup">Rise
+                            Up</button>
+                    @endif
 
                 </div>
 
@@ -478,8 +497,8 @@
                     !$dailyCheck->qrpDetail->dh_id or
                     $dailyCheck->qrpDetail->dh_id == auth()->user()->id and
                         $dailyCheck->qrpDetail->qrp_status_id == 4 and
-                        !$dailyCheck->qrpDetail->ph_id or $dailyCheck->qrpDetail->ph_id == auth()->user()->id and
-                        $dailyCheck->qrpDetail->qrp_status_id == 4)
+                        !$dailyCheck->qrpDetail->ph_id or
+                    $dailyCheck->qrpDetail->ph_id == auth()->user()->id and $dailyCheck->qrpDetail->qrp_status_id == 4)
                 <div class="form-group mb-4">
                     <div class="d-flex justify-content-center gap-3">
                         <button class="btn btn-danger " data-bs-toggle="modal" data-bs-target="#open">TOLAK</button>
@@ -545,32 +564,62 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ asset('jquery-3.7.1.min.js') }}"></script>
-    <script src="{{ asset('assets/webcam/webcam.min.js') }}"></script>
-    <script>
-        Webcam.on('error', function(err) {
-            $('#fotoLangsung').addClass('d-none');
-            $('#galeri-tab').addClass('active');
-            $('#direct').removeClass('show active');
-            $('#galeri').addClass('show active');
-        });
+    <script src="{{ asset('assets/webcam/webcam.min.js') }}" defer></script>
 
-        Webcam.set({
-            width: 240,
-            height: 320,
-            image_format: 'jpeg',
-            jpeg_quality: 90,
-            constraints: {
-                facingMode: "environment"
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            Webcam.on('error', function(err) {
+                $('#fotoLangsung').addClass('d-none');
+                $('#galeri-tab').addClass('active');
+                $('#direct').removeClass('show active');
+                $('#galeri').addClass('show active');
+            });
+
+            Webcam.set({
+                width: 240,
+                height: 320,
+                image_format: 'jpeg',
+                jpeg_quality: 90,
+                constraints: {
+                    facingMode: "environment"
+                }
+            });
+
+            if (document.getElementById('my_camera')) {
+                Webcam.attach('#my_camera');
             }
-        });
 
-        if (document.getElementById('my_camera')) {
-            Webcam.attach('#my_camera');
-        }
-    </script>
+            navigator.mediaDevices.enumerateDevices()
+                .then(devices => {
+                    devices.forEach(device => {
+                        if (device.kind === 'videoinput') {
+                            console.log(device.label, device.deviceId);
+                        }
+                    });
+                });
 
-    <script>
+
+            const recomendation = document.getElementById("recomendation");
+            const description = document.getElementById("description");
+
+            autoGrowDescription(description);
+
+            @if ($errors->any())
+                let errorList = '';
+                @foreach ($errors->all() as $error)
+                    errorList += `• {{ $error }}\n`;
+                @endforeach
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validasi Gagal!',
+                    text: 'Silakan periksa form Anda.',
+                    footer: `<pre style="text-align: left;">${errorList}</pre>`,
+                    confirmButtonColor: "#dc3545"
+                });
+            @endif
+        })
+
         function preview_snapshot() {
 
             Webcam.snap(function(data_uri) {
@@ -607,41 +656,6 @@
             element.style.height = "5px";
             element.style.height = (element.scrollHeight) + "px";
         }
-
-        document.addEventListener("DOMContentLoaded", function() {
-
-
-            navigator.mediaDevices.enumerateDevices()
-                .then(devices => {
-                    devices.forEach(device => {
-                        if (device.kind === 'videoinput') {
-                            console.log(device.label, device.deviceId);
-                        }
-                    });
-                });
-
-
-            const recomendation = document.getElementById("recomendation");
-            const description = document.getElementById("description");
-
-            autoGrowDescription(description);
-
-            @if ($errors->any())
-                let errorList = '';
-                @foreach ($errors->all() as $error)
-                    errorList += `• {{ $error }}\n`;
-                @endforeach
-
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Validasi Gagal!',
-                    text: 'Silakan periksa form Anda.',
-                    footer: `<pre style="text-align: left;">${errorList}</pre>`,
-                    confirmButtonColor: "#dc3545"
-                });
-            @endif
-
-        });
     </script>
 @endpush
 

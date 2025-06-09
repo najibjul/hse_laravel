@@ -19,7 +19,7 @@
 
 </head>
 
-<body data-pc-preset="preset-1" data-pc-direction="ltr" data-pc-theme="light" id="main-font-link">
+<body data-pc-preset="preset-1" data-pc-direction="ltr" data-pc-theme="light" id="main-font-link" style="font-family: tabler-icons">
 
     <div class="loader-bg">
         <div class="loader-track">
@@ -243,8 +243,6 @@
     <script src="{{ asset('assets/js/fonts/custom-font.js') }}"></script>
     <script src="{{ asset('assets/js/plugins/feather.min.js') }}"></script>
     <script src="{{ asset('assets/js/pcoded.js') }}"></script>
-
-    <script></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
