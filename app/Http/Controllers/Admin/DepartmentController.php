@@ -10,17 +10,11 @@ use Illuminate\Support\Facades\Validator;
 
 class DepartmentController
 {
-    public function index(Request $request)
+    public function index()
     {
-        if ($request->search) {
-            $search = $request->search;
-        } else {
-            $search = "";
-        }
+        $departments = Department::get();
 
-        $departments = Department::paginate(10);
-
-        return view('admin.departments.index', compact('departments', 'search'));
+        return view('admin.departments.index', compact('departments'));
     }
 
     public function create()

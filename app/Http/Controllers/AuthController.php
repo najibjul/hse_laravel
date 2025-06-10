@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
 use Illuminate\Http\Request;
-use Validator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -31,13 +31,14 @@ class AuthController extends Controller
             return redirect()->route('dashboard');
         }
 
-        session()->flash('unauthenticated', 'NIP & Password doesn\'t match');
+        session()->flash('unauthenticated', 'NIP & Password salah');
         return back();
-
     }
 
     public function logout() 
     {
+        /** @var \App\Models\User|null $user */
+
         $user = Auth::user();
         $user->setRememberToken(null);
         $user->save();

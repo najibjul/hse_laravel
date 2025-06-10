@@ -31,37 +31,71 @@ class QrpController extends Controller
 
         session()->put('factor', 1);
 
-        $dailyChecks = DailyCheck::when(Auth::user()->role_id == 3, function ($q) {
-            $q->where('user_id', Auth::user()->id)
-            ->when(Auth::user()->position_id == 2, function($q){
-                $q->orWherehas('user', function($q){
-                    $q->where('department_id', Auth::user()->department_id);
-                });
-            });
-        })
-            ->when($search, function ($q) use ($search) {
-                $q->where(function ($q) use ($search) {
-                    $q->whereHas('user', function ($q) use ($search) {
-                        $q->where('name', 'like', '%' . $search . '%')
-                            ->orwhere('nip', 'like', '%' . $search . '%');
-                    })
-                        ->orWhere(function ($q) use ($search) {
-                            $q->where('activity', 'like', '%' . $search . '%')
-                                ->orWhereHas('qrpDetail', function ($q) use ($search) {
-                                    $q->where('description', 'like', '%' . $search . '%');
-                                });
-                        })
-                        ->orWhere('area', 'like', '%' . $search . '%')
-                        ->orWhere('check_status', 'like', '%' . $search . '%')
-                        ->orWhereHas('qrpDetail', function ($q) use ($search) {
-                            $q->whereHas('qrpStatus', function ($q) use ($search) {
-                                $q->where('name', 'like', '%' . $search . '%');
-                            });
+        if ($agent->isMobile()) {
+            $dailyChecks = DailyCheck::when(Auth::user()->role_id == 3, function ($q) {
+                $q->where('user_id', Auth::user()->id)
+                    ->when(Auth::user()->position_id == 2, function ($q) {
+                        $q->orWherehas('user', function ($q) {
+                            $q->where('department_id', Auth::user()->department_id);
                         });
-                });
+                    });
             })
-            ->latest()
-            ->get();
+                ->when($search, function ($q) use ($search) {
+                    $q->where(function ($q) use ($search) {
+                        $q->whereHas('user', function ($q) use ($search) {
+                            $q->where('name', 'like', '%' . $search . '%')
+                                ->orwhere('nip', 'like', '%' . $search . '%');
+                        })
+                            ->orWhere(function ($q) use ($search) {
+                                $q->where('activity', 'like', '%' . $search . '%')
+                                    ->orWhereHas('qrpDetail', function ($q) use ($search) {
+                                        $q->where('description', 'like', '%' . $search . '%');
+                                    });
+                            })
+                            ->orWhere('area', 'like', '%' . $search . '%')
+                            ->orWhere('check_status', 'like', '%' . $search . '%')
+                            ->orWhereHas('qrpDetail', function ($q) use ($search) {
+                                $q->whereHas('qrpStatus', function ($q) use ($search) {
+                                    $q->where('name', 'like', '%' . $search . '%');
+                                });
+                            });
+                    });
+                })
+                ->latest()
+                ->paginate(10);
+        } else {
+            $dailyChecks = DailyCheck::when(Auth::user()->role_id == 3, function ($q) {
+                $q->where('user_id', Auth::user()->id)
+                    ->when(Auth::user()->position_id == 2, function ($q) {
+                        $q->orWherehas('user', function ($q) {
+                            $q->where('department_id', Auth::user()->department_id);
+                        });
+                    });
+            })
+                ->when($search, function ($q) use ($search) {
+                    $q->where(function ($q) use ($search) {
+                        $q->whereHas('user', function ($q) use ($search) {
+                            $q->where('name', 'like', '%' . $search . '%')
+                                ->orwhere('nip', 'like', '%' . $search . '%');
+                        })
+                            ->orWhere(function ($q) use ($search) {
+                                $q->where('activity', 'like', '%' . $search . '%')
+                                    ->orWhereHas('qrpDetail', function ($q) use ($search) {
+                                        $q->where('description', 'like', '%' . $search . '%');
+                                    });
+                            })
+                            ->orWhere('area', 'like', '%' . $search . '%')
+                            ->orWhere('check_status', 'like', '%' . $search . '%')
+                            ->orWhereHas('qrpDetail', function ($q) use ($search) {
+                                $q->whereHas('qrpStatus', function ($q) use ($search) {
+                                    $q->where('name', 'like', '%' . $search . '%');
+                                });
+                            });
+                    });
+                })
+                ->latest()
+                ->get();
+        }
 
         return view('qrp.daily-checking', compact('dailyChecks', 'search', 'agent'));
     }
@@ -207,7 +241,7 @@ class QrpController extends Controller
                 'body' => 'Anda memiliki tugas untuk approve safety comitee',
                 'target' => 'qrp',
                 'target_id' => $dailyCheck->id,
-                
+
             ]);
 
             DB::commit();
@@ -314,7 +348,7 @@ class QrpController extends Controller
 
                 if (preg_match('/^data:image\/(\w+);base64,/', $dataUri, $type)) {
                     $data = substr($dataUri, strpos($dataUri, ',') + 1);
-                    $ext = strtolower($type[1]); 
+                    $ext = strtolower($type[1]);
                     $data = base64_decode($data);
                 }
 
@@ -414,18 +448,17 @@ class QrpController extends Controller
         try {
             $dailyCheck = DailyCheck::find($id);
 
-            if (Auth::user()->position_id == 3) {   
+            if (Auth::user()->position_id == 3) {
                 QrpDetail::where('daily_check_id', $id)->update([
                     'adh_approve_date' => now(),
                     'qrp_status_id' => 2
                 ]);
-
             } elseif (Auth::user()->position_id == 2) {
                 QrpDetail::where('daily_check_id', $id)->update([
                     'dh_approve_date' => now(),
                     'qrp_status_id' => 2
                 ]);
-            } elseif (Auth::user()->position_id == 1 ) {
+            } elseif (Auth::user()->position_id == 1) {
                 QrpDetail::where('daily_check_id', $id)->update([
                     'ph_approve_date' => now(),
                     'qrp_status_id' => 2
@@ -438,7 +471,7 @@ class QrpController extends Controller
                 'body' => 'Kerjakan sesuai rekomendasi',
                 'target' => 'qrp',
                 'target_id' => $dailyCheck->id,
-                
+
             ]);
 
             DB::commit();
@@ -498,7 +531,7 @@ class QrpController extends Controller
 
             if (preg_match('/^data:image\/(\w+);base64,/', $dataUri, $type)) {
                 $data = substr($dataUri, strpos($dataUri, ',') + 1);
-                $ext = strtolower($type[1]); 
+                $ext = strtolower($type[1]);
                 $data = base64_decode($data);
             }
 
@@ -527,7 +560,7 @@ class QrpController extends Controller
                 'body' => 'Pastikan penyelesaian sesuai dengan rekomendasi',
                 'target' => 'qrp',
                 'target_id' => $dailyCheck->id,
-                
+
             ]);
 
             DB::commit();
@@ -623,7 +656,7 @@ class QrpController extends Controller
                 'title' => 'Pekerjaan telah dilakukan',
                 'body' => 'Pastikan penyelesaian sesuai dengan rekomendasi',
                 'target' => 'qrp',
-                'target_id' => $dailyCheck->id,                
+                'target_id' => $dailyCheck->id,
             ]);
 
             DB::commit();
@@ -693,7 +726,7 @@ class QrpController extends Controller
                 'body' => 'Pekerjaan telah selesai',
                 'target' => 'qrp',
                 'target_id' => $dailyCheck->id,
-                
+
             ]);
 
             DB::commit();
@@ -743,7 +776,7 @@ class QrpController extends Controller
                 'body' => 'Mohon ulangi sesuai rekomendasi',
                 'target' => 'qrp',
                 'target_id' => $id,
-                
+
             ]);
 
             Storage::disk('public')->delete("image/{$after}");
@@ -773,13 +806,13 @@ class QrpController extends Controller
         DB::beginTransaction();
 
         try {
-            if (!$dailyCheck->qrpDetail->dh_id ) {
+            if (!$dailyCheck->qrpDetail->dh_id) {
                 QrpDetail::where('daily_check_id', $id)->update([
                     'dh_id' => $request->riseup
                 ]);
             }
-            
-            if (!$dailyCheck->qrpDetail->ph_id && $dailyCheck->qrpDetail->dh_id ) {
+
+            if (!$dailyCheck->qrpDetail->ph_id && $dailyCheck->qrpDetail->dh_id) {
                 QrpDetail::where('daily_check_id', $id)->update([
                     'ph_id' => $request->riseup
                 ]);
@@ -791,7 +824,7 @@ class QrpController extends Controller
                 'body' => 'Anda memiliki tugas untuk approve safety comitee',
                 'target' => 'qrp',
                 'target_id' => $id,
-                
+
             ]);
 
             DB::commit();

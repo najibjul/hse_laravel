@@ -16,25 +16,9 @@ class UserController extends Controller
 {
     public function index(Request $request) 
     {   
-        if ($request->search) {
-            $search = $request->search;
-        } else {
-            $search = null;
-        }
-
-        $users = User::when($search != null, function($q) use($search){
-            $q->where('name','like', '%' . $search . '%')
-            ->orWhere('nip', 'like', '%' . $search . '%')
-            ->orWhere('email', 'like', '%' . $search . '%')
-            ->orWhereHas('department', function($q)use($search){
-                $q->where('department_name', 'like', '%' . $search . '%');
-            })
-            ->orWhereHas('role', function($q)use($search){
-                $q->where('role_name', 'like', '%' . $search . '%');
-            });
-        })->paginate(10);
+        $users = User::get();
         
-        return view('admin.users.index', compact('users','search'));
+        return view('admin.users.index', compact('users'));
     }
 
     public function create() 

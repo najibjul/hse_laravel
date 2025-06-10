@@ -195,6 +195,8 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            
+            
             Webcam.on('error', function(err) {
                 $('#fotoLangsung').addClass('d-none');
                 $('#galeri-tab').addClass('active');
@@ -277,9 +279,4 @@
             element.style.height = (element.scrollHeight) + "px";
         }
     </script>
-@endpush
-
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('select2.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('select2-bootstrap-5-theme.min.css') }}">
 @endpush

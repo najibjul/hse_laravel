@@ -1,11 +1,3 @@
-@import 'tailwindcss';
-@import '../assets/fonts/tabler-icons.min.css';
-@import '../assets/fonts/feather.css';
-@import '../assets/fonts/fontawesome.css';
-@import '../assets/fonts/material.css';
-@import '../assets/css/style.css';
-@import '../assets/css/style-preset.css';
-
 .pagination .page-item.active .page-link {
   background-color: #52c41a !important;
   border-color: #52c41a !important;
@@ -18,40 +10,38 @@
 }
 
 .pagination .page-item .page-link {
-  color: #52c41a;
+  color: #52c41a !important;
 }
 
 .breadcrumb-item a:hover {
   color: #52c41a !important;
-  /* Bootstrap green */
 }
 
 .form-control:focus {
-  border-color: #52c41a;
-  box-shadow: 0 0 0 1px rgba(82, 196, 26, 0.25);
+  border-color: #52c41a !important;
+  box-shadow: 0 0 0 1px rgba(82, 196, 26, 0.25) !important;
 }
 
 .form-control:focus.search {
-  border-color: #ecce4b;
-  box-shadow: 0 0 0 1px rgba(82, 196, 26, 0.25);
+  border-color: #ecce4b !important;
+  box-shadow: 0 0 0 1px rgba(82, 196, 26, 0.25) !important;
 }
 
 .form-select:focus {
-  border-color: #52c41a;
-  box-shadow: 0 0 0 1px rgba(82, 196, 26, 0.25);
+  border-color: #52c41a !important;
+  box-shadow: 0 0 0 1px rgba(82, 196, 26, 0.25) !important;
 }
 
 .form-select:focus.search {
-  border-color: #ecce4b;
-  box-shadow: 0 0 0 1px rgba(82, 196, 26, 0.25);
+  border-color: #ecce4b !important;
+  box-shadow: 0 0 0 1px rgba(82, 196, 26, 0.25) !important;
 }
 
 .pc-item.active {
   background-color: #52c41a !important;
-  /* hijau */
   color: white !important;
   border-right: none !important;
-  margin-right: -2px;
+  margin-right: -2px !important;
 }
 
 .pc-item.active .pc-link {
@@ -70,7 +60,6 @@
 }
 
 .form-check-input:checked {
-  background-color: #52c41a;
-  /* warna hijau Bootstrap */
-  border-color: #52c41a;
+  background-color: #52c41a !important;
+  border-color: #52c41a !important;
 }

@@ -8,7 +8,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-
 <body>
     <div class="loader-bg">
         <div class="loader-track">
@@ -32,12 +31,12 @@
                             <div class="form-group mb-3">
                                 <label class="form-label">NIP</label>
                                 <input name="nip" type="text" class="form-control @error('nip') is-invalid @enderror"
-                                    placeholder="User NIP">
+                                    placeholder="User NIP" required>
                             </div>
                             <div class="form-group mb-3">
                                 <label class="form-label">Password</label>
                                 <input name="password" type="password"
-                                    class="form-control @error('password') is-invalid @enderror" placeholder="Password">
+                                    class="form-control @error('password') is-invalid @enderror" placeholder="Password" required>
                             </div>
                             <div class="d-flex mt-1 justify-content-between">
                                 <div class="form-check">
@@ -62,28 +61,10 @@
                     <div class="col my-1">
                         <p class="m-0">Copyright © <a href="#">EDP {{ now()->format('Y') }}</a></p>
                     </div>
-                    <div class="col-auto my-1">
-                        <ul class="list-inline footer-link mb-0">
-                            <li class="list-inline-item"><a href="#">Home</a></li>
-                            <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
-                            <li class="list-inline-item"><a href="#">Contact us</a></li>
-                        </ul>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <script src="/assets/js/fonts/custom-font.js"></script>
-    <script src="/assets/js/pcoded.js"></script>
-
-    <script>
-        layout_change('light');
-        change_box_container('false');
-        layout_rtl_change('false');
-        preset_change('preset-1');
-        font_change('Public-Sans');
-    </script>
 </body>
 
 </html>

@@ -57,7 +57,6 @@ Route::middleware('auth')->group(function () {
     Route::middleware('admin')->group(function(){
         Route::prefix('admin')->as('admin.')->group(function () {
             Route::resource('users', UserController::class);
-            
             Route::resource('departments', DepartmentController::class);
             Route::get('departments/{id}/edit/search-dh', [DepartmentController::class, 'searchDh'])->name('departments.edit.search-dh');
         });

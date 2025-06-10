@@ -60,7 +60,7 @@
                                 <th>Faktor</th>
                                 <th>Status Cek</th>
                                 <th>Status Terakhir</th>
-                                <th>Opsi</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -89,8 +89,7 @@
                                     </td>
                                     <td>
                                         <a href="{{ route('qrp.qrp-form-detail', encrypt($dailyCheck->id)) }}"
-                                            class="btn btn-info rounded btn-sm  {{ $dailyCheck->check_status == 'OK' ? 'd-none' : '' }}"><i
-                                                class="ti ti-edit"></i></a>
+                                            class="  {{ $dailyCheck->check_status == 'OK' ? 'd-none' : '' }} d-flex">Detail</a>
                                     </td>
                                 </tr>
                             @empty

@@ -16768,10 +16768,10 @@ pre[class*=language-] > code {
   top: 100% !important;
   padding: 0;
 }
-.pc-header .pc-mega-menu .pc-mega-dmenu .image-block {
+/* .pc-header .pc-mega-menu .pc-mega-dmenu .image-block {
   padding: 30px;
   background: url("../images/mega-menu/back.svg"), linear-gradient(183.77deg, rgb(0, 168, 84) 11.46%, rgb(0, 92, 52) 100.33%);
-}
+} */
 .pc-header .pc-mega-menu .pc-mega-dmenu .image-block .img-charts {
   margin-bottom: -20px;
 }

@@ -15,11 +15,9 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @stack('styles')
-
-
 </head>
 
-<body data-pc-preset="preset-1" data-pc-direction="ltr" data-pc-theme="light" id="main-font-link" style="font-family: tabler-icons">
+<body data-pc-preset="preset-1" data-pc-direction="ltr" data-pc-theme="light" id="main-font-link" >
 
     <div class="loader-bg">
         <div class="loader-track">
@@ -233,7 +231,7 @@
         <div class="footer-wrapper container-fluid">
             <div class="row">
                 <div class="col-sm my-1">
-                    <p class="m-0">Copyright ©️ EDP {{ now()->format('Y') }}</p>
+                    <p class="m-0">Copyright © EDP {{ now()->format('Y') }}</p>
                 </div>
             </div>
         </div>

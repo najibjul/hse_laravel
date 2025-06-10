@@ -23,23 +23,16 @@
         </div>
         <div class="card-body">
             <div class="row mb-4">
-                <form action="{{ route('admin.departments.index') }}" method="get">
-                    <div class="d-flex justify-content-end">
-                        <input type="text" class="form-control search w-auto me-1" name="search" placeholder="Cari ..."
-                            value="{{ $search }}">
+                <div class="d-flex justify-content-end">
 
-                        <button type="submit" class="btn btn-warning me-3">
-                            <i class="ti ti-search"></i>
-                        </button>
 
-                        <a href="{{ route('admin.departments.create') }}" class="btn btn-success">
-                            <i class="ti ti-plus"></i> Tambah
-                        </a>
-                    </div>
-                </form>
+                    <a href="{{ route('admin.departments.create') }}" class="btn btn-success">
+                        <i class="ti ti-plus"></i> Tambah
+                    </a>
+                </div>
             </div>
             <div class="table-responsive">
-                <table class="table">
+                <table class="table" id="myTable">
                     <thead class="table-success">
                         <tr>
                             <th>No</th>
@@ -51,9 +44,12 @@
                     <tbody>
                         @foreach ($departments as $department)
                             <tr>
-                                <th>{{ $loop->iteration + ($departments->currentPage() - 1) * $departments->perPage() }}</th>
+                                <th>{{ $loop->iteration }}</th>
                                 <td>{{ $department->department_name }}</td>
-                                <td>{{ $department->depthead?->name }} @if ($department->depthead?->nip) ({{ $department->depthead?->nip }}) @endif</td>
+                                <td>{{ $department->depthead?->name }} @if ($department->depthead?->nip)
+                                        ({{ $department->depthead?->nip }})
+                                    @endif
+                                </td>
                                 <td>
                                     <div class="d-flex gap-2 justify-content-center">
                                         <a href="{{ route('admin.departments.edit', encrypt($department->id)) }}">
@@ -67,8 +63,8 @@
                                 </td>
                             </tr>
 
-                            <div class="modal fade" id="delete{{ $department->id }}" tabindex="-1" aria-labelledby="exampleModalLabel"
-                                aria-hidden="true">
+                            <div class="modal fade" id="delete{{ $department->id }}" tabindex="-1"
+                                aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -82,7 +78,8 @@
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
                                                 data-bs-dismiss="modal">Kembali</button>
-                                            <form action="{{ route('admin.departments.destroy', $department->id) }}" method="POST">
+                                            <form action="{{ route('admin.departments.destroy', $department->id) }}"
+                                                method="POST">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger">Hapus</button>
@@ -94,8 +91,16 @@
                         @endforeach
                     </tbody>
                 </table>
-                {{ $departments->links('vendor.pagination.bootstrap-5') }}
             </div>
         </div>
     </div>
 @endsection
+
+
+@push('scripts')
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            $('#myTable').DataTable();
+        })
+    </script>
+@endpush
