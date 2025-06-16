@@ -64,7 +64,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($dailyChecks as $dailyCheck)
+                            @foreach ($dailyChecks as $dailyCheck)
                                 <tr>
                                     <th>{{ $loop->iteration }}</th>
                                     @if (auth()->user()->role_id != 3 or auth()->user()->deptHead)
@@ -92,12 +92,7 @@
                                             class="  {{ $dailyCheck->check_status == 'OK' ? 'd-none' : '' }} d-flex">Detail</a>
                                     </td>
                                 </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="9" class="text-center">Belum ada data</td>
-                                </tr>
-                            @endforelse
-
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

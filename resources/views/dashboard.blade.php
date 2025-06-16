@@ -29,7 +29,7 @@
         </div>
     </div>
 
-    <div class="mb-3 mt-4">Summary QRP</div>
+    <div class="mb-3 mt-4">Summary Safety Commite</div>
     <div class="row">
         <div class="col-6 col-xl-4">
             <div class="card border-0 border-top border-info border-3">
