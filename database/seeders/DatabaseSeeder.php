@@ -101,6 +101,10 @@ class DatabaseSeeder extends Seeder
         Position::create([
             'position_name' => 'Staff'
         ]);
+
+        Position::create([
+            'position_name' => 'Asst. Plant Head'
+        ]);
         
         User::factory(10)->create();
 

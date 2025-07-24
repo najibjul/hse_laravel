@@ -32,5 +32,17 @@ services:
     volumes:
       - dbdata:/var/lib/mysql
 
+  node:
+    image: node:18
+    container_name: laravel-node
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+      - ./nginx/ssl:/etc/nginx/ssl
+    ports:
+      - "5173:5173"
+    depends_on:
+      - app
+
 volumes:
   dbdata:

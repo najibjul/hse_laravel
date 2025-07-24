@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('positions', function (Blueprint $table) {
+        Schema::create('plants', function (Blueprint $table) {
             $table->id();
-            $table->string('position_name')->unique();
-            $table->boolean('is_qrp_enabled')->default(false);
+            $table->string('plant_name')->unique();
             $table->timestamps();
         });
     }
@@ -24,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('positions');
+        Schema::dropIfExists('plants');
     }
 };

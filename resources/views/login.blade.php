@@ -42,8 +42,7 @@
                                 <div class="form-check">
                                     <input class="form-check-input input-success" type="checkbox" id="customCheckc1"
                                         name="remember">
-                                    <label class="form-check-label text-muted" for="customCheckc1">Keep me sign
-                                        in</label>
+                                    <label class="form-check-label text-muted" for="customCheckc1">Keep me sign in</label>
                                 </div>
                             </div>
                             @if(session()->has('unauthenticated'))
