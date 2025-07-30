@@ -11,7 +11,11 @@ class DailyCheck extends Model
         'activity',
         'area',
         'factor_id',
-        'check_status'
+        'check_status',
+        'cost_center_id',
+        'department_id',
+        'plant_id',
+        'position_id'
     ];
 
     public function user() {
@@ -25,6 +29,10 @@ class DailyCheck extends Model
     public function factor()
     {
         return $this->belongsTo(Factor::class);
-        
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
     }
 }

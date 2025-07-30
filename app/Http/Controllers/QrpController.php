@@ -6,7 +6,9 @@ use App\Models\Category;
 use App\Models\DailyCheck;
 use App\Models\Factor;
 use App\Models\Notification;
+use App\Models\QrpApproval;
 use App\Models\QrpDetail;
+use App\Models\QrpRecomendation;
 use App\Models\Rank;
 use App\Models\User;
 use Carbon\Carbon;
@@ -39,7 +41,7 @@ class QrpController extends Controller
                             $q->where('department_id', Auth::user()->department_id);
                         });
                     });
-            })
+                })
                 ->when($search, function ($q) use ($search) {
                     $q->where(function ($q) use ($search) {
                         $q->whereHas('user', function ($q) use ($search) {
@@ -65,13 +67,24 @@ class QrpController extends Controller
                 ->paginate(10);
         } else {
             $dailyChecks = DailyCheck::when(Auth::user()->role_id == 3, function ($q) {
-                $q->where('user_id', Auth::user()->id)
-                    ->when(Auth::user()->position_id == 2, function ($q) {
-                        $q->orWherehas('user', function ($q) {
-                            $q->where('department_id', Auth::user()->department_id);
-                        });
-                    });
-            })
+
+                $user_id = Auth::user()->id;
+                $team_ids[] = $user_id;
+                
+                for ($i=0; $i < 500; $i++) { 
+                    $teams = User::whereIn('leader_id', $team_ids)->select('id')->get();
+                    if (!$teams) {
+                        dd($i);
+                        break;
+                    } else {   
+                        $user_ids = array_merge($team_ids, $teams->pluck('id')->toArray());
+                        $team_ids = $teams->pluck('id')->toArray();
+                    }
+                }
+                dd($user_ids);
+                $q->whereIn('user_id', $user_ids);
+                    
+                })
                 ->when($search, function ($q) use ($search) {
                     $q->where(function ($q) use ($search) {
                         $q->whereHas('user', function ($q) use ($search) {
@@ -95,6 +108,7 @@ class QrpController extends Controller
                 })
                 ->latest()
                 ->get();
+
         }
 
         return view('qrp.daily-checking', compact('dailyChecks', 'search', 'agent'));
@@ -153,9 +167,8 @@ class QrpController extends Controller
         $factor = Factor::find(session('factor'));
         $categories = Category::get();
         $ranks = Rank::get();
-        $adhs = User::where('position_id', 3)->where('department_id', Auth::user()->department_id)->orderBy('name')->get();
-
-        return view('qrp.qrp-form', compact('factor', 'categories', 'ranks', 'adhs'));
+        $leader = User::find(Auth::user()->leader_id);
+        return view('qrp.qrp-form', compact('factor', 'categories', 'ranks', 'leader'));
     }
 
     public function qrpFormPost(Request $request)
@@ -168,7 +181,7 @@ class QrpController extends Controller
                 'recomendation' => 'required',
                 'category' => 'required',
                 'rank' => 'required',
-                'adh' => 'required',
+                'leader' => 'required',
 
             ]);
         } else {
@@ -179,7 +192,7 @@ class QrpController extends Controller
                 'recomendation' => 'required',
                 'category' => 'required',
                 'rank' => 'required',
-                'adh' => 'required',
+                'leader' => 'required',
             ]);
         }
 
@@ -211,37 +224,45 @@ class QrpController extends Controller
                 'user_id' => Auth::user()->id,
                 'area' => $request->area,
                 'factor_id' => session('factor'),
-                'check_status' => 'NG'
+                'check_status' => 'NG',
+                'cost_center_id' => Auth::user()->cost_center_id,
+                'department_id' => Auth::user()->department_id,
+                'plant_id' => Auth::user()->plant_id,
+                'position_id' => Auth::user()->position_id
             ]);
 
             $rank = Rank::find($request->rank);
             $due_date = Carbon::now()->addDays($rank->due_day);
 
-            $recomendation[] = [
-                'user' => Auth::user()->name . " (" . Auth::user()->nip . ")",
-                'recomendation' => $request->recomendation
-            ];
-
-            QrpDetail::create([
+            $qrpDetail = QrpDetail::create([
                 'daily_check_id' => $dailyCheck->id,
-                'department_id' => Auth::user()->department_id,
                 'description' => $request->description,
                 'category_id' => $request->category,
                 'before' => $filename,
-                'recomendation' => json_encode($recomendation),
                 'rank_id' => $request->rank,
                 'due_date' =>  $due_date,
-                'adh_id' => $request->adh,
                 'qrp_status_id' => 1,
             ]);
 
+            QrpApproval::create([
+                'qrp_detail_id' => $qrpDetail->id,
+                'approval_id' => $request->leader,
+                'status' => 'waiting'
+            ]);
+
+            QrpRecomendation::create([
+                'qrp_detail_id' => $qrpDetail->id,
+                'user_id' => Auth::user()->id,
+                'recomendation' => $request->recomendation,
+                'status' => 1
+            ]);
+
             Notification::create([
-                'user_id' => $request->adh,
+                'user_id' => $request->leader,
                 'title' => 'Approve safety comitee',
                 'body' => 'Anda memiliki tugas untuk approve safety comitee',
                 'target' => 'qrp',
                 'target_id' => $dailyCheck->id,
-
             ]);
 
             DB::commit();
@@ -250,6 +271,7 @@ class QrpController extends Controller
             return redirect()->route('qrp.qrp-form-detail', encrypt($dailyCheck->id));
         } catch (\Exception $error) {
             DB::rollBack();
+            dd($error);
             session()->flash('error', $error->getMessage());
             return redirect()->route('qrp.qrp-form');
         }
@@ -257,12 +279,10 @@ class QrpController extends Controller
 
     public function qrpFormDetail($id)
     {
-        $adhs = User::where('department_id', Auth::user()->department_id)->where('position_id', 3)->get();
         $agent = new Agent();
         $dailyCheck = DailyCheck::find(decrypt($id));
-        $deptHeads = User::where('department_id', $dailyCheck->qrpDetail->department_id)->where('position_id', 2)->get();
-        $plantHeads = User::where('position_id', 1)->get();
-        return view('qrp.qrp-form-detail', compact('dailyCheck', 'agent', 'adhs', 'deptHeads', 'plantHeads'));
+
+        return view('qrp.qrp-form-detail', compact('dailyCheck', 'agent'));
     }
 
     public function qrpFormDelete($id)
@@ -276,6 +296,8 @@ class QrpController extends Controller
 
             Storage::disk('public')->delete("image/{$before}");
             Notification::where('target_id', $id)->delete();
+            QrpApproval::where('qrp_detail_id', $dailyCheck->qrpDetail->id)->delete();
+            QrpRecomendation::where('qrp_detail_id', $dailyCheck->qrpDetail->id)->delete();
             QrpDetail::where('daily_check_id', $id)->delete();
             DailyCheck::where('id', $id)->delete();
 
@@ -294,7 +316,6 @@ class QrpController extends Controller
     {
         $dailyCheck = DailyCheck::find(decrypt($id));
         $agent = new Agent();
-        $adhs = $adhs = User::where('position_id', 3)->where('department_id', Auth::user()->department_id)->orderBy('name')->get();
 
         if (Auth::user()->id != $dailyCheck->user_id || $dailyCheck->qrpDetail->qrp_status_id != 1) {
             session()->flash('error', 'Anda tidak berhak');
@@ -304,7 +325,7 @@ class QrpController extends Controller
         $factors = Factor::get();
         $categories = Category::get();
 
-        return view('qrp.qrp-form-detail-edit', compact('dailyCheck', 'agent', 'factors', 'categories', 'adhs'));
+        return view('qrp.qrp-form-detail-edit', compact('dailyCheck', 'agent', 'factors', 'categories'));
     }
 
     public function qrpFormUpdate($id, Request $request)
@@ -317,8 +338,6 @@ class QrpController extends Controller
                 'dataUri' => 'nullable',
                 'recomendation' => 'required',
                 'category' => 'required',
-                'adh' => 'required',
-
             ]);
         } else {
             $validator = Validator::make($request->all(), [
@@ -328,7 +347,6 @@ class QrpController extends Controller
                 'galery' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
                 'recomendation' => 'required',
                 'category' => 'required',
-                'adh' => 'required',
             ]);
         }
 
@@ -367,11 +385,6 @@ class QrpController extends Controller
                 'factor_id' => $request->factor
             ]);
 
-            $recomendation[] = [
-                'user' => Auth::user()->name . " (" . Auth::user()->nip . ")",
-                'recomendation' => $request->recomendation
-            ];
-
             if (!isset($filename)) {
                 $filename = $before;
             }
@@ -380,17 +393,17 @@ class QrpController extends Controller
                 'description' => $request->description,
                 'category_id' => $request->category,
                 'before' => $filename,
-                'recomendation' => $recomendation,
-                'adh_id' => $request->adh
             ]);
 
+            QrpRecomendation::where('qrp_detail_id', $qrpDetail->id)->update([
+                'recomendation' => $request->recomendation
+            ]);
 
             DB::commit();
             session()->flash('success', 'Data berhasil diupdate');
             return redirect()->route('qrp.qrp-form-detail', encrypt($id));
         } catch (\Throwable $th) {
             DB::rollBack();
-            dd($th->getMessage());
             session()->flash('error', $th->getMessage());
             return redirect()->route('qrp.qrp-form-detail', encrypt($id));
         }

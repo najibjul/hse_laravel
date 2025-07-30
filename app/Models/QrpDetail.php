@@ -8,21 +8,11 @@ class QrpDetail extends Model
 {
     protected $fillable = [
         'daily_check_id',
-        'department_id',
         'description',
         'category_id',
         'before',
-        'recomendation',
         'rank_id',
         'due_date',
-        'adh_id',
-        'adh_approve_date',
-        'dh_id',
-        'dh_approve_date',
-        'ph_id',
-        'ph_approve_date',
-        'hse_id',
-        'hse_approve_date',
         'after',
         'after_uploaded_at',
         'closed_at',
@@ -82,6 +72,16 @@ class QrpDetail extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function qrpRecomendations()
+    {
+        return $this->hasMany(QrpRecomendation::class);
+    }
+
+    public function qrpApprovals()
+    {
+        return $this->hasMany(QrpApproval::class);
     }
 
 }

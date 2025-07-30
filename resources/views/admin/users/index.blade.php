@@ -50,9 +50,9 @@
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->nip }}</td>
                                 <td>{{ $user->email }}</td>
-                                <td>{{ $user->department->department_name }}</td>
-                                <td>{{ $user->role->role_name }}</td>
-                                <td>{{ $user->position->position_name }}</td>
+                                <td>{{ $user->department?->department_name }}</td>
+                                <td>{{ $user->role?->role_name }}</td>
+                                <td>{{ $user->position?->position_name }}</td>
                                 <td>
                                     <div class="d-flex gap-2 justify-content-center">
                                         <a href="{{ route('admin.users.edit', encrypt($user->id)) }}">

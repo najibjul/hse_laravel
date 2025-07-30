@@ -48,7 +48,7 @@
                 <div class="col-12 col-md-6 col-lg-6 mb-4">
                     <label class="form-label fw-bold">Departemen</label>
                     <input type="text" class="form-control" disabled
-                        value="{{ $dailyCheck->qrpDetail->department->department_name }}">
+                        value="{{ $dailyCheck->department->department_name }}">
                 </div>
                 <div class="col-12 col-md-6 col-lg-6 mb-4">
                     <label class="form-label fw-bold">Faktor temuan</label>
@@ -77,16 +77,22 @@
                 <div class="col-12 col-md-6 col-lg-6 mb-4">
                     <label class="form-label fw-bold">Rekomendasi</label>
                     <br>
-                    @foreach (json_decode($dailyCheck->qrpDetail->recomendation, true) as $recomendation)
-                        <label for="label-form" class="">
-                            • {!! $recomendation['user'] !!}
-                        </label>
-                        <div class="font-italic text-secondary mb-4">
-                            <i>
-                                {!! nl2br($recomendation['recomendation']) !!}
-                            </i>
-                        </div>
-                    @endforeach
+                    <ul>
+                        @foreach ($dailyCheck->qrpDetail->qrpRecomendations->sortByDesc('id') as $qrpRecomendation)
+                        <li>
+                            <div style="text-align: justify;">
+                                {{ $qrpRecomendation->recomendation }}
+                            </div>
+                            <span class="text-sm fst-italic text-secondary">{{ $qrpRecomendation->user->name }} ({{ $qrpRecomendation->user->nip }})
+                            </span>
+                            <br>
+                            <span class="text-sm fst-italic text-secondary">
+                                {{ \Carbon\Carbon::parse($qrpRecomendation->updated_at) }}
+                            </span>
+                        </li>
+                        @endforeach
+                    </ul>
+                    
                 </div>
                 <div class="col-12 col-md-6 col-lg-6 mb-4">
                     <label class="form-label fw-bold">Batas perbaikan</label>
@@ -266,13 +272,29 @@
 
                 </div>
                 <div class="col-12 col-md-6 col-lg-6 mb-4">
-                    <label class="form-label fw-bold">Asst. Dept. Head</label>
+                    <label class="form-label fw-bold">Approval</label>
+                    <ul>
+                        @foreach ($dailyCheck->qrpDetail->qrpApprovals as $qrpApproval)
+                            <li>
+                                <div>
+                                    {{ $qrpApproval->approval->name }} ({{ $qrpApproval->approval->nip }})
+                                </div>
+                                {{-- <div class="text-warning fw-bold">
+                                    {{ $qrpApproval->status }}
+                                </div> --}}
+
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+                {{-- <div class="col-12 col-md-6 col-lg-6 mb-4">
+                    <label class="form-label fw-bold">Leader</label>
                     <input type="text" class="form-control" disabled placeholder="ketik disini"
                         value="{{ $dailyCheck->qrpDetail->adh->name }} {{ '(' . $dailyCheck->qrpDetail->adh->nip . ')' }}">
 
                 </div>
                 <div class="col-12 col-md-6 col-lg-6 mb-4">
-                    <label class="form-label fw-bold">ADH konfirmasi</label>
+                    <label class="form-label fw-bold">Tanggal konfirmasi</label>
                     <input class="form-control" disabled
                         value="{{ $dailyCheck->qrpDetail->adh_approve_date ? \Carbon\Carbon::parse($dailyCheck->qrpDetail->adh_approve_date)->format('d M Y H:i') : '' }}">
                 </div>
@@ -301,7 +323,7 @@
                         <input class="form-control" disabled
                             value="{{ $dailyCheck->qrpDetail->ph_approve_date ? \Carbon\Carbon::parse($dailyCheck->qrpDetail->ph_approve_date)->format('d M Y H:i') : '' }}">
                     </div>
-                @endif
+                @endif --}}
 
             </div>
 

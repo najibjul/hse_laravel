@@ -24,17 +24,17 @@
             <div class="card-body">
                 <div class="row mb-2">
                     <div class="d-flex justify-content-end">
-
-
-                        <button type="button" class="btn btn-success  rounded" data-bs-toggle="modal"
-                            data-bs-target="#addCheckingModal">
-                            <div class="d-block d-md-none d-lg-none">
-                                <div class="ti ti-plus"></div>
-                            </div>
-                            <div class="d-none d-md-block d-lg-block">
-                                <i class="ti ti-plus"></i> Lakukan pengecekan
-                            </div>
-                        </button>
+                        @if (auth()->user()->position?->is_qrp_enabled)
+                            <button type="button" class="btn btn-success  rounded" data-bs-toggle="modal"
+                                data-bs-target="#addCheckingModal">
+                                <div class="d-block d-md-none d-lg-none">
+                                    <div class="ti ti-plus"></div>
+                                </div>
+                                <div class="d-none d-md-block d-lg-block">
+                                    <i class="ti ti-plus"></i> Lakukan pengecekan
+                                </div>
+                            </button>
+                        @endif
 
                         <button type="button"
                             onclick="event.preventDefault(); document.getElementById('formExport').submit();"
@@ -51,9 +51,9 @@
                         <thead class="table-success">
                             <tr>
                                 <th>No</th>
-                                @if (auth()->user()->role_id != 3 or auth()->user()->deptHead)
+                                {{-- @if (auth()->user()->role_id != 3 or auth()->user()->deptHead) --}}
                                     <th>User</th>
-                                @endif
+                                {{-- @endif --}}
                                 <th>Aktifitas / Problem</th>
                                 <th>Area</th>
                                 <th>Tanggal</th>
@@ -67,9 +67,9 @@
                             @foreach ($dailyChecks as $dailyCheck)
                                 <tr>
                                     <th>{{ $loop->iteration }}</th>
-                                    @if (auth()->user()->role_id != 3 or auth()->user()->deptHead)
+                                    {{-- @if (auth()->user()->role_id != 3 or auth()->user()->deptHead) --}}
                                         <td>{{ $dailyCheck->user->name }} ({{ $dailyCheck->user->nip }})</td>
-                                    @endif
+                                    {{-- @endif --}}
                                     <td>{{ $dailyCheck->activity ? $dailyCheck->activity : $dailyCheck->qrpDetail->description }}
                                     </td>
                                     <td>{{ $dailyCheck->area }}</td>
@@ -109,10 +109,12 @@
                 <button type="submit" class="btn  btn-warning rounded-pill" type="submit">
                     <i class="ti ti-search"></i>
                 </button>
-                <button type="button" class="btn  btn-success rounded-pill" data-bs-toggle="modal"
-                    data-bs-target="#addCheckingModal">
-                    <i class="ti ti-plus"></i>
-                </button>
+                @if (auth()->user()->position?->is_qrp_enabled)
+                    <button type="button" class="btn  btn-success rounded-pill" data-bs-toggle="modal"
+                        data-bs-target="#addCheckingModal">
+                        <i class="ti ti-plus"></i>
+                    </button>
+                @endif
             </div>
         </form>
 
@@ -293,6 +295,5 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
         }
-        
     </style>
 @endpush

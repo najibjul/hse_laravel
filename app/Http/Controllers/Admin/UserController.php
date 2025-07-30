@@ -16,7 +16,7 @@ class UserController extends Controller
 {
     public function index(Request $request) 
     {   
-        $users = User::get();
+        $users = User::limit(1000)->get();
         
         return view('admin.users.index', compact('users'));
     }

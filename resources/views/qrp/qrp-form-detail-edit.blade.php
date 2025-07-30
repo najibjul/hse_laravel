@@ -126,13 +126,13 @@
                     <div class="col-12 col-md-6 mb-4">
                         <label class="form-label fw-bold">Rekomendasi</label>
                         <textarea name="recomendation" id="recomendation" oninput="autoGrowRecomendation(this)"
-                            class="form-control @error('recomendation') is-invalid @enderror" placeholder="ketik disini" required>@foreach (json_decode($dailyCheck->qrpDetail->recomendation, true) as $item){!! $item['recomendation'] !!}@endforeach</textarea>
+                            class="form-control @error('recomendation') is-invalid @enderror" placeholder="ketik disini" required>@foreach ($dailyCheck->qrpDetail->qrpRecomendations as $qrpRecomendation){{ $qrpRecomendation->recomendation }}@endforeach</textarea>
                         @error('recomendation')
                             <div class="form-text text-danger mb-3">{{ $message }}</div>
                         @enderror
                     </div>
 
-                    <div class="col-12 col-md-6 mb-4">
+                    {{-- <div class="col-12 col-md-6 mb-4">
                         <div class="form-group mb-4">
                             <label class="form-label fw-bold">Asst. Dept. Head</label>
                             <select id="adh" class="form-control @error('adh') is-invalid @enderror required"
@@ -148,7 +148,7 @@
                             @enderror
 
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
 
                 <div class="form-group mb-4">

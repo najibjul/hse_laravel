@@ -9,5 +9,5 @@ class Position extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['position_name'];
+    protected $fillable = ['position_name', 'is_qrp_enabled'];
 }

@@ -66,47 +66,47 @@ class DatabaseSeeder extends Seeder
             'role_name' => 'Admin HSE'
         ]);
         
-        Department::create([
-            'department_name' => 'EDP'
-        ]);
+        // Department::create([
+        //     'department_name' => 'EDP'
+        // ]);
         
-        Department::create([
-            'department_name' => 'Engineering BCHI'
-        ]);
+        // Department::create([
+        //     'department_name' => 'Engineering BCHI'
+        // ]);
         
-        Department::create([
-            'department_name' => 'Produksi A'
-        ]);
+        // Department::create([
+        //     'department_name' => 'Produksi A'
+        // ]);
 
-        Department::create([
-            'department_name' => 'HSE'
-        ]);
+        // Department::create([
+        //     'department_name' => 'HSE'
+        // ]);
 
-        Position::create([
-            'position_name' => 'Plant Head / HoD'
-        ]);
+        // Position::create([
+        //     'position_name' => 'Plant Head / HoD'
+        // ]);
         
-        Position::create([
-            'position_name' => 'Dept. Head'
-        ]);
+        // Position::create([
+        //     'position_name' => 'Dept. Head'
+        // ]);
 
-        Position::create([
-            'position_name' => 'Asst. Dept. Head'
-        ]);
+        // Position::create([
+        //     'position_name' => 'Asst. Dept. Head'
+        // ]);
 
-        Position::create([
-            'position_name' => 'Sect. Head'
-        ]);
+        // Position::create([
+        //     'position_name' => 'Sect. Head'
+        // ]);
 
-        Position::create([
-            'position_name' => 'Staff'
-        ]);
+        // Position::create([
+        //     'position_name' => 'Staff'
+        // ]);
 
-        Position::create([
-            'position_name' => 'Asst. Plant Head'
-        ]);
+        // Position::create([
+        //     'position_name' => 'Asst. Plant Head'
+        // ]);
         
-        User::factory(10)->create();
+        // User::factory(10)->create();
 
         Category::create([
             'category_name' => 'Health'
