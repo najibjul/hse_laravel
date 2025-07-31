@@ -69,20 +69,21 @@ class QrpController extends Controller
             $dailyChecks = DailyCheck::when(Auth::user()->role_id == 3, function ($q) {
 
                 $user_id = Auth::user()->id;
-                $team_ids[] = $user_id;
+                $user_ids[] = $user_id;
+                $team_ids = [$user_id];
                 
                 for ($i=0; $i < 500; $i++) { 
-                    $teams = User::whereIn('leader_id', $team_ids)->select('id')->get();
-                    if (!$teams) {
-                        dd($i);
+                    $teams = User::whereIn('leader_id', $user_ids)->select('id')->get();
+
+                    if (count($teams) == 0) {
                         break;
                     } else {   
-                        $user_ids = array_merge($team_ids, $teams->pluck('id')->toArray());
-                        $team_ids = $teams->pluck('id')->toArray();
+                        $user_ids = $teams->pluck('id')->toArray();
+                        $team_ids = array_merge($team_ids, $user_ids);
                     }
                 }
-                dd($user_ids);
-                $q->whereIn('user_id', $user_ids);
+
+                $q->whereIn('user_id', $team_ids);
                     
                 })
                 ->when($search, function ($q) use ($search) {
@@ -424,25 +425,26 @@ class QrpController extends Controller
 
         try {
             $qrpDetail = QrpDetail::where('daily_check_id', $id)->first();
-            $oldRecomendation = json_decode($qrpDetail->recomendation);
 
-            $recomendation = [
-                'user' => Auth::user()->name . " (" . Auth::user()->nip . ")",
-                'recomendation' => $request->recomendation
-            ];
+            QrpRecomendation::where('qrp_detail_id', $qrpDetail->id)->where('status', 1)->update([
+                'status' => 2
+            ]);
 
-            $oldRecomendation[] = $recomendation;
+            QrpRecomendation::create([
+                'qrp_detail_id' => $qrpDetail->id,
+                'user_id' => Auth::user()->id,
+                'recomendation' => $request->recomendation,
+                'status' => 1
+            ]);
 
-            $oldRecomendation = json_encode($oldRecomendation);
+            QrpApproval::where('qrp_detail_id', $qrpDetail->id)->where('approval_id', Auth::user()->id)->update([
+                'approved_at' => now(),
+                'status' => 'approved',
+            ]);
 
-            if (Auth::user()->position_id == 3) {
-
-                QrpDetail::where('daily_check_id', $id)->update([
-                    'adh_approve_date' => now(),
-                    'recomendation' => $oldRecomendation,
-                    'qrp_status_id' => 2
-                ]);
-            }
+            QrpDetail::where('daily_check_id', $id)->update([
+                'qrp_status_id' => 2
+            ]);
 
             DB::commit();
             session()->flash('success', 'Laporan berhasil diupdate');
@@ -461,22 +463,14 @@ class QrpController extends Controller
         try {
             $dailyCheck = DailyCheck::find($id);
 
-            if (Auth::user()->position_id == 3) {
-                QrpDetail::where('daily_check_id', $id)->update([
-                    'adh_approve_date' => now(),
-                    'qrp_status_id' => 2
-                ]);
-            } elseif (Auth::user()->position_id == 2) {
-                QrpDetail::where('daily_check_id', $id)->update([
-                    'dh_approve_date' => now(),
-                    'qrp_status_id' => 2
-                ]);
-            } elseif (Auth::user()->position_id == 1) {
-                QrpDetail::where('daily_check_id', $id)->update([
-                    'ph_approve_date' => now(),
-                    'qrp_status_id' => 2
-                ]);
-            }
+            QrpApproval::where('qrp_detail_id', $dailyCheck->qrpDetail->id)->where('approval_id', Auth::user()->id)->update([
+                'approved_at' => now(),
+                'status' => 'approved',
+            ]);
+            
+            QrpDetail::where('daily_check_id', $id)->update([
+                'qrp_status_id' => 2
+            ]);
 
             Notification::create([
                 'user_id' => $dailyCheck->user_id,
@@ -484,7 +478,6 @@ class QrpController extends Controller
                 'body' => 'Kerjakan sesuai rekomendasi',
                 'target' => 'qrp',
                 'target_id' => $dailyCheck->id,
-
             ]);
 
             DB::commit();
@@ -656,13 +649,7 @@ class QrpController extends Controller
 
             $dailyCheck = DailyCheck::find($id);
 
-            if ($dailyCheck->qrpDetail->adh_id && !$dailyCheck->qrpDetail->dh_id) {
-                $user = $dailyCheck->qrpDetail->adh_id;
-            } elseif ($dailyCheck->qrpDetail->dh_id && !$dailyCheck->qrpDetail->ph_id) {
-                $user = $dailyCheck->qrpDetail->dh_id;
-            } elseif ($dailyCheck->qrpDetail->ph_id) {
-                $user = $dailyCheck->qrpDetail->ph_id;
-            }
+            $user = $dailyCheck->qrpDetail->qrpApprovals->sortByDesc('id')->first()->approval_id;
 
             Notification::create([
                 'user_id' => $user,
@@ -707,7 +694,6 @@ class QrpController extends Controller
                 'after_uploaded_at' => now(),
             ]);
 
-
             Storage::disk('public')->delete("image/{$after}");
 
             DB::commit();
@@ -738,8 +724,7 @@ class QrpController extends Controller
                 'title' => 'Laporan Close',
                 'body' => 'Pekerjaan telah selesai',
                 'target' => 'qrp',
-                'target_id' => $dailyCheck->id,
-
+                'target_id' => $dailyCheck->id
             ]);
 
             DB::commit();
@@ -819,17 +804,12 @@ class QrpController extends Controller
         DB::beginTransaction();
 
         try {
-            if (!$dailyCheck->qrpDetail->dh_id) {
-                QrpDetail::where('daily_check_id', $id)->update([
-                    'dh_id' => $request->riseup
-                ]);
-            }
-
-            if (!$dailyCheck->qrpDetail->ph_id && $dailyCheck->qrpDetail->dh_id) {
-                QrpDetail::where('daily_check_id', $id)->update([
-                    'ph_id' => $request->riseup
-                ]);
-            }
+            
+            QrpApproval::create([
+                'qrp_detail_id' => $dailyCheck->qrpDetail->id,
+                'approval_id' => $request->riseup,
+                'status' => 'waiting'
+            ]);
 
             Notification::create([
                 'user_id' => $request->riseup,
@@ -837,7 +817,6 @@ class QrpController extends Controller
                 'body' => 'Anda memiliki tugas untuk approve safety comitee',
                 'target' => 'qrp',
                 'target_id' => $id,
-
             ]);
 
             DB::commit();

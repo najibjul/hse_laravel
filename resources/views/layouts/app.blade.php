@@ -53,25 +53,6 @@
                         </a>
                     </li>
 
-
-                    {{-- <li class="pc-item pc-caption">
-                        <label>Safety Patrol</label>
-                        <i class="ti ti-dashboard"></i>
-                    </li>
-                    <li class="pc-item">
-                        <a href="#" class="pc-link">
-                            <span class="pc-micon"><i class="ti ti-calendar"></i></span>
-                            <span class="pc-mtext">Jadwal Patrol</span>
-                        </a>
-                    </li>
-                    <li class="pc-item">
-                        <a href="#" class="pc-link">
-                            <span class="pc-micon"><i class="ti ti-alert-circle"></i></span>
-                            <span class="pc-mtext">Temuan Patrol</span>
-                        </a>
-                    </li> --}}
-
-
                     @if (auth()->user()->role_id == 2 or auth()->user()->role_id == 1)
                         <li class="pc-item pc-caption">
                             <label>Admin Menu</label>
@@ -90,7 +71,6 @@
                             </a>
                         </li>
                     @endif
-
 
                 </ul>
             </div>
@@ -153,7 +133,6 @@
                                                         alt="user-image" class="user-avtar">
                                                 </div>
                                                 <div class="flex-grow-1 ms-1">
-                                                    {{-- <span class="float-end text-muted">3:00 AM</span> --}}
                                                     <p class="text-body mb-1">{{ $notification->title }}</p>
                                                     <span class="text-muted">{{ $notification->body }}</span>
                                                 </div>

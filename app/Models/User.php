@@ -66,4 +66,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Position::class);
     }
+    
+    public function leader()
+    {
+        return $this->belongsTo(User::class, 'leader_id', 'id');
+    }
 }

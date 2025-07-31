@@ -24,10 +24,64 @@
             <h4>Detail</h4>
         </div>
         <div class="card-body">
-            <h4 class="mt-1 text-end">
-                <span
-                    class="{{ $dailyCheck->qrpDetail->qrpStatus->class }}">{{ $dailyCheck->qrpDetail->qrpStatus->name }}</span>
-            </h4>
+
+
+                <div class="d-flex justify-content-center mb-4 gap-3">
+                    
+                    <a href="#" class="text-center text-success">
+                        <div class="rounded-circle">
+                            <div class="bg-success rounded-circle py-2 px-3">
+                                <h3 class="mt-1">
+                                    <i class="ti ti-writing text-light"></i>
+                                </h3>
+                            </div>
+                        </div>
+                        Dibuat
+                    </a>
+
+                    <div class="align-self-center py-1 px-2 {{ $dailyCheck->qrpDetail->qrp_status_id >= 2 ? 'bg-success border border-success' : 'bg-light border border-secondary' }} rounded"></div>
+                    <a href="#" class="position-relative d-flex justify-content-center ">
+                        <div class="rounded-circle ">
+                            <div class="{{ $dailyCheck->qrpDetail->qrp_status_id >= 2 ? 'bg-success' : 'border border-secondary bg-light' }} rounded-circle py-2 px-3">
+                                <h3 class="mt-1">
+                                    <i class="{{ $dailyCheck->qrpDetail->qrp_status_id >= 2 ? 'text-white' : 'text-dark' }} ti ti-run "></i>
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="position-absolute align-self-end text-success">
+                        Dikerjakan
+                        </div>
+                    </a>
+
+                    <div class="align-self-center py-1 px-2 {{ $dailyCheck->qrpDetail->qrp_status_id >= 4 ? 'bg-success border border-success' : 'bg-light border border-secondary' }} rounded"></div>
+                    <a href="#" class="position-relative d-flex justify-content-center ">
+                        <div class="rounded-circle ">
+                            <div class="{{ $dailyCheck->qrpDetail->qrp_status_id >= 4 ? 'bg-success' : 'border border-secondary bg-light' }} rounded-circle py-2 px-3">
+                                <h3 class="mt-1">
+                                    <i class="{{ $dailyCheck->qrpDetail->qrp_status_id >= 4 ? 'text-white' : 'text-dark' }} ti ti-zoom-check "></i>
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="position-absolute align-self-end text-success">
+                        Konfirmasi
+                        </div>
+                    </a>
+
+                    <div class="align-self-center py-1 px-2 {{ $dailyCheck->qrpDetail->qrp_status_id >= 5 ? 'bg-success border border-success' : 'bg-light border border-secondary' }} rounded"></div>
+                    <a href="#" class="position-relative d-flex justify-content-center ">
+                        <div class="rounded-circle ">
+                            <div class="{{ $dailyCheck->qrpDetail->qrp_status_id >= 5 ? 'bg-success' : 'border border-secondary bg-light' }} rounded-circle py-2 px-3">
+                                <h3 class="mt-1">
+                                    <i class="{{ $dailyCheck->qrpDetail->qrp_status_id >= 5 ? 'text-white' : 'text-dark' }} ti ti-checks "></i>
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="position-absolute align-self-end text-success">
+                        Selesai
+                        </div>
+                    </a>
+                </div>    
+
             @if ($dailyCheck->qrpDetail->closed_at)
                 <div class="text-end">
                     <label class="form-label">Close :
@@ -87,7 +141,7 @@
                             </span>
                             <br>
                             <span class="text-sm fst-italic text-secondary">
-                                {{ \Carbon\Carbon::parse($qrpRecomendation->updated_at) }}
+                                {{ \Carbon\Carbon::parse($qrpRecomendation->created_at) }}
                             </span>
                         </li>
                         @endforeach
@@ -190,22 +244,12 @@
                             </div>
                         @endif
                     @else
-                        @if (
-                            !$dailyCheck->qrpDetail->adh_approve_date or
-                                !$dailyCheck->qrpDetail->dh_approve_date or
-                                !$dailyCheck->qrpDetail->ph_approve_date)
+                        @if ($dailyCheck->qrpDetail->qrpApprovals->sortByDesc('id')->first()->approved_at)
                             <h5 class="mt-1">
                                 <span class="badge bg-warning text-white">BELUM ADA ACTION</span>
                             </h5>
 
-                            @if (
-                                $dailyCheck->qrpDetail->adh_approve_date and
-                                    $dailyCheck->user_id == auth()->user()->id and
-                                    !$dailyCheck->qrpDetail->dh_id or
-                                    $dailyCheck->qrpDetail->dh_approve_date and
-                                        $dailyCheck->user_id == auth()->user()->id and
-                                        !$dailyCheck->qrpDetail->ph_id or
-                                    $dailyCheck->qrpDetail->ph_approve_date and $dailyCheck->user_id == auth()->user()->id)
+                            @if ($dailyCheck->qrpDetail->qrpApprovals->sortByDesc('id')->first()->approved_at and $dailyCheck->user_id == auth()->user()->id)
                                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                                     <li class="nav-item" role="presentation" id="fotoLangsung">
                                         <button class="nav-link active" id="direct-tab" data-bs-toggle="tab"
@@ -274,7 +318,7 @@
                 <div class="col-12 col-md-6 col-lg-6 mb-4">
                     <label class="form-label fw-bold">Approval</label>
                     <ul>
-                        @foreach ($dailyCheck->qrpDetail->qrpApprovals as $qrpApproval)
+                        @foreach ($dailyCheck->qrpDetail->qrpApprovals->sortByDesc('id') as $qrpApproval)
                             <li>
                                 <div>
                                     {{ $qrpApproval->approval->name }} ({{ $qrpApproval->approval->nip }})
@@ -364,15 +408,7 @@
                 </div>
             @endif
 
-
-            @if (
-                $dailyCheck->qrpDetail->qrp_status_id == 1 and
-                    $dailyCheck->qrpDetail->adh_id == auth()->user()->id and
-                    $dailyCheck->qrpDetail->dh_id == null or
-                    $dailyCheck->qrpDetail->qrp_status_id == 1 and
-                        $dailyCheck->qrpDetail->dh_id == auth()->user()->id and
-                        $dailyCheck->qrpDetail->ph_id == null or
-                    $dailyCheck->qrpDetail->qrp_status_id == 1 and $dailyCheck->qrpDetail->ph_id == auth()->user()->id)
+            @if ($dailyCheck->qrpDetail->qrp_status_id == 1 && $dailyCheck->qrpDetail->qrpApprovals->sortByDesc('id')->first()->approval_id == auth()->user()->id)
                 <div class="d-flex justify-content-center gap-1 mt-4">
                     {{-- <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#cancel">Cancel</button> --}}
 
@@ -427,31 +463,13 @@
                                 @csrf
                                 <div class="modal-body">
                                     <div class="form-group">
-
-                                        @if (!$dailyCheck->qrpDetail->dh_id)
-                                            <label>Pilih Dept. Head :</label>
-                                            <select name="riseup" class="form-control">
-                                                <option value="">--</option>
-                                                @foreach ($deptHeads as $deptHead)
-                                                    <option value="{{ $deptHead->id }}">{{ $deptHead->name }}
-                                                        {{ '(' . $deptHead->nip . ')' }}</option>
-                                                @endforeach
-                                            </select>
-                                        @elseif($dailyCheck->qrpDetail->dh_id and !$dailyCheck->qrpDetail->ph_id)
-                                            <label>Pilih Plant Head :</label>
-                                            <select name="riseup" class="form-control">
-                                                <option value="">--</option>
-                                                @foreach ($plantHeads as $plantHead)
-                                                    <option value="{{ $plantHead->id }}">{{ $plantHead->name }}
-                                                        {{ '(' . $plantHead->nip . ')' }}</option>
-                                                @endforeach
-                                            </select>
-                                        @endif
+                                        <div>Rise up ke <b><i>{{ auth()->user()->leader?->name }} ({{ auth()->user()->leader?->nip }})</i></b>?</div>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary"
                                         data-bs-dismiss="modal">Kembali</button>
+                                        <input type="text" name="riseup" class="d-none" value="{{ auth()->user()->leader_id }}">
                                     <button type="submit" class="btn btn-warning">Rise Up</button>
                                 </div>
                             </form>
@@ -513,14 +531,7 @@
                 </div>
             @endif
 
-            @if (
-                $dailyCheck->qrpDetail->adh_id == auth()->user()->id and
-                    $dailyCheck->qrpDetail->qrp_status_id == 4 and
-                    !$dailyCheck->qrpDetail->dh_id or
-                    $dailyCheck->qrpDetail->dh_id == auth()->user()->id and
-                        $dailyCheck->qrpDetail->qrp_status_id == 4 and
-                        !$dailyCheck->qrpDetail->ph_id or
-                    $dailyCheck->qrpDetail->ph_id == auth()->user()->id and $dailyCheck->qrpDetail->qrp_status_id == 4)
+            @if ($dailyCheck->qrpDetail->qrpApprovals->sortByDesc('id')->first()->approval_id == auth()->user()->id and $dailyCheck->qrpDetail->qrp_status_id == 4)
                 <div class="form-group mb-4">
                     <div class="d-flex justify-content-center gap-3">
                         <button class="btn btn-danger " data-bs-toggle="modal" data-bs-target="#open">TOLAK</button>
