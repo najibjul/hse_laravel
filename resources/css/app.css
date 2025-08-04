@@ -1,3 +1,41 @@
+@import 'select2/dist/css/select2.css';
+@import 'select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css';
+
+
+
+.select2-selection.select2-selection--single {
+  border-color: rgb(192, 189, 189) !important;
+  box-shadow: 0 0 0 0 rgba(88, 88, 88, 0.25) !important;
+}
+
+.select2-selection.select2-selection--single:focus {
+  border-color: #53c41af5 !important;
+  box-shadow: 0 0 0 0 rgba(88, 88, 88, 0.25) !important;
+}
+
+.form-control.select2-hidden-accessible{
+  border-color: rgb(192, 189, 189) !important;
+  box-shadow: 0 0 0 0 rgba(88, 88, 88, 0.25) !important;
+
+}
+
+.select2-dropdown.select2-dropdown--below {
+  border-color: rgb(192, 189, 189) !important;
+  box-shadow: 0 0 0 1px rgba(82, 196, 26, 0.25) !important;
+}
+
+.select2-search.select2-search--dropdown {
+  border-color: rgb(192, 189, 189) !important;
+  box-shadow: 0 0 0 1px rgba(82, 196, 26, 0.25) !important;
+
+}
+
+.select2-search__field {
+  border-color: rgb(228, 228, 228) !important;
+  box-shadow: 0 0 0 1px rgba(82, 196, 26, 0.25) !important;
+
+}
+
 .pagination .page-item.active .page-link {
   background-color: #52c41a !important;
   border-color: #52c41a !important;
@@ -63,3 +101,39 @@
   background-color: #52c41a !important;
   border-color: #52c41a !important;
 }
+
+/* 
+.dt-processing-dots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #28a745;
+}
+
+.dt-processing-dots span {
+
+    animation: bounce 0.8s infinite ease-in-out;
+}
+
+.dt-processing-dots span:nth-child(2) {
+
+    animation-delay: 0.2s;
+}
+.dt-processing-dots span:nth-child(3) {
+
+    animation-delay: 0.4s;
+}
+
+@keyframes bounce {
+    0%, 80%, 100% {
+        transform: scale(0);
+        opacity: 0.2;
+    }
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+} */

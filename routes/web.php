@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\MasterController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QrpController;
@@ -59,6 +60,12 @@ Route::middleware('auth')->group(function () {
             Route::resource('users', UserController::class);
             Route::resource('departments', DepartmentController::class);
             Route::get('departments/{id}/edit/search-dh', [DepartmentController::class, 'searchDh'])->name('departments.edit.search-dh');
+            
+            Route::get('department-master', [MasterController::class, 'department'])->name('department-master');
+            Route::get('position-master', [MasterController::class, 'position'])->name('position-master');
+            Route::get('cost-center-master', [MasterController::class, 'costCenter'])->name('cost-center-master');
+            
+            
         });
     });
 });

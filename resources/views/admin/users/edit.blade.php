@@ -29,80 +29,63 @@
                         <label>Name</label>
                         <input type="text" class="form-control @error('name') is-invalid @enderror "
                             placeholder="Masukan nama..." name="name" required value="{{ $user->name }}">
-                            @error('name')
-                                <div class="text-danger">{{$message}}</div>
-                            @enderror
+                        @error('name')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="col-6 mb-3">
                         <label>NIP</label>
-                        <input type="text" class="form-control @error('nip') is-invalid @enderror " placeholder="Masukan NIP..."
-                            name="nip" required value="{{ $user->nip }}">
-                            @error('nip')
-                                <div class="text-danger">{{$message}}</div>
-                            @enderror
+                        <input type="text" class="form-control @error('nip') is-invalid @enderror "
+                            placeholder="Masukan NIP..." name="nip" required value="{{ $user->nip }}">
+                        @error('nip')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="col-6 mb-3">
                         <label>Email</label>
                         <input type="email" class="form-control @error('email') is-invalid @enderror "
                             placeholder="Masukan email..." name="email" required value="{{ $user->email }}">
-                            @error('email')
-                                <div class="text-danger">{{$message}}</div>
-                            @enderror
-                    </div>
-                    <div class="col-6 mb-3">
-                        <label>Departemen</label>
-                        <select name="department" class="form-control @error('department') is-invalid @enderror " required>
-                            <option value="">-Pilih departemen-</option>
-                            @foreach ($departments as $department)
-                                <option {{ $department->id == $user->department_id ? 'selected' : '' }} value="{{ $department->id }}">{{ $department->department_name }}</option>
-                            @endforeach
-                        </select>
-                        @error('department')
-                            <div class="text-danger">{{$message}}</div>
+                        @error('email')
+                            <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="col-6 mb-3">
                         <label>Role</label>
                         <select name="role" class="form-control @error('role') is-invalid @enderror " required>
                             <option value="">-Pilih role-</option>
-                            @foreach($roles as $role)
-                                <option {{ $role->id == $user->role_id ? 'selected' : '' }} value="{{ $role->id }}">{{ $role->role_name }}</option>
+                            @foreach ($roles as $role)
+                                <option {{ $role->id == $user->role_id ? 'selected' : '' }} value="{{ $role->id }}">
+                                    {{ $role->role_name }}</option>
                             @endforeach
                         </select>
                         @error('role')
-                            <div class="text-danger">{{$message}}</div>
+                            <div class="text-danger">{{ $message }}</div>
                         @enderror
+                    </div>
+                    <div class="col-6 mb-3">
+                        <label>Departemen</label>
+                        <select id="department-select" class="form-control form-control-lg" style="width: 100%;"></select>
                     </div>
                     <div class="col-6 mb-3">
                         <label>Position</label>
-                        <select name="position" class="form-control @error('position') is-invalid @enderror " required>
-                            <option value="">-Pilih position-</option>
-                            @foreach($positions as $position)
-                                <option {{ $position->id == $user->position_id ? 'selected' : '' }} value="{{ $position->id }}">{{ $position->position_name }}</option>
-                            @endforeach
-                        </select>
-                        @error('position')
-                            <div class="text-danger">{{$message}}</div>
-                        @enderror
+                        <select id="position-select" class="form-control form-control-lg" style="width: 100%;"></select>
                     </div>
                     <div class="col-6 mb-3">
-                        <label>Password</label>
-                        <input type="password" class="form-control @error('password') is-invalid @enderror "
-                            placeholder="Ketik untuk ganti password" name="password">
-                            @error('password')
-                                <div class="text-danger">{{$message}}</div>
-                            @enderror
+                        <label>Cost center</label>
+                        <select id="cost-center-select" class="form-control form-control-lg" style="width: 100%;"></select>
                     </div>
                 </div>
                 <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#update"><i
                         class="ti ti-device-floppy"></i> Update</button>
 
-                <div class="modal fade" id="update" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal fade" id="update" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h1 class="modal-title fs-5" id="exampleModalLabel">Edit</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 Edit data user?

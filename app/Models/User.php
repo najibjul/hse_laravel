@@ -50,10 +50,6 @@ class User extends Authenticatable
         ];
     }
 
-    public function deptHead () {
-        return $this->hasOne(Department::class, 'dept_head_id', 'id');
-    }
-
     public function department () {
         return $this->belongsTo(Department::class);
     }
@@ -66,9 +62,19 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Position::class);
     }
+
+    public function plant() 
+    {
+        return $this->belongsTo(Plant::class);
+    }
     
     public function leader()
     {
         return $this->belongsTo(User::class, 'leader_id', 'id');
+    }
+    
+    public function costCenter() 
+    {
+        return $this->belongsTo(CostCenter::class, 'cost_center_id', 'id');
     }
 }

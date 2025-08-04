@@ -2,21 +2,21 @@
 <html lang="en">
 
 <head>
+    
     <title>{{ isset($title) ? $title . ' - HSE' : 'HSE' }}</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description"
-        content="Mantis is made using Bootstrap 5 design framework. Download the free admin template & use it for your project.">
+    content="Mantis is made using Bootstrap 5 design framework. Download the free admin template & use it for your project.">
     <meta name="keywords"
-        content="Mantis, Dashboard UI Kit, Bootstrap 5, Admin Template, Admin Dashboard, CRM, CMS, Bootstrap Admin Template">
+    content="Mantis, Dashboard UI Kit, Bootstrap 5, Admin Template, Admin Dashboard, CRM, CMS, Bootstrap Admin Template">
     <meta name="author" content="CodedThemes">
-
+    
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @stack('styles')
 </head>
-
 <body data-pc-preset="preset-1" data-pc-direction="ltr" data-pc-theme="light" id="main-font-link" >
 
     <div class="loader-bg">
@@ -250,6 +250,7 @@
     </script>
 
     @stack('scripts')
+
 </body>
 
 </html>
