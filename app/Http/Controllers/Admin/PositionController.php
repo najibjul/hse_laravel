@@ -2,40 +2,40 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Department;
-use App\Models\User;
+use App\Http\Controllers\Controller;
+use App\Models\Position;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
 
-class DepartmentController
+class PositionController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request) 
     {
         if ($request->ajax()) {
-            $data = Department::select('id', 'department_name');
+            $data = Position::select('id', 'position_name');
 
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    return '<a href="/admin/departments/' . encrypt($row->id) . '/edit" class="text-warning fs-4"><i class="ti ti-edit"></i></a>';
+                    return '<a href="/admin/positions/' . encrypt($row->id) . '/edit" class="text-warning fs-4"><i class="ti ti-edit"></i></a>';
                 })
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        return view('admin.departments.index');
+        return view('admin.positions.index');
     }
 
     public function create()
     {
-        return view('admin.departments.create');
+        return view('admin.positions.create');
     }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'department' => 'required|string|unique:departments,department_name'
+            'position' => 'required|string|unique:positions,position_name'
         ]);
 
         if ($validator->fails()) {
@@ -45,33 +45,33 @@ class DepartmentController
         DB::beginTransaction();
 
         try {
-            Department::create([
-                'department_name' => $request->department
+            Position::create([
+                'position_name' => $request->position
             ]);
 
             DB::commit();
-            session()->flash('success', 'Department berhasil disimpan');
-            return redirect()->route('admin.departments.index');
+            session()->flash('success', 'Position berhasil disimpan');
+            return redirect()->route('admin.positions.index');
 
         } catch (\Throwable $error) {
             DB::rollBack();
             session()->flash('error', $error->getMessage());
-            return redirect()->route('admin.departments.create');
+            return redirect()->route('admin.positions.create');
         }
     }
-
+    
     public function edit($id)
     {
         $id = decrypt($id);
-        $department = Department::find($id);
-        return view('admin.departments.edit', compact('department'));
+        $position = Position::find($id);
+        return view('admin.positions.edit', compact('position'));
     }
 
     public function update($id, Request $request)
     {
         $id = decrypt($id);
         $validator = Validator::make($request->all(), [
-            'department' => 'required|string|unique:departments,department_name,' . $id . ',id',
+            'position' => 'required|string|unique:positions,position_name,' . $id . ',id',
         ]);
 
         if ($validator->fails()) {
@@ -81,18 +81,18 @@ class DepartmentController
         DB::beginTransaction();
 
         try {
-            Department::where('id', $id)->update([
-                'department_name' => $request->department,
+            Position::where('id', $id)->update([
+                'position_name' => $request->position,
             ]);
 
             DB::commit();
-            session()->flash('success', 'Departemen berhasil diupdate');
-            return redirect()->route('admin.departments.index');
+            session()->flash('success', 'Position berhasil diupdate');
+            return redirect()->route('admin.positions.index');
 
         } catch (\Throwable $error) {
             DB::rollBack();
             session()->flash('error', $error->getMessage());
-            return redirect()->route('admin.departments.edit', encrypt($id));
+            return redirect()->route('admin.positions.edit', encrypt($id));
         }
     }
 }

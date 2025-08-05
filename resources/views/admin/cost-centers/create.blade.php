@@ -1,15 +1,15 @@
-@extends('layouts.app', ['title' => 'Create Department'])
+@extends('layouts.app', ['title' => 'Create Cost Center'])
 @section('content')
     <div class="page-header">
         <div class="page-block">
             <div class="row align-items-center">
                 <div class="col-md-12">
                     <div class="page-header-title">
-                        <h5 class="m-b-10">Tambah Department</h5>
+                        <h5 class="m-b-10">Tambah Cost Center</h5>
                     </div>
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.departments.index') }}">Master Department</a>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.cost-centers.index') }}">Master Cost Center</a>
                         </li>
                         <li class="breadcrumb-item" aria-current="page">Tambah Department</li>
                     </ul>
@@ -20,18 +20,17 @@
 
     <div class="card">
         <div class="card-header">
-            <h4>Tambah Department</h4>
+            <h4>Tambah Cost Center</h4>
         </div>
         <div class="card-body">
-            <form action="{{ route('admin.departments.store') }}" method="POST">
+            <form action="{{ route('admin.cost-centers.store') }}" method="POST">
                 @csrf
                 <div class="row">
                     <div class="col-12 mb-3">
-                        <label>Nama Department</label>
-                        <input type="text" class="form-control @error('department') is-invalid @enderror "
-                            placeholder="Masukan nama..." name="department"
-                            value="{{ old('department') }}">
-                        @error('department')
+                        <label>Nama Cost center</label>
+                        <input type="text" class="form-control @error('costCenter') is-invalid @enderror "
+                            placeholder="Ketik disini ..." name="costCenter">
+                        @error('costCenter')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
@@ -50,7 +49,7 @@
                                     aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                Simpan department?
+                                Simpan cost center?
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kembali</button>

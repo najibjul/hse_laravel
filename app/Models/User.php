@@ -24,7 +24,11 @@ class User extends Authenticatable
         'department_id',
         'role_id',
         'nip',
-        'position_id'
+        'position_id',
+        'cost_center_id',
+        'plant_id',
+        'leader_id'
+
     ];
 
     /**

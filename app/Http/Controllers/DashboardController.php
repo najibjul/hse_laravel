@@ -4,15 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\DailyCheck;
 use App\Models\QrpDetail;
-use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index()
     {
         $qrpDetails = QrpDetail::whereHas('dailyCheck', function($q){
-            $q->where('user_id', auth()->user()->id);
+            $q->where('user_id', Auth::user()->id);
         })
+        ->whereDate('created_at', '>=', Carbon::now()->subMonth()->firstOfMonth())
         ->get();
 
         $waiting = $qrpDetails->filter(function($q){
@@ -31,7 +33,7 @@ class DashboardController extends Controller
             return $q->qrp_status_id == 6 || $q->qrp_status_id == 6;
         })->count();
 
-        $todayChecked = DailyCheck::where('user_id', auth()->user()->id)->whereDate('created_at', now())->count();
+        $todayChecked = DailyCheck::where('user_id', Auth::user()->id)->whereDate('created_at', now())->count();
 
         return view('dashboard', compact('waiting', 'inProgress', 'close', 'reject', 'todayChecked'));
     }

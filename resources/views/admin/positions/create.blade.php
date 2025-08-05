@@ -1,17 +1,17 @@
-@extends('layouts.app', ['title' => 'Create Department'])
+@extends('layouts.app', ['title' => 'Create Position'])
 @section('content')
     <div class="page-header">
         <div class="page-block">
             <div class="row align-items-center">
                 <div class="col-md-12">
                     <div class="page-header-title">
-                        <h5 class="m-b-10">Tambah Department</h5>
+                        <h5 class="m-b-10">Tambah Position</h5>
                     </div>
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.departments.index') }}">Master Department</a>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.positions.index') }}">Master position</a>
                         </li>
-                        <li class="breadcrumb-item" aria-current="page">Tambah Department</li>
+                        <li class="breadcrumb-item" aria-current="page">Tambah Position</li>
                     </ul>
                 </div>
             </div>
@@ -20,18 +20,18 @@
 
     <div class="card">
         <div class="card-header">
-            <h4>Tambah Department</h4>
+            <h4>Tambah Position</h4>
         </div>
         <div class="card-body">
-            <form action="{{ route('admin.departments.store') }}" method="POST">
+            <form action="{{ route('admin.positions.store') }}" method="POST">
                 @csrf
                 <div class="row">
                     <div class="col-12 mb-3">
-                        <label>Nama Department</label>
-                        <input type="text" class="form-control @error('department') is-invalid @enderror "
-                            placeholder="Masukan nama..." name="department"
-                            value="{{ old('department') }}">
-                        @error('department')
+                        <label>Nama position</label>
+                        <input type="text" class="form-control @error('position') is-invalid @enderror "
+                            placeholder="Ketik disni..." name="position"
+                            value="{{ old('position') }}">
+                        @error('position')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
@@ -50,7 +50,7 @@
                                     aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                Simpan department?
+                                Simpan position?
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kembali</button>

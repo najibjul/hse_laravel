@@ -1,9 +1,12 @@
 <?php
 
+use App\Http\Controllers\Admin\CostCenterController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\DepartmentController;
+use App\Http\Controllers\Admin\PlantController;
+use App\Http\Controllers\Admin\PositionController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\MasterController;
 use App\Http\Controllers\NotificationController;
@@ -54,18 +57,33 @@ Route::middleware('auth')->group(function () {
     Route::post('export', [ExportController::class, 'store'])->name('export.store');
     
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+    
+    Route::get('/users/export', [ExportController::class, 'userExport'])->name('users.export');
 
     Route::middleware('admin')->group(function(){
         Route::prefix('admin')->as('admin.')->group(function () {
+            
             Route::resource('users', UserController::class);
+
             Route::resource('departments', DepartmentController::class);
-            Route::get('departments/{id}/edit/search-dh', [DepartmentController::class, 'searchDh'])->name('departments.edit.search-dh');
+            Route::resource('cost-centers', CostCenterController::class);
+            Route::resource('positions', PositionController::class);
+            Route::resource('plants', PlantController::class);
             
             Route::get('department-master', [MasterController::class, 'department'])->name('department-master');
+            Route::get('department-master/{id}', [MasterController::class, 'departmentShow'])->name('department-master-selected');
+            
             Route::get('position-master', [MasterController::class, 'position'])->name('position-master');
+            Route::get('position-master/{id}', [MasterController::class, 'positionShow'])->name('position-master-selected');
+            
             Route::get('cost-center-master', [MasterController::class, 'costCenter'])->name('cost-center-master');
+            Route::get('cost-center-master/{id}', [MasterController::class, 'costCenterShow'])->name('cost-center-master-selected');
             
+            Route::get('plant-master', [MasterController::class, 'plant'])->name('plant-master');
+            Route::get('plant-master/{id}', [MasterController::class, 'plantShow'])->name('plant-master-selected');
             
+            Route::get('leader-master', [MasterController::class, 'leader'])->name('leader-master');
+            Route::get('leader-master/{id}', [MasterController::class, 'leaderShow'])->name('leader-master-selected');
         });
     });
 });

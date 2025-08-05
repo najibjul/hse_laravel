@@ -1,17 +1,17 @@
-@extends('layouts.app', ['title' => 'Edit Departemen'])
+@extends('layouts.app', ['title' => 'Edit Position'])
 @section('content')
     <div class="page-header">
         <div class="page-block">
             <div class="row align-items-center">
                 <div class="col-md-12">
                     <div class="page-header-title">
-                        <h5 class="m-b-10">Edit Departemen</h5>
+                        <h5 class="m-b-10">Edit Position</h5>
                     </div>
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.departments.index') }}">Master Departemen</a>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.positions.index') }}">Master Position</a>
                         </li>
-                        <li class="breadcrumb-item" aria-current="page">Edit Departemen</li>
+                        <li class="breadcrumb-item" aria-current="page">Edit Position</li>
                     </ul>
                 </div>
             </div>
@@ -20,19 +20,19 @@
 
     <div class="card">
         <div class="card-header">
-            <h4>Edit Departemen</h4>
+            <h4>Edit Position</h4>
         </div>
         <div class="card-body">
-            <form action="{{ route('admin.departments.update', encrypt($department->id)) }}" method="POST">
+            <form action="{{ route('admin.positions.update', encrypt($position->id)) }}" method="POST">
                 @method('PATCH')
                 @csrf
                 <div class="mb-3">
 
-                    <label>Nama Departemen</label>
-                    <input type="text" class="form-control @error('department') is-invalid @enderror "
-                    placeholder="Masukan nama departemen..." name="department"
-                    value="{{ $department->department_name }}">
-                    @error('department')
+                    <label>Nama position</label>
+                    <input type="text" class="form-control @error('position') is-invalid @enderror "
+                    placeholder="Ketik disini..." name="position"
+                    value="{{ $position->position_name }}">
+                    @error('position')
                     <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
@@ -49,7 +49,7 @@
                                     aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                Edit data departemen?
+                                Edit data Position?
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kembali</button>

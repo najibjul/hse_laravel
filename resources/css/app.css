@@ -19,9 +19,9 @@
 
 }
 
-.select2-dropdown.select2-dropdown--below {
+.select2-dropdown{
   border-color: rgb(192, 189, 189) !important;
-  box-shadow: 0 0 0 1px rgba(82, 196, 26, 0.25) !important;
+  box-shadow: 0 0 0 1px rgba(151, 154, 150, 0.25) !important;
 }
 
 .select2-search.select2-search--dropdown {
@@ -32,8 +32,12 @@
 
 .select2-search__field {
   border-color: rgb(228, 228, 228) !important;
-  box-shadow: 0 0 0 1px rgba(82, 196, 26, 0.25) !important;
+  box-shadow: 0 0 0 1px rgba(111, 114, 109, 0.25) !important;
+}
 
+.select2-invalid {
+  border-radius: 6.5px;
+  border: solid #dc3545 1.5px;
 }
 
 .pagination .page-item.active .page-link {

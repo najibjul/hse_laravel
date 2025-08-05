@@ -25,7 +25,7 @@
                 @method('PATCH')
                 @csrf
                 <div class="row">
-                    <div class="col-6 mb-3">
+                    <div class="col-6 mb-4">
                         <label>Name</label>
                         <input type="text" class="form-control @error('name') is-invalid @enderror "
                             placeholder="Masukan nama..." name="name" required value="{{ $user->name }}">
@@ -33,7 +33,7 @@
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-6 mb-3">
+                    <div class="col-6 mb-4">
                         <label>NIP</label>
                         <input type="text" class="form-control @error('nip') is-invalid @enderror "
                             placeholder="Masukan NIP..." name="nip" required value="{{ $user->nip }}">
@@ -41,15 +41,15 @@
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-6 mb-3">
+                    <div class="col-6 mb-4">
                         <label>Email</label>
                         <input type="email" class="form-control @error('email') is-invalid @enderror "
-                            placeholder="Masukan email..." name="email" required value="{{ $user->email }}">
+                            placeholder="Masukan email..." name="email" value="{{ $user->email }}">
                         @error('email')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-6 mb-3">
+                    <div class="col-6 mb-4">
                         <label>Role</label>
                         <select name="role" class="form-control @error('role') is-invalid @enderror " required>
                             <option value="">-Pilih role-</option>
@@ -62,17 +62,40 @@
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="col-6 mb-3">
-                        <label>Departemen</label>
-                        <select id="department-select" class="form-control form-control-lg" style="width: 100%;"></select>
+                    <div class="col-6 mb-4">
+                        <label>Departemen </label>
+                        <div class="@error('department') select2-invalid @enderror">
+                            <select name="department" id="department-select" class="form-control" style="width: 100%;"
+                                data-department="{{ old('department', $user->department_id) ?? '' }}"></select>
+                        </div>
                     </div>
-                    <div class="col-6 mb-3">
+                    <div class="col-6 mb-4">
                         <label>Position</label>
-                        <select id="position-select" class="form-control form-control-lg" style="width: 100%;"></select>
+                        <div class="@error('position') select2-invalid @enderror">
+                            <select name="position" id="position-select" class="form-control" style="width: 100%;"
+                                data-position="{{ old('position', $user->position_id) ?? '' }}"></select>
+                        </div>
                     </div>
-                    <div class="col-6 mb-3">
+                    <div class="col-6 mb-4">
                         <label>Cost center</label>
-                        <select id="cost-center-select" class="form-control form-control-lg" style="width: 100%;"></select>
+                        <div class="@error('costCenter') select2-invalid @enderror">
+                            <select name="costCenter" id="cost-center-select" class="form-control" style="width: 100%;"
+                                data-cost-center="{{ old('costCenter', $user->cost_center_id) ?? '' }}"></select>
+                        </div>
+                    </div>
+                    <div class="col-6 mb-4">
+                        <label>Plant</label>
+                        <div class="@error('plant') select2-invalid @enderror">
+                            <select name="plant" id="plant-select" class="form-control" style="width: 100%;"
+                                data-plant="{{ old('plant', $user->plant_id) ?? '' }}"></select>
+                        </div>
+                    </div>
+                    <div class="col-6 mb-4">
+                        <label>Leader</label>
+                        <div class="@error('leader') select2-invalid @enderror">
+                            <select name="leader" id="leader-select" class="form-control" style="width: 100%;"
+                                data-leader="{{ old('leader', $user->leader_id) ?? '' }}"></select>
+                        </div>
                     </div>
                 </div>
                 <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#update"><i

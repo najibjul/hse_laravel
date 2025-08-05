@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Models\Department;
 use App\Models\Position;
@@ -11,13 +12,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Excel;
 use Yajra\DataTables\DataTables;
 
 class UserController extends Controller
 {
     public function index(Request $request)
     {
-
         if ($request->ajax()) {
             $data = User::select('id', 'name', 'nip', 'email', 'cost_center_id', 'department_id', 'role_id', 'position_id', 'plant_id', 'leader_id')
                 ->with(['costCenter' => function ($q) {
@@ -90,7 +91,7 @@ class UserController extends Controller
                     });
                 })
                 ->addColumn('action', function ($row) {
-                    return '<a href="/admin/users/' . encrypt($row->id) . '/edit" class="btn btn-sm btn-warning">Edit</a>';
+                    return '<a href="/admin/users/' . encrypt($row->id) . '/edit" class="text-warning fs-4"><i class="ti ti-edit"></i></a>';
                 })
                 ->rawColumns(['costCenter', 'department', 'role', 'position', 'plant', 'leader', 'action'])
 
@@ -113,11 +114,9 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
-            'email' => 'required|email|unique:users,email',
+            'email' => 'nullable|email',
             'nip' => 'required|string|unique:users,nip',
-            'department' => 'required',
-            'role' => 'required',
-            'position' => 'required'
+            'role' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -132,18 +131,22 @@ class UserController extends Controller
                 'email' => $request->email,
                 'nip' => $request->nip,
                 'department_id' => $request->department,
+                'cost_center_id' => $request->costCenter,
                 'role_id' => $request->role,
                 'position_id' => $request->position,
+                'plant_id' => $request->plant,
+                'leader_id' => $request->leader,
                 'password' => bcrypt('password')
             ]);
 
             DB::commit();
             session()->flash('success', 'User berhasil ditambahkan');
             return redirect()->route('admin.users.index');
+
         } catch (\Throwable $error) {
             DB::rollBack();
             session()->flash('error', $error->getMessage());
-            return redirect()->route('admin.users.create');
+            return redirect()->route('admin.users.index');
         }
     }
 
@@ -157,16 +160,11 @@ class UserController extends Controller
 
     public function update($id, Request $request)
     {
-        $id = decrypt($id);
-
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
-            'email' => 'required|email|unique:users,email,' . $id,
+            'email' => 'nullable|email',
             'nip' => 'required|string|unique:users,nip,' . $id,
-            'department' => 'required',
-            'role' => 'required',
-            'password' => 'nullable|min:8',
-            'position' => 'required'
+            'role' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -177,26 +175,17 @@ class UserController extends Controller
 
         try {
 
-            if ($request->password == "") {
-                User::where('id', $id)->update([
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'nip' => $request->nip,
-                    'department_id' => $request->department,
-                    'role_id' => $request->role,
-                    'position_id' => $request->position
-                ]);
-            } else {
-                User::where('id', $id)->update([
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'nip' => $request->nip,
-                    'department_id' => $request->department,
-                    'role_id' => $request->role,
-                    'position_id' => $request->position,
-                    'password' => bcrypt($request->password)
-                ]);
-            }
+            User::where('id', $id)->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'nip' => $request->nip,
+                'department_id' => $request->department,
+                'cost_center_id' => $request->costCenter,
+                'role_id' => $request->role,
+                'position_id' => $request->position,
+                'plant_id' => $request->plant,
+                'leader_id' => $request->leader,
+            ]);
 
             DB::commit();
             session()->flash('success', 'User berhasil diupdate');
@@ -204,7 +193,7 @@ class UserController extends Controller
         } catch (\Throwable $error) {
             DB::rollBack();
             session()->flash('error', $error->getMessage());
-            return redirect()->route('admin.users.edit', $id);
+            return redirect()->route('admin.users.edit', encrypt($id));
         }
     }
 
@@ -226,4 +215,8 @@ class UserController extends Controller
             return redirect()->route('admin.users.index');
         }
     }
+
+    
+    
+    
 }

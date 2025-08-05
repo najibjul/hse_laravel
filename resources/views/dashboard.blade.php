@@ -6,7 +6,7 @@
             <div class="row align-items-center">
                 <div class="col-md-12">
                     <div class="page-header-title">
-                        <h5 class="m-b-10">Dashboard</h5>
+                        <div class="m-b-10 fs-2 ">Dashboard</div>
                     </div>
                 </div>
             </div>
@@ -29,14 +29,16 @@
         </div>
     </div>
 
-    <div class="mb-3 mt-4">Summary Safety Commite</div>
+    <div class="mb-1 mt-5 ms-3 text-secondary">Total Safety Commite</div>
+    <div class="mb-3 fs-4 ms-3 text-uppercase ">{{ \Carbon\Carbon::now()->subMonth()->format('M') }} - {{ \Carbon\Carbon::now()->format('M Y') }}</div>
+
     <div class="row">
         <div class="col-6 col-xl-4">
             <div class="card border-0 border-top border-info border-3">
                 <div class="card-body ">
                     <h6 class="mb-2 f-w-400 text-info">Menunggu</h6>
                     <h1 class="mb-3">{{ $waiting }}</h1>
-                    <p class="mb-0 text-muted text-sm">Menunggu konfirmasi DH & penyelesaian
+                    <p class="mb-0 text-muted text-sm">Menunggu konfirmasi pelaksanaan & penyelesaian
                     </p>
                 </div>
             </div>
@@ -59,17 +61,6 @@
                 </div>
             </div>
         </div>
-        {{-- <div class="col-6 col-xl-3">
-            <div class="card border-0 border-top border-danger border-3">
-                <div class="card-body">
-                    <h6 class="mb-2 f-w-400 text-danger">Tolak Open / Cancel</h6>
-                    <h1 class="mb-3">{{ $reject }}</h1>
-                    <p class="mb-0 text-muted text-sm">
-                        Dicancel atau tidak close dengan penyebab tertentu 
-                    </p>
-                </div>
-            </div>
-        </div> --}}
     </div>
 
 @endsection

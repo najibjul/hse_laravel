@@ -3,7 +3,7 @@
 
 <head>
     
-    <title>{{ isset($title) ? $title . ' - HSE' : 'HSE' }}</title>
+    <title>{{ isset($title) ? $title . ' • HSE' : 'HSE' }}</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,6 +12,7 @@
     <meta name="keywords"
     content="Mantis, Dashboard UI Kit, Bootstrap 5, Admin Template, Admin Dashboard, CRM, CMS, Bootstrap Admin Template">
     <meta name="author" content="CodedThemes">
+    
     
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -66,12 +67,29 @@
                         </li>
                         <li class="pc-item {{ Route::is('admin.departments.*') ? 'active' : '' }}">
                             <a href="{{ route('admin.departments.index') }}" class="pc-link">
-                                <span class="pc-micon"><i class="ti ti-building-skyscraper"></i></span>
+                                <span class="pc-micon"><i class="ti ti-home"></i></span>
                                 <span class="pc-mtext">Master Department</span>
                             </a>
                         </li>
+                        <li class="pc-item {{ Route::is('admin.cost-centers.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.cost-centers.index') }}" class="pc-link">
+                                <span class="pc-micon"><i class="ti ti-currency-dollar"></i></span>
+                                <span class="pc-mtext">Master Cost Center</span>
+                            </a>
+                        </li>
+                        <li class="pc-item {{ Route::is('admin.positions.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.positions.index') }}" class="pc-link">
+                                <span class="pc-micon"><i class="ti ti-grid-dots"></i></span>
+                                <span class="pc-mtext">Master Position</span>
+                            </a>
+                        </li>
+                        <li class="pc-item {{ Route::is('admin.plants.*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.plants.index') }}" class="pc-link">
+                                <span class="pc-micon"><i class="ti ti-building-skyscraper"></i></span>
+                                <span class="pc-mtext">Master Plant</span>
+                            </a>
+                        </li>
                     @endif
-
                 </ul>
             </div>
         </div>
