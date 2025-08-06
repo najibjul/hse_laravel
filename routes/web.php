@@ -58,13 +58,12 @@ Route::middleware('auth')->group(function () {
     
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     
-    Route::get('/users/export', [ExportController::class, 'userExport'])->name('users.export');
+    
 
     Route::middleware('admin')->group(function(){
         Route::prefix('admin')->as('admin.')->group(function () {
             
             Route::resource('users', UserController::class);
-
             Route::resource('departments', DepartmentController::class);
             Route::resource('cost-centers', CostCenterController::class);
             Route::resource('positions', PositionController::class);
@@ -85,5 +84,11 @@ Route::middleware('auth')->group(function () {
             Route::get('leader-master', [MasterController::class, 'leader'])->name('leader-master');
             Route::get('leader-master/{id}', [MasterController::class, 'leaderShow'])->name('leader-master-selected');
         });
+        
+        Route::get('/users/export', [ExportController::class, 'userExport'])->name('users.export');
+        Route::get('/departments/export', [ExportController::class, 'departmentExport'])->name('departments.export');
+        Route::get('/cost-centers/export', [ExportController::class, 'costCenterExport'])->name('cost-centers.export');
+        Route::get('/positions/export', [ExportController::class, 'positionExport'])->name('positions.export');
+        Route::get('/plants/export', [ExportController::class, 'plantExport'])->name('plants.export');
     });
 });

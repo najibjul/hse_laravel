@@ -1,12 +1,26 @@
-# FROM php:8.2-fpm
 FROM dunglas/frankenphp
 
+WORKDIR /app
+
+# Install dependencies & PHP extensions
 RUN apt-get update && apt-get install -y \
-    zip unzip curl git libzip-dev libpng-dev libonig-dev libxml2-dev \
-    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath gd
+    git unzip libpng-dev libzip-dev curl libonig-dev libpq-dev \
+    && docker-php-ext-install pdo pdo_mysql mbstring zip gd
 
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Copy project files
+COPY . .
 
-WORKDIR /var/www
+# Set permission for Laravel
+RUN chown -R www-data:www-data storage bootstrap/cache
 
-CMD ["php-fpm"]
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Install Laravel dependencies
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+
+# Optimize Laravel (optional)
+RUN php artisan config:cache && php artisan route:cache || true
+
+# Run FrankenPHP with TLS
+CMD ["frankenphp", "--document-root", "public", "--tls", "--cert", "/app/docker/ssl/cert.pem", "--key", "/app/docker/ssl/key.pem"]

@@ -24,11 +24,10 @@
         <div class="card-body">
             <div class="row mb-4">
                 <div class="d-flex justify-content-end">
-
-
-                    <a href="{{ route('admin.departments.create') }}" class="btn btn-success">
+                    <a href="{{ route('admin.departments.create') }}" class="btn btn-sm btn-success rounded">
                         <i class="ti ti-plus"></i> Tambah
                     </a>
+                    <button type="button" id="departmentExport" class="btn btn-sm btn-info rounded ms-2"><i class="ti ti-file"></i> Export</button>
                 </div>
             </div>
             <div class="table-responsive">

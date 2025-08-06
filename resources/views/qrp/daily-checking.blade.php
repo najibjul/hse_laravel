@@ -25,20 +25,20 @@
                 <div class="row mb-2">
                     <div class="d-flex justify-content-end">
                         @if (auth()->user()->position?->is_qrp_enabled)
-                            <button type="button" class="btn btn-success  rounded" data-bs-toggle="modal"
+                            <button type="button" class="btn btn-sm btn-success rounded" data-bs-toggle="modal"
                                 data-bs-target="#addCheckingModal">
                                 <div class="d-block d-md-none d-lg-none">
                                     <div class="ti ti-plus"></div>
                                 </div>
                                 <div class="d-none d-md-block d-lg-block">
-                                    <i class="ti ti-plus"></i> Lakukan pengecekan
+                                    <i class="ti ti-plus"></i> Pengecekan
                                 </div>
                             </button>
                         @endif
 
                         <button type="button"
                             onclick="event.preventDefault(); document.getElementById('formExport').submit();"
-                            class="btn btn-info ms-2 rounded"><i class="ti ti-file-export"></i> Export Excel</button>
+                            class="btn btn-sm btn-info ms-2 rounded"><i class="ti ti-file-export"></i> Export</button>
                     </div>
 
                     <form id="formExport" method="POST" action="{{ route('export.store') }}">

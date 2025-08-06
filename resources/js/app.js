@@ -84,12 +84,37 @@ $(function () {
 
     $('#userExport').on('click', function (e) {
         e.preventDefault();
-
         let params = $('#userTable').DataTable().ajax.params();
-
         let value = params.search.value;
-        
-        window.location.href = '/users/export?key=' + value;
+        window.location.href = '/users/export?param=' + value;
+    });
+
+    $('#departmentExport').on('click', function (e) {
+        e.preventDefault();
+        let params = $('#departmentTable').DataTable().ajax.params();
+        let value = params.search.value;
+        window.location.href = '/departments/export?param=' + value;
+    });
+
+    $('#costCenterExport').on('click', function (e) {
+        e.preventDefault();
+        let params = $('#costCenterTable').DataTable().ajax.params();
+        let value = params.search.value;
+        window.location.href = '/cost-centers/export?param=' + value;
+    });
+
+    $('#positionExport').on('click', function (e) {
+        e.preventDefault();
+        let params = $('#positionTable').DataTable().ajax.params();
+        let value = params.search.value;
+        window.location.href = '/positions/export?param=' + value;
+    });
+
+    $('#plantExport').on('click', function (e) {
+        e.preventDefault();
+        let params = $('#plantTable').DataTable().ajax.params();
+        let value = params.search.value;
+        window.location.href = '/plants/export?param=' + value;
     });
 
     $('#departmentTable').DataTable({
