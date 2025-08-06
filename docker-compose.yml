@@ -1,33 +1,30 @@
-version: '3.8'
-
 services:
-  app:
+  franken:
     build: .
     ports:
-      - "443:443"  # HTTPS
+      - "443:443"
     volumes:
       - .:/app
-    depends_on:
-      - mysql
+    restart: always
     environment:
       DB_CONNECTION: mysql
       DB_HOST: mysql
       DB_PORT: 3306
-      DB_DATABASE: laravel
+      DB_DATABASE: hse
       DB_USERNAME: root
       DB_PASSWORD: root
-    restart: unless-stopped
+    depends_on:
+      - mysql
 
   mysql:
     image: mysql:8.0
-    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: laravel
-    volumes:
-      - mysql-data-hse:/var/lib/mysql
+      MYSQL_DATABASE: hse
     ports:
-      - "3307:3306"
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
 
 volumes:
-  mysql-data-hse:
+  mysql-data:
