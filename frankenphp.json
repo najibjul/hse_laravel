@@ -1,0 +1,6 @@
+{
+  "config": {
+    "document_root": "public",
+    "bootstrap": "bootstrap/app.php"
+  }
+}

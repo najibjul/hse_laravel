@@ -3,8 +3,13 @@ services:
     build: .
     ports:
       - "443:443"
+      - "5173:5173"
     volumes:
       - .:/app
+      - ./docker/Caddyfile:/etc/caddy/Caddyfile
+      - ./docker/certs:/etc/caddy/certs
+      - caddy_data:/data
+      - caddy_config:/config
     restart: always
     environment:
       DB_CONNECTION: mysql
@@ -28,3 +33,5 @@ services:
 
 volumes:
   mysql-data:
+  caddy_data:
+  caddy_config:

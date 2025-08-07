@@ -18,24 +18,15 @@ export default defineConfig({
     alias: {
     }
   },
-  
-  // server: {
-  //   cors: true,
-  //   host: '0.0.0.0',
-  //   port: 5173,
-  //   https: {
-  //           key: fs.readFileSync('/var/www/nginx/ssl/server.key'),
-  //           cert: fs.readFileSync('/var/www/nginx/ssl/server.crt'),
-  //       },
-  //   strictPort: true,
-  //   watch: {
-  //     usePolling: true
-  //   },
-  //   origin: 'https://10.129.78.59:5173',
-  //   hmr: {
-  //     host: '10.129.78.59',
-  //     port: 5173,
-  //   },
-  // }
+
+  server: {
+    cors: true,
+    host: "0.0.0.0",
+    port: 5173,
+    https: {
+      key: fs.readFileSync('docker/certs/key.pem'),
+      cert: fs.readFileSync('docker/certs/cert.pem'),
+    },
+  }
 
 });

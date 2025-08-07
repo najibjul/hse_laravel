@@ -1,0 +1,6 @@
+https://10.129.43.97 {
+    tls /etc/caddy/certs/cert.pem /etc/caddy/certs/key.pem
+    root * /app/public
+    php_fastcgi / frankenphp
+    file_server
+}
