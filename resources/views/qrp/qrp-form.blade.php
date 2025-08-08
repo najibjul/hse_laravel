@@ -151,13 +151,6 @@
                             <label class="form-label fw-bold" for="leader">Atasan langsung</label>
                             <input type="text" class="form-control" disabled value="{{ $leader?->name }} {{ $leader ? '(' . $leader->nip . ')' : '' }}">
                             <input type="text" name="leader" class="d-none" value="{{ $leader->id }}" >
-
-                            {{-- <input type="text" name="" class="form-control" value="{{ $leader && $leader->name }}" id="leader"> --}}
-                            {{-- <select class="form-control @error('leader') is-invalid @enderror" name="leader"> --}}
-                                {{-- @foreach ($leader as $leader) --}}
-                                    {{-- <option value="{{ $leader?->id }}" {{ old('leader') == $leader?->id ? 'selected' : '' }}>{{ $leader?->name }} {{ $leader?->nip }}</option> --}}
-                                {{-- @endforeach --}}
-                            {{-- </select> --}}
                             @error('leader')
                                 <div class="text-danger form-text text-md">{{ $message }}</div>
                             @enderror

@@ -58,7 +58,7 @@ Route::middleware('auth')->group(function () {
     
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     
-    
+    Route::get('/qrp/export', [ExportController::class, 'qrpExport'])->name('qrp.export');
 
     Route::middleware('admin')->group(function(){
         Route::prefix('admin')->as('admin.')->group(function () {

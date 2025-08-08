@@ -1,6 +1,5 @@
-@extends('layouts.app', ['title' => 'Daily Checking'])
-@section('content')
-    @if ($agent->isDesktop())
+<?php $__env->startSection('content'); ?>
+    <?php if($agent->isDesktop()): ?>
         <div class="page-header">
             <div class="page-block">
                 <div class="row align-items-center">
@@ -9,7 +8,7 @@
                             <h5 class="m-b-10">Daily Checking</h5>
                         </div>
                         <ul class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="<?php echo e(route('dashboard')); ?>">Dashboard</a></li>
                             <li class="breadcrumb-item"><a href="javascript: void(0)">Safety Comitee</a></li>
                             <li class="breadcrumb-item" aria-current="page">Daily Checking</li>
                         </ul>
@@ -24,7 +23,7 @@
             <div class="card-body">
                 <div class="row mb-2">
                     <div class="d-flex justify-content-end">
-                        @if (auth()->user()->position?->is_qrp_enabled)
+                        <?php if(auth()->user()->position?->is_qrp_enabled): ?>
                             <button type="button" class="btn btn-sm btn-success rounded" data-bs-toggle="modal"
                                 data-bs-target="#addCheckingModal">
                                 <div class="d-block d-md-none d-lg-none">
@@ -34,13 +33,13 @@
                                     <i class="ti ti-plus"></i> Pengecekan
                                 </div>
                             </button>
-                        @endif
+                        <?php endif; ?>
                         <button type="button" id="qrpExport" class="btn btn-sm btn-info ms-2 rounded"><i
                                 class="ti ti-file-export"></i> Export</button>
                     </div>
 
-                    <form id="formExport" method="POST" action="{{ route('export.store') }}">
-                        @csrf
+                    <form id="formExport" method="POST" action="<?php echo e(route('export.store')); ?>">
+                        <?php echo csrf_field(); ?>
                     </form>
                 </div>
                 <div class="table-responsive">
@@ -62,49 +61,51 @@
                 </div>
             </div>
         </div>
-    @elseif($agent->isMobile())
+    <?php elseif($agent->isMobile()): ?>
         <div class="mb-3">
             <h4>DAILY CHECKING</h4>
         </div>
-        <form action="{{ route('qrp.daily-checking') }}" method="GET">
+        <form action="<?php echo e(route('qrp.daily-checking')); ?>" method="GET">
             <div class="d-flex gap-2 mb-4">
-                <input type="text" name="search" class="form-control  search rounded-pill" value="{{ $search }}"
+                <input type="text" name="search" class="form-control  search rounded-pill" value="<?php echo e($search); ?>"
                     placeholder="Cari...">
                 <button type="submit" class="btn  btn-warning rounded-pill" type="submit">
                     <i class="ti ti-search"></i>
                 </button>
-                @if (auth()->user()->position?->is_qrp_enabled)
+                <?php if(auth()->user()->position?->is_qrp_enabled): ?>
                     <button type="button" class="btn  btn-success rounded-pill" data-bs-toggle="modal"
                         data-bs-target="#addCheckingModal">
                         <i class="ti ti-plus"></i>
                     </button>
-                @endif
+                <?php endif; ?>
             </div>
         </form>
 
-        @foreach ($dailyChecks as $dailyCheck)
-            <a href="{{ $dailyCheck->check_status == 'NG' ? route('qrp.qrp-form-detail', encrypt($dailyCheck->id)) : 'javascript:void(0)' }}"
-                @if ($dailyCheck->check_status == 'OK') onclick="statusOk(event)" @endif>
+        <?php $__currentLoopData = $dailyChecks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $dailyCheck): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <a href="<?php echo e($dailyCheck->check_status == 'NG' ? route('qrp.qrp-form-detail', encrypt($dailyCheck->id)) : 'javascript:void(0)'); ?>"
+                <?php if($dailyCheck->check_status == 'OK'): ?> onclick="statusOk(event)" <?php endif; ?>>
                 <div class="card card-hover " style="border-radius: 15px;">
                     <div class="card-body ">
-                        <div><i class="ti ti-user"></i> {{ $dailyCheck->user->name }} ({{ $dailyCheck->user->nip }})</div>
+                        <div><i class="ti ti-user"></i> <?php echo e($dailyCheck->user->name); ?> (<?php echo e($dailyCheck->user->nip); ?>)</div>
                         <div><i class="ti ti-alert-circle"></i>
-                            {{ $dailyCheck->activity ? $dailyCheck->activity : $dailyCheck->qrpDetail->description }}</div>
-                        <div><i class="ti ti-building-community"></i> {{ $dailyCheck->area }}</div>
+                            <?php echo e($dailyCheck->activity ? $dailyCheck->activity : $dailyCheck->qrpDetail->description); ?></div>
+                        <div><i class="ti ti-building-community"></i> <?php echo e($dailyCheck->area); ?></div>
                         <div><i class="ti ti-calendar-event"></i>
-                            {{ \Carbon\Carbon::parse($dailyCheck->created_at)->translatedFormat('d M Y H:i') }}</div>
-                        <div class="badge {{ $dailyCheck->check_status == 'NG' ? 'bg-danger' : 'bg-success' }}">
-                            {{ $dailyCheck->check_status }}</div>
-                        <div class="{{ $dailyCheck->qrpDetail?->qrpStatus->class }}">
-                            {{ $dailyCheck->qrpDetail?->qrpStatus->name }}
+                            <?php echo e(\Carbon\Carbon::parse($dailyCheck->created_at)->translatedFormat('d M Y H:i')); ?></div>
+                        <div class="badge <?php echo e($dailyCheck->check_status == 'NG' ? 'bg-danger' : 'bg-success'); ?>">
+                            <?php echo e($dailyCheck->check_status); ?></div>
+                        <div class="<?php echo e($dailyCheck->qrpDetail?->qrpStatus->class); ?>">
+                            <?php echo e($dailyCheck->qrpDetail?->qrpStatus->name); ?>
+
                         </div>
                     </div>
                 </div>
             </a>
-        @endforeach
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
-        {{ $dailyChecks->links('vendor.pagination.bootstrap-5') }}
-    @endif
+        <?php echo e($dailyChecks->links('vendor.pagination.bootstrap-5')); ?>
+
+    <?php endif; ?>
 
     <div class="modal fade" id="addCheckingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -137,8 +138,8 @@
                         Apakah faktor fisika dan kebersihan area sudah proper?
                     </div>
                     <div id="dailyCheckForm" class="d-none">
-                        <form method="POST" action="{{ route('qrp.daily-checking-post') }}">
-                            @csrf
+                        <form method="POST" action="<?php echo e(route('qrp.daily-checking-post')); ?>">
+                            <?php echo csrf_field(); ?>
                             <div class="form-group mb-3">
                                 <label class="form-label">Aktifitas</label>
                                 <textarea required name="activity" class="form-control" placeholder="Masukan aktifitas pekerjaan Anda ..."></textarea>
@@ -156,7 +157,7 @@
                 </div>
                 <div id="modalFooterChecking" class="modal-footer">
                     <div class="d-flex justify-content-end">
-                        <a class="btn btn-danger me-2" href="{{ route('qrp.qrp-form') }}">TIDAK</a>
+                        <a class="btn btn-danger me-2" href="<?php echo e(route('qrp.qrp-form')); ?>">TIDAK</a>
                         <button type="button" class="btn btn-success" onclick="nextCheck()">YA <i
                                 class="ti ti-chevron-right"></i></button>
                     </div>
@@ -164,9 +165,9 @@
             </div>
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
     <script>
         let man = document.getElementById('man');
         let machine = document.getElementById('machine');
@@ -177,7 +178,7 @@
         let modalFooterChecking = document.getElementById('modalFooterChecking');
 
         function nextCheck() {
-            fetch("{{ route('qrp.change-factor') }}");
+            fetch("<?php echo e(route('qrp.change-factor')); ?>");
 
             if (man.classList.contains("d-block")) {
                 man.classList.remove("d-block");
@@ -246,4 +247,16 @@
             });
         }
     </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php $__env->startPush('styles'); ?>
+    <style>
+        .card-hover:hover {
+            transform: scale(1.03);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+    </style>
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.app', ['title' => 'Daily Checking'], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\hse\resources\views/qrp/daily-checking.blade.php ENDPATH**/ ?>

@@ -1,7 +1,11 @@
 @import 'select2/dist/css/select2.css';
 @import 'select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.min.css';
 
-
+.card-hover:hover {
+  transform: scale(1.03);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
 
 .select2-selection.select2-selection--single {
   border-color: rgb(192, 189, 189) !important;

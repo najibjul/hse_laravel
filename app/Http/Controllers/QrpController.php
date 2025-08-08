@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Jenssegers\Agent\Agent;
+use Yajra\DataTables\DataTables;
 
 class QrpController extends Controller
 {
@@ -41,7 +42,7 @@ class QrpController extends Controller
                             $q->where('department_id', Auth::user()->department_id);
                         });
                     });
-                })
+            })
                 ->when($search, function ($q) use ($search) {
                     $q->where(function ($q) use ($search) {
                         $q->whereHas('user', function ($q) use ($search) {
@@ -66,50 +67,100 @@ class QrpController extends Controller
                 ->latest()
                 ->paginate(10);
         } else {
-            $dailyChecks = DailyCheck::when(Auth::user()->role_id == 3, function ($q) {
 
-                $user_id = Auth::user()->id;
-                $user_ids[] = $user_id;
-                $team_ids = [$user_id];
-                
-                for ($i=0; $i < 500; $i++) { 
-                    $teams = User::whereIn('leader_id', $user_ids)->select('id')->get();
+            $dailyChecks = null;
 
-                    if (count($teams) == 0) {
-                        break;
-                    } else {   
-                        $user_ids = $teams->pluck('id')->toArray();
-                        $team_ids = array_merge($team_ids, $user_ids);
+            if ($request->ajax()) {
+                $data = DailyCheck::with(['qrpDetail' => function ($q) {
+                    $q->select('daily_check_id', 'description', 'qrp_status_id')
+                        ->with(['qrpStatus' => function ($q) {
+                            $q->select('id', 'name', 'class');
+                        }]);
+                }])->with(['user' => function ($q) {
+                    $q->select('id', 'name', 'nip');
+                }])->with(['factor' => function ($q) {
+                    $q->select('id', 'factor_name');
+                }])
+                ->when(Auth::user()->role_id == 3, function ($q) {
+                    $user_id = Auth::user()->id;
+                    $user_ids[] = $user_id;
+                    $team_ids = [$user_id];
+
+                    for ($i = 0; $i < User::count(); $i++) {
+                        $teams = User::whereIn('leader_id', $user_ids)->select('id')->get();
+                        if (count($teams) == 0) {
+                            break;
+                        } else {
+                            $user_ids = $teams->pluck('id')->toArray();
+                            $team_ids = array_merge($team_ids, $user_ids);
+                        }
                     }
+
+                    $q->whereIn('user_id', $team_ids);
+                })
+                ->select('id', 'user_id', 'activity', 'area', 'factor_id', 'check_status', 'created_at');
+
+                if ($request->start_date && $request->end_date) {
+                    $data->whereDate('created_at', '>=', $request->start_date)->whereDate('created_at', '<=', $request->end_date);
                 }
 
-                $q->whereIn('user_id', $team_ids);
-                    
-                })
-                ->when($search, function ($q) use ($search) {
-                    $q->where(function ($q) use ($search) {
-                        $q->whereHas('user', function ($q) use ($search) {
-                            $q->where('name', 'like', '%' . $search . '%')
-                                ->orwhere('nip', 'like', '%' . $search . '%');
-                        })
-                            ->orWhere(function ($q) use ($search) {
-                                $q->where('activity', 'like', '%' . $search . '%')
-                                    ->orWhereHas('qrpDetail', function ($q) use ($search) {
-                                        $q->where('description', 'like', '%' . $search . '%');
-                                    });
-                            })
-                            ->orWhere('area', 'like', '%' . $search . '%')
-                            ->orWhere('check_status', 'like', '%' . $search . '%')
-                            ->orWhereHas('qrpDetail', function ($q) use ($search) {
-                                $q->whereHas('qrpStatus', function ($q) use ($search) {
-                                    $q->where('name', 'like', '%' . $search . '%');
-                                });
+                return DataTables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('user', function ($row) {
+                        return $row->user->name . ' (' . $row->user->nip . ')';
+                    })
+                    ->filterColumn('user', function ($query, $keyword) {
+                        $query->whereHas('user', function ($q) use ($keyword) {
+                            $q->where('name', 'like', "%{$keyword}%")->orWhere('nip', 'like', "%{$keyword}%");
+                        });
+                    })
+                    ->addColumn('description', function ($row) {
+                        return $row->qrpDetail?->description;
+                    })
+                    ->filterColumn('description', function ($query, $keyword) {
+                        $query->whereHas('qrpDetail', function ($q) use ($keyword) {
+                            $q->where('description', 'like', "%{$keyword}%");
+                        });
+                    })
+                    ->addColumn('area', function ($row) {
+                        return $row->area;
+                    })
+                    ->filterColumn('area', function ($query, $keyword) {
+                        $query->where('area', 'like', "%{$keyword}%");
+                    })
+                    ->addColumn('created_at', function ($row) {
+                        return $row->created_at;
+                    })
+                    ->addColumn('factor', function ($row) {
+                        return $row->factor?->factor_name;
+                    })
+                    ->filterColumn('factor', function ($query, $keyword) {
+                        $query->whereHas('factor', function ($q) use ($keyword) {
+                            $q->where('factor_name', 'like', "%{$keyword}%");
+                        });
+                    })
+                    ->addColumn('check_status', function ($row) {
+                        return $row->check_status;
+                    })
+                    ->filterColumn('check_status', function ($query, $keyword) {
+                        $query->where('check_status', 'like', "%{$keyword}%");
+                    })
+                    ->addColumn('status', function ($row) {
+                        return $row->qrpDetail?->qrpStatus?->name;
+                    })
+                    ->filterColumn('status', function ($query, $keyword) {
+                        $query->whereHas('qrpDetail', function ($q) use ($keyword) {
+                            $q->whereHas('qrpStatus', function ($q) use ($keyword) {
+                                $q->where('name', 'like', "%{$keyword}%");
                             });
-                    });
-                })
-                ->latest()
-                ->get();
-
+                        });
+                    })
+                    ->addColumn('action', function ($row) {
+                        return '<a href="/qrp-form/detail/' . encrypt($row->id) . '" class="text-info"><i class="ti ti-eye"></i></a>';
+                    })
+                    ->rawColumns(['user', 'description', 'area', 'created_at', 'factor', 'check_status', 'status', 'action'])
+                    ->make(true);
+            }
         }
 
         return view('qrp.daily-checking', compact('dailyChecks', 'search', 'agent'));
@@ -142,7 +193,6 @@ class QrpController extends Controller
         } catch (\Exception $error) {
             DB::rollBack();
 
-            dd($error->getMessage());
             session()->flash('error', $error->getMessage());
             return redirect()->route('qrp.daily-checking');
         }
@@ -272,7 +322,6 @@ class QrpController extends Controller
             return redirect()->route('qrp.qrp-form-detail', encrypt($dailyCheck->id));
         } catch (\Exception $error) {
             DB::rollBack();
-            dd($error);
             session()->flash('error', $error->getMessage());
             return redirect()->route('qrp.qrp-form');
         }
@@ -467,7 +516,7 @@ class QrpController extends Controller
                 'approved_at' => now(),
                 'status' => 'approved',
             ]);
-            
+
             QrpDetail::where('daily_check_id', $id)->update([
                 'qrp_status_id' => 2
             ]);
@@ -804,7 +853,7 @@ class QrpController extends Controller
         DB::beginTransaction();
 
         try {
-            
+
             QrpApproval::create([
                 'qrp_detail_id' => $dailyCheck->qrpDetail->id,
                 'approval_id' => $request->riseup,

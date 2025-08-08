@@ -16,69 +16,161 @@ window.Swal = Swal;
 import '../assets/fonts/tabler-icons.min.css';
 import '../assets/css/style.css';
 
+const page = document.body.dataset.title;
+
+// console.log(page);
+
 $(function () {
+
+    const qrpTable = $('#qrpTable').DataTable({
+        processing: false,
+        serverSide: true,
+        ajax: {
+            url: '/daily-checking',
+            data: function (d) {
+                d.start_date = $('#start_date').val();
+                d.end_date = $('#end_date').val();
+            }
+        },
+        columns: [{
+            data: 'DT_RowIndex',
+            name: 'DT_RowIndex',
+            orderable: false,
+            searchable: false
+        },
+        {
+            data: 'user',
+            name: 'user',
+            searchable: true
+        },
+        {
+            data: 'description',
+            name: 'description',
+            searchable: true,
+            orderable: false
+        },
+        {
+            data: 'area',
+            name: 'area',
+            searchable: true,
+            orderable: false
+        },
+        {
+            data: 'created_at',
+            name: 'created_at',
+            searchable: true
+        },
+        {
+            data: 'factor',
+            name: 'factor',
+            searchable: true,
+            orderable: false,
+        },
+        {
+            data: 'check_status',
+            name: 'check_status',
+            searchable: true,
+            orderable: false,
+        },
+        {
+            data: 'status',
+            name: 'status',
+            searchable: true,
+            orderable: false,
+        },
+        {
+            data: 'action',
+            name: 'action',
+            orderable: false,
+            searchable: false
+        }
+        ]
+    });
+
+    if (page == 'Daily Checking') {
+        document.querySelector('.dt-search').innerHTML += `<input type="date" class="form-control w-auto form-control-sm ms-3" id="start_date"><span class="ps-2">s/d</span><input type="date" class="form-control w-auto form-control-sm" id="end_date">`;
+    }
+
+    $('#start_date').on('change', function () {
+        if ($('#start_date').val != "" && $('#end_date').val != "") {
+            qrpTable.draw();
+        }
+    })
+
+    $('#end_date').on('change', function () {
+        if ($('#start_date').val != "" && $('#end_date').val != "") {
+            qrpTable.draw();
+        }
+    })
+
+    $('#qrpExport').on('click', function (e) {
+        e.preventDefault();
+        let params = $('#qrpTable').DataTable().ajax.params();
+        let value = params.search.value;
+        window.location.href = '/qrp/export?param=' + value + '&start_date=' + $('#start_date').val() + '&end_date=' + $('#end_date').val();
+    });
 
     $('#userTable').DataTable({
         processing: false,
         serverSide: true,
         ajax: "/admin/users",
         columns: [{
-                data: 'DT_RowIndex',
-                name: 'DT_RowIndex',
-                orderable: false,
-                searchable: false
-            },
-            {
-                data: 'name',
-                name: 'name',
-                searchable: true
-            },
-            {
-                data: 'nip',
-                name: 'nip',
-                searchable: true
-            },
-            {
-                data: 'email',
-                name: 'email',
-                searchable: true
-            },
-            {
-                data: 'costCenter',
-                name: 'costCenter',
-                searchable: true
-            },
-            {
-                data: 'department',
-                name: 'department',
-                searchable: true
-            },
-            {
-                data: 'role',
-                name: 'role',
-                searchable: true
-            },
-            {
-                data: 'position',
-                name: 'position',
-                searchable: true
-            },
-            {
-                data: 'plant',
-                name: 'plant',
-                searchable: true
-            },
-            {
-                data: 'leader',
-                name: 'leader',
-                searchable: true
-            },
-            {
-                data: 'action',
-                name: 'action',
-                orderable: false,
-                searchable: false
-            }
+            data: 'DT_RowIndex',
+            name: 'DT_RowIndex',
+            orderable: false,
+            searchable: false
+        },
+        {
+            data: 'name',
+            name: 'name',
+            searchable: true
+        },
+        {
+            data: 'nip',
+            name: 'nip',
+            searchable: true
+        },
+        {
+            data: 'email',
+            name: 'email',
+            searchable: true
+        },
+        {
+            data: 'costCenter',
+            name: 'costCenter',
+            searchable: true
+        },
+        {
+            data: 'department',
+            name: 'department',
+            searchable: true
+        },
+        {
+            data: 'role',
+            name: 'role',
+            searchable: true
+        },
+        {
+            data: 'position',
+            name: 'position',
+            searchable: true
+        },
+        {
+            data: 'plant',
+            name: 'plant',
+            searchable: true
+        },
+        {
+            data: 'leader',
+            name: 'leader',
+            searchable: true
+        },
+        {
+            data: 'action',
+            name: 'action',
+            orderable: false,
+            searchable: false
+        }
         ]
     });
 
@@ -122,22 +214,22 @@ $(function () {
         serverSide: true,
         ajax: "/admin/departments",
         columns: [{
-                data: 'DT_RowIndex',
-                name: 'DT_RowIndex',
-                orderable: false,
-                searchable: false
-            },
-            {
-                data: 'department_name',
-                name: 'department_name',
-                searchable: true
-            },
-            {
-                data: 'action',
-                name: 'action',
-                orderable: false,
-                searchable: false
-            }
+            data: 'DT_RowIndex',
+            name: 'DT_RowIndex',
+            orderable: false,
+            searchable: false
+        },
+        {
+            data: 'department_name',
+            name: 'department_name',
+            searchable: true
+        },
+        {
+            data: 'action',
+            name: 'action',
+            orderable: false,
+            searchable: false
+        }
         ]
     });
 
@@ -146,46 +238,46 @@ $(function () {
         serverSide: true,
         ajax: "/admin/plants",
         columns: [{
-                data: 'DT_RowIndex',
-                name: 'DT_RowIndex',
-                orderable: false,
-                searchable: false
-            },
-            {
-                data: 'plant_name',
-                name: 'plant_name',
-                searchable: true
-            },
-            {
-                data: 'action',
-                name: 'action',
-                orderable: false,
-                searchable: false
-            }
+            data: 'DT_RowIndex',
+            name: 'DT_RowIndex',
+            orderable: false,
+            searchable: false
+        },
+        {
+            data: 'plant_name',
+            name: 'plant_name',
+            searchable: true
+        },
+        {
+            data: 'action',
+            name: 'action',
+            orderable: false,
+            searchable: false
+        }
         ]
     });
-    
+
     $('#costCenterTable').DataTable({
         processing: false,
         serverSide: true,
         ajax: "/admin/cost-centers",
         columns: [{
-                data: 'DT_RowIndex',
-                name: 'DT_RowIndex',
-                orderable: false,
-                searchable: false
-            },
-            {
-                data: 'costCenter',
-                name: 'costCenter',
-                searchable: true
-            },
-            {
-                data: 'action',
-                name: 'action',
-                orderable: false,
-                searchable: false
-            }
+            data: 'DT_RowIndex',
+            name: 'DT_RowIndex',
+            orderable: false,
+            searchable: false
+        },
+        {
+            data: 'costCenter',
+            name: 'costCenter',
+            searchable: true
+        },
+        {
+            data: 'action',
+            name: 'action',
+            orderable: false,
+            searchable: false
+        }
         ]
     });
 
@@ -194,22 +286,22 @@ $(function () {
         serverSide: true,
         ajax: "/admin/positions",
         columns: [{
-                data: 'DT_RowIndex',
-                name: 'DT_RowIndex',
-                orderable: false,
-                searchable: false
-            },
-            {
-                data: 'position_name',
-                name: 'position_name',
-                searchable: true
-            },
-            {
-                data: 'action',
-                name: 'action',
-                orderable: false,
-                searchable: false
-            }
+            data: 'DT_RowIndex',
+            name: 'DT_RowIndex',
+            orderable: false,
+            searchable: false
+        },
+        {
+            data: 'position_name',
+            name: 'position_name',
+            searchable: true
+        },
+        {
+            data: 'action',
+            name: 'action',
+            orderable: false,
+            searchable: false
+        }
         ]
     });
 

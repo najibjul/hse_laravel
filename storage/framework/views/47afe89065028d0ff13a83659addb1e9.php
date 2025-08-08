@@ -3,7 +3,7 @@
 
 <head>
     
-    <title>{{ isset($title) ? $title . ' • HSE' : 'HSE' }}</title>
+    <title><?php echo e(isset($title) ? $title . ' • HSE' : 'HSE'); ?></title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -14,11 +14,11 @@
     <meta name="author" content="CodedThemes">
     
     
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
 
-    @stack('styles')
+    <?php echo $__env->yieldPushContent('styles'); ?>
 </head>
-<body data-title="{{ $title ?? '' }}" data-pc-preset="preset-1" data-pc-direction="ltr" data-pc-theme="light" id="main-font-link" >
+<body data-title="<?php echo e($title ?? ''); ?>" data-pc-preset="preset-1" data-pc-direction="ltr" data-pc-theme="light" id="main-font-link" >
 
     <div class="loader-bg">
         <div class="loader-track">
@@ -30,13 +30,13 @@
         <div class="navbar-wrapper">
             <div class="m-header">
                 <a href="#" class="b-brand text-primary">
-                    <img src="{{ asset('assets/images/logo-dark.svg') }}" class="img-fluid" alt="logo">
+                    <img src="<?php echo e(asset('assets/images/logo-dark.svg')); ?>" class="img-fluid" alt="logo">
                 </a>
             </div>
             <div class="navbar-content">
                 <ul class="pc-navbar">
-                    <li class="pc-item {{ route('dashboard') && 'active' }}">
-                        <a href="{{ route('dashboard') }}" class="pc-link">
+                    <li class="pc-item <?php echo e(route('dashboard') && 'active'); ?>">
+                        <a href="<?php echo e(route('dashboard')); ?>" class="pc-link">
                             <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
                             <span class="pc-mtext">Dashboard</span>
                         </a>
@@ -47,49 +47,49 @@
                         <label>Safety Comitee</label>
                         <i class="ti ti-dashboard"></i>
                     </li>
-                    <li class="pc-item {{ Route::is('qrp.*') ? 'active' : '' }}">
-                        <a href="{{ route('qrp.daily-checking') }}" class="pc-link">
+                    <li class="pc-item <?php echo e(Route::is('qrp.*') ? 'active' : ''); ?>">
+                        <a href="<?php echo e(route('qrp.daily-checking')); ?>" class="pc-link">
                             <span class="pc-micon"><i class="ti ti-shield-check"></i></span>
                             <span class="pc-mtext">Daily Checking</span>
                         </a>
                     </li>
 
-                    @if (auth()->user()->role_id == 2 or auth()->user()->role_id == 1)
+                    <?php if(auth()->user()->role_id == 2 or auth()->user()->role_id == 1): ?>
                         <li class="pc-item pc-caption">
                             <label>Admin Menu</label>
                             <i class="ti ti-dashboard"></i>
                         </li>
-                        <li class="pc-item {{ Route::is('admin.users.*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.users.index') }}" class="pc-link">
+                        <li class="pc-item <?php echo e(Route::is('admin.users.*') ? 'active' : ''); ?>">
+                            <a href="<?php echo e(route('admin.users.index')); ?>" class="pc-link">
                                 <span class="pc-micon"><i class="ti ti-users"></i></span>
                                 <span class="pc-mtext">Master User</span>
                             </a>
                         </li>
-                        <li class="pc-item {{ Route::is('admin.departments.*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.departments.index') }}" class="pc-link">
+                        <li class="pc-item <?php echo e(Route::is('admin.departments.*') ? 'active' : ''); ?>">
+                            <a href="<?php echo e(route('admin.departments.index')); ?>" class="pc-link">
                                 <span class="pc-micon"><i class="ti ti-home"></i></span>
                                 <span class="pc-mtext">Master Department</span>
                             </a>
                         </li>
-                        <li class="pc-item {{ Route::is('admin.cost-centers.*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.cost-centers.index') }}" class="pc-link">
+                        <li class="pc-item <?php echo e(Route::is('admin.cost-centers.*') ? 'active' : ''); ?>">
+                            <a href="<?php echo e(route('admin.cost-centers.index')); ?>" class="pc-link">
                                 <span class="pc-micon"><i class="ti ti-currency-dollar"></i></span>
                                 <span class="pc-mtext">Master Cost Center</span>
                             </a>
                         </li>
-                        <li class="pc-item {{ Route::is('admin.positions.*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.positions.index') }}" class="pc-link">
+                        <li class="pc-item <?php echo e(Route::is('admin.positions.*') ? 'active' : ''); ?>">
+                            <a href="<?php echo e(route('admin.positions.index')); ?>" class="pc-link">
                                 <span class="pc-micon"><i class="ti ti-grid-dots"></i></span>
                                 <span class="pc-mtext">Master Position</span>
                             </a>
                         </li>
-                        <li class="pc-item {{ Route::is('admin.plants.*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.plants.index') }}" class="pc-link">
+                        <li class="pc-item <?php echo e(Route::is('admin.plants.*') ? 'active' : ''); ?>">
+                            <a href="<?php echo e(route('admin.plants.index')); ?>" class="pc-link">
                                 <span class="pc-micon"><i class="ti ti-building-skyscraper"></i></span>
                                 <span class="pc-mtext">Master Plant</span>
                             </a>
                         </li>
-                    @endif
+                    <?php endif; ?>
                 </ul>
             </div>
         </div>
@@ -117,11 +117,11 @@
                         <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#"
                             role="button" aria-haspopup="false" aria-expanded="false">
                             <i class="ti ti-mail">
-                                @if ($totalNotification > 0)
+                                <?php if($totalNotification > 0): ?>
                                     <span class="badge bg-success rounded small"
                                         style="position: fixed; margin-top: -13px;  margin-left: -15px;">
-                                        {{ $totalNotification }}</span>
-                                @endif
+                                        <?php echo e($totalNotification); ?></span>
+                                <?php endif; ?>
                             </i>
                         </a>
                         <div class="dropdown-menu dropdown-notification dropdown-menu-end pc-h-dropdown">
@@ -134,33 +134,33 @@
                             <div class="dropdown-header px-0 text-wrap header-notification-scroll position-relative"
                                 style="max-height: calc(100vh - 215px)">
                                 <div class="list-group list-group-flush w-100">
-                                    @forelse ($notifications as $notification)
-                                        <form id="notificationUpdate{{ $notification->id }}" method="POST"
-                                            action="{{ route('notification.update', $notification->id) }}"
+                                    <?php $__empty_1 = true; $__currentLoopData = $notifications; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $notification): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                        <form id="notificationUpdate<?php echo e($notification->id); ?>" method="POST"
+                                            action="<?php echo e(route('notification.update', $notification->id)); ?>"
                                             class="d-none">
-                                            @csrf
-                                            @method('patch')
+                                            <?php echo csrf_field(); ?>
+                                            <?php echo method_field('patch'); ?>
                                         </form>
 
                                         <a href="#"
-                                            onclick="event.preventDefault(); document.getElementById(`notificationUpdate{{ $notification->id }}`).submit();"
+                                            onclick="event.preventDefault(); document.getElementById(`notificationUpdate<?php echo e($notification->id); ?>`).submit();"
                                             class="list-group-item list-group-item-action">
                                             <div class="d-flex">
                                                 <div class="flex-shrink-0">
-                                                    <img src=" {{ asset('assets/images/user/avatar-2.jpg') }}"
+                                                    <img src=" <?php echo e(asset('assets/images/user/avatar-2.jpg')); ?>"
                                                         alt="user-image" class="user-avtar">
                                                 </div>
                                                 <div class="flex-grow-1 ms-1">
-                                                    <p class="text-body mb-1">{{ $notification->title }}</p>
-                                                    <span class="text-muted">{{ $notification->body }}</span>
+                                                    <p class="text-body mb-1"><?php echo e($notification->title); ?></p>
+                                                    <span class="text-muted"><?php echo e($notification->body); ?></span>
                                                 </div>
                                             </div>
                                         </a>
-                                    @empty
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                         <div class="flex-grow-1 ms-1 text-center">
                                             Tidak ada pesan
                                         </div>
-                                    @endforelse
+                                    <?php endif; ?>
 
                                 </div>
                             </div>
@@ -170,20 +170,20 @@
                         <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown"
                             href="#" role="button" aria-haspopup="false" data-bs-auto-close="outside"
                             aria-expanded="false">
-                            <img src="{{ asset('assets/images/user/avatar-2.jpg') }}" alt="user-image"
+                            <img src="<?php echo e(asset('assets/images/user/avatar-2.jpg')); ?>" alt="user-image"
                                 class="user-avtar">
-                            <span>{{ auth()->user()->name }}</span>
+                            <span><?php echo e(auth()->user()->name); ?></span>
                         </a>
                         <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
                             <div class="dropdown-header">
                                 <div class="d-flex mb-1">
                                     <div class="flex-shrink-0">
-                                        <img src="{{ asset('/assets/images/user/avatar-2.jpg') }}" alt="user-image"
+                                        <img src="<?php echo e(asset('/assets/images/user/avatar-2.jpg')); ?>" alt="user-image"
                                             class="user-avtar wid-35">
                                     </div>
                                     <div class="flex-grow-1 ms-3">
-                                        <h6 class="mb-1">{{ auth()->user()->name }}</h6>
-                                        <span>{{ auth()->user()->role->role_name }}</span>
+                                        <h6 class="mb-1"><?php echo e(auth()->user()->name); ?></h6>
+                                        <span><?php echo e(auth()->user()->role->role_name); ?></span>
                                     </div>
                                 </div>
                             </div>
@@ -192,7 +192,7 @@
                                 <div class="tab-pane fade show active" id="drp-tab-1" role="tabpanel"
                                     aria-labelledby="drp-t1" tabindex="0">
 
-                                    <a href="{{ route('profile.index') }}" class="dropdown-item">
+                                    <a href="<?php echo e(route('profile.index')); ?>" class="dropdown-item">
                                         <i class="ti ti-user"></i>
                                         <span>Profile</span>
                                     </a>
@@ -203,9 +203,9 @@
                                         <i class="ti ti-power"></i>
                                         <span>Logout</span>
                                     </a>
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                    <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST"
                                         style="display: none;">
-                                        @csrf
+                                        <?php echo csrf_field(); ?>
                                     </form>
                                 </div>
 
@@ -219,7 +219,7 @@
 
     <div class="pc-container">
         <div class="pc-content">
-            @yield('content')
+            <?php echo $__env->yieldContent('content'); ?>
         </div>
     </div>
 
@@ -228,36 +228,36 @@
         <div class="footer-wrapper container-fluid">
             <div class="row">
                 <div class="col-sm my-1">
-                    <p class="m-0">Copyright © EDP {{ now()->format('Y') }}</p>
+                    <p class="m-0">Copyright © EDP <?php echo e(now()->format('Y')); ?></p>
                 </div>
             </div>
         </div>
     </footer>
 
-    <script src="{{ asset('assets/js/plugins/simplebar.min.js') }}"></script>
-    <script src="{{ asset('assets/js/fonts/custom-font.js') }}"></script>
-    <script src="{{ asset('assets/js/plugins/feather.min.js') }}"></script>
-    <script src="{{ asset('assets/js/pcoded.js') }}"></script>
+    <script src="<?php echo e(asset('assets/js/plugins/simplebar.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('assets/js/fonts/custom-font.js')); ?>"></script>
+    <script src="<?php echo e(asset('assets/js/plugins/feather.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('assets/js/pcoded.js')); ?>"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            @if (session()->has('success'))
+            <?php if(session()->has('success')): ?>
                 Swal.fire({
                     title: "Berhasil",
-                    text: `{{ session('success') }}`,
+                    text: `<?php echo e(session('success')); ?>`,
                     icon: "success",
                     confirmButtonColor: "#52c41a",
                 });
-            @endif
+            <?php endif; ?>
 
-            @if (session()->has('error'))
+            <?php if(session()->has('error')): ?>
                 Swal.fire({
                     title: "Error",
-                    text: `{{ session('error') }}`,
+                    text: `<?php echo e(session('error')); ?>`,
                     icon: "error",
                     confirmButtonColor: "#ff4d4f"
                 });
-            @endif
+            <?php endif; ?>
 
             layout_change('light');
             change_box_container('false');
@@ -267,8 +267,9 @@
         })
     </script>
 
-    @stack('scripts')
+    <?php echo $__env->yieldPushContent('scripts'); ?>
 
 </body>
 
 </html>
+<?php /**PATH C:\laragon\www\hse\resources\views/layouts/app.blade.php ENDPATH**/ ?>

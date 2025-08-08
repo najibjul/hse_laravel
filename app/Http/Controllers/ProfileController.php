@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
-use Hash;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class ProfileController extends Controller
@@ -20,7 +20,8 @@ class ProfileController extends Controller
             'current_password' => ['required'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
-
+        
+        /** @var \App\Models\User $user */
         $user = Auth::user();
 
         if (!Hash::check($request->current_password, $user->password)) {
