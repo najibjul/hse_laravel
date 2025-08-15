@@ -34,8 +34,9 @@ class ExportController extends Controller
 
     public function positionExport(Request $request)
     {
-        $param = $request->param;        
-        return Excel::download(new PositionExport($param), 'positions-exported-at-'.now().'.xlsx');
+        $param = $request->param;
+        $isQrpEnabled = $request->isQrpEnabled;        
+        return Excel::download(new PositionExport($param, $isQrpEnabled), 'positions-exported-at-'.now().'.xlsx');
     }
 
     public function plantExport(Request $request)

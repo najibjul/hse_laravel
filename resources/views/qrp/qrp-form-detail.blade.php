@@ -26,7 +26,7 @@
         <div class="card-body">
 
 
-                <div class="d-flex justify-content-center mb-4 gap-3">
+                {{-- <div class="d-flex justify-content-center mb-4 gap-3">
                     
                     <a href="#" class="text-center text-success">
                         <div class="rounded-circle">
@@ -80,7 +80,7 @@
                         Selesai
                         </div>
                     </a>
-                </div>    
+                </div>     --}}
 
             @if ($dailyCheck->qrpDetail->closed_at)
                 <div class="text-end">
@@ -155,14 +155,18 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-6 mb-4">
                     <label class="form-label fw-bold">Temuan sebelum diaction</label>
-                    <img src="{{ asset('storage/image/' . $dailyCheck->qrpDetail->before) }}" class="img-thumbnail"
+                    <div>
+                        <img src="{{ asset('storage/image/' . $dailyCheck->qrpDetail->before) }}" class="img-thumbnail"
                         alt="{{ $dailyCheck->qrpDetail->before }}">
+                    </div>
                 </div>
                 <div class="col-12 col-md-6 col-lg-6 mb-4">
                     <label class="form-label fw-bold">Temuan sesudah diaction</label>
                     @if ($dailyCheck->qrpDetail->after)
-                        <img src="{{ asset('storage/image/' . $dailyCheck->qrpDetail->after) }}" class="img-thumbnail"
+                        <div>
+                            <img src="{{ asset('storage/image/' . $dailyCheck->qrpDetail->after) }}" class="img-thumbnail"
                             alt="{{ $dailyCheck->qrpDetail->after }}">
+                        </div>
 
                         <label class="form-label">Tgl. upload : {{ $dailyCheck->qrpDetail->after_uploaded_at }}</label>
 
@@ -323,52 +327,10 @@
                                 <div>
                                     {{ $qrpApproval->approval->name }} ({{ $qrpApproval->approval->nip }})
                                 </div>
-                                {{-- <div class="text-warning fw-bold">
-                                    {{ $qrpApproval->status }}
-                                </div> --}}
-
                             </li>
                         @endforeach
                     </ul>
                 </div>
-                {{-- <div class="col-12 col-md-6 col-lg-6 mb-4">
-                    <label class="form-label fw-bold">Leader</label>
-                    <input type="text" class="form-control" disabled placeholder="ketik disini"
-                        value="{{ $dailyCheck->qrpDetail->adh->name }} {{ '(' . $dailyCheck->qrpDetail->adh->nip . ')' }}">
-
-                </div>
-                <div class="col-12 col-md-6 col-lg-6 mb-4">
-                    <label class="form-label fw-bold">Tanggal konfirmasi</label>
-                    <input class="form-control" disabled
-                        value="{{ $dailyCheck->qrpDetail->adh_approve_date ? \Carbon\Carbon::parse($dailyCheck->qrpDetail->adh_approve_date)->format('d M Y H:i') : '' }}">
-                </div>
-                @if ($dailyCheck->qrpDetail->dh_id)
-                    <div class="col-12 col-md-6 col-lg-6 mb-4">
-                        <label class="form-label fw-bold">Dept. Head</label>
-                        <input type="text" class="form-control" disabled placeholder="ketik disini"
-                            value="{{ $dailyCheck->qrpDetail->dh->name }} {{ '(' . $dailyCheck->qrpDetail->dh->nip . ')' }}">
-
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-6 mb-4">
-                        <label class="form-label fw-bold">DH konfirmasi</label>
-                        <input class="form-control" disabled
-                            value="{{ $dailyCheck->qrpDetail->dh_approve_date ? \Carbon\Carbon::parse($dailyCheck->qrpDetail->dh_approve_date)->format('d M Y H:i') : '' }}">
-                    </div>
-                @endif
-                @if ($dailyCheck->qrpDetail->ph_id)
-                    <div class="col-12 col-md-6 col-lg-6 mb-4">
-                        <label class="form-label fw-bold">Plant Head</label>
-                        <input type="text" class="form-control" disabled placeholder="ketik disini"
-                            value="{{ $dailyCheck->qrpDetail->ph->name }} {{ '(' . $dailyCheck->qrpDetail->ph->nip . ')' }}">
-
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-6 mb-4">
-                        <label class="form-label fw-bold">PH konfirmasi</label>
-                        <input class="form-control" disabled
-                            value="{{ $dailyCheck->qrpDetail->ph_approve_date ? \Carbon\Carbon::parse($dailyCheck->qrpDetail->ph_approve_date)->format('d M Y H:i') : '' }}">
-                    </div>
-                @endif --}}
-
             </div>
 
             @if (auth()->user()->id == $dailyCheck->user_id && $dailyCheck->qrpDetail->qrp_status_id == 1)
@@ -419,10 +381,11 @@
                     <button class="btn btn-sm btn-info text-nowrap " data-bs-toggle="modal"
                         data-bs-target="#confirmationModal">Revisi rekomendasi </button>
 
-                    @if (auth()->user()->position_id != 1)
-                        <button class="btn btn-warning btn-sm " data-bs-toggle="modal" data-bs-target="#riseup">Rise
-                            Up</button>
-                    @endif
+                        @if (auth()->user()->leader)
+                    <button class="btn btn-warning btn-sm " data-bs-toggle="modal" data-bs-target="#riseup">Rise
+                        Up</button>
+
+                        @endif
 
                 </div>
 
@@ -694,23 +657,6 @@
 
 @push('styles')
     <style type="text/css">
-        body {
-            font-family: Helvetica, sans-serif;
-        }
-
-        h2,
-        h3 {
-            margin-top: 0;
-        }
-
-        form {
-            margin-top: 15px;
-        }
-
-        form input {
-            margin-right: 15px;
-        }
-
         #results {
             float: right;
             margin: 20px;

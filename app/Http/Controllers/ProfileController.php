@@ -18,14 +18,23 @@ class ProfileController extends Controller
     {
         $request->validate([
             'current_password' => ['required'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'regex:/[A-Z]/',     
+                'regex:/[a-z]/',     
+                'regex:/[0-9]/',     
+                'regex:/[@$!%*#?&]/',
+                'confirmed'
+            ],
         ]);
         
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
         if (!Hash::check($request->current_password, $user->password)) {
-            return back()->withErrors(['current_password' => 'Password lama salah.']);
+            return back()->withErrors(['current_password' => 'Password salah.']);
         }
 
         $user->password = Hash::make($request->password);

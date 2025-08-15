@@ -19,14 +19,18 @@ export default defineConfig({
     }
   },
 
-  // server: {
-  //   cors: true,
-  //   host: "0.0.0.0",
-  //   port: 5173,
-  //   https: {
-  //     key: fs.readFileSync('docker/certs/key.pem'),
-  //     cert: fs.readFileSync('docker/certs/cert.pem'),
-  //   },
-  // }
+  server: {
+    cors: true,
+    host: "0.0.0.0",
+    port: 5173,
+    // https: {
+    //   key: fs.readFileSync('docker/certs/key.pem'),
+    //   cert: fs.readFileSync('docker/certs/cert.pem'),
+    // },
+    // hmr: {
+    //     host: 'localhost',
+    //     protocol: 'wss'
+    // }
+  }
 
 });

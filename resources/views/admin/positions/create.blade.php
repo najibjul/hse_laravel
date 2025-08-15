@@ -35,7 +35,17 @@
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-
+                    <div class="col-12 mb-3">
+                        <label>Safety Comitee</label>
+                        <select name="isQrpEnabled" class="form-select @error('isQrpEnabled') is-invalid @enderror">
+                            <option value="">- Akses -</option>
+                            <option value="1">Ya</option>
+                            <option value="2">Tidak</option>
+                        </select>
+                        @error('isQrpEnabled')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
                 </div>
                 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#create"><i
                         class="ti ti-device-floppy"></i> Simpan</button>

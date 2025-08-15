@@ -27,7 +27,6 @@
                 @method('PATCH')
                 @csrf
                 <div class="mb-3">
-
                     <label>Nama position</label>
                     <input type="text" class="form-control @error('position') is-invalid @enderror "
                     placeholder="Ketik disini..." name="position"
@@ -35,6 +34,13 @@
                     @error('position')
                     <div class="text-danger">{{ $message }}</div>
                     @enderror
+                </div>
+                <div class="mb-3">
+                    <label>Safety Comitee </label>
+                    <select name="isQrpEnabled" class="form-select">
+                        <option {{ $position->is_qrp_enabled == 1 ? 'selected' : '' }} value="1">Ya</option>
+                        <option {{ $position->is_qrp_enabled == 0 ? 'selected' : '' }} value="0">Tidak</option>
+                    </select>
                 </div>
                 <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#update"><i
                         class="ti ti-device-floppy"></i> Update</button>

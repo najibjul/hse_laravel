@@ -14,14 +14,26 @@ class PositionController extends Controller
     public function index(Request $request) 
     {
         if ($request->ajax()) {
-            $data = Position::select('id', 'position_name');
+
+            $isQrpEnabled = $request->isQrpEnabled;
+
+            $data = Position::when(isset($isQrpEnabled), function($q)use($isQrpEnabled){ 
+                return $q->where('is_qrp_enabled', $isQrpEnabled); 
+            })->select('id', 'position_name', 'is_qrp_enabled');
 
             return DataTables::of($data)
                 ->addIndexColumn()
+                ->addColumn('safety_comitee', function ($row) {
+                    if ($row->is_qrp_enabled) {
+                        return '<span class="badge bg-success rounded-pill">Ya</span>';
+                    } else {
+                        return '<span class="badge bg-danger rounded-pill">Tidak</span>';
+                    }   
+                })
                 ->addColumn('action', function ($row) {
                     return '<a href="/admin/positions/' . encrypt($row->id) . '/edit" class="text-warning fs-4"><i class="ti ti-edit"></i></a>';
                 })
-                ->rawColumns(['action'])
+                ->rawColumns(['safety_comitee', 'action' ])
                 ->make(true);
         }
         return view('admin.positions.index');
@@ -35,7 +47,8 @@ class PositionController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'position' => 'required|string|unique:positions,position_name'
+            'position' => 'required|string|unique:positions,position_name',
+            'isQrpEnabled' => 'required|boolean'
         ]);
 
         if ($validator->fails()) {
@@ -46,7 +59,8 @@ class PositionController extends Controller
 
         try {
             Position::create([
-                'position_name' => $request->position
+                'position_name' => $request->position,
+                'is_qrp_enabled' => $request->isQrpEnabled
             ]);
 
             DB::commit();
@@ -83,6 +97,7 @@ class PositionController extends Controller
         try {
             Position::where('id', $id)->update([
                 'position_name' => $request->position,
+                'is_qrp_enabled' => $request->isQrpEnabled
             ]);
 
             DB::commit();

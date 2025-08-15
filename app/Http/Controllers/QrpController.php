@@ -98,6 +98,7 @@ class QrpController extends Controller
 
                     $q->whereIn('user_id', $team_ids);
                 })
+                ->orderByDesc('id')
                 ->select('id', 'user_id', 'activity', 'area', 'factor_id', 'check_status', 'created_at');
 
                 if ($request->start_date && $request->end_date) {
@@ -140,13 +141,17 @@ class QrpController extends Controller
                         });
                     })
                     ->addColumn('check_status', function ($row) {
-                        return $row->check_status;
+                        if ($row->check_status == "OK") {
+                            return '<span class="badge bg-success rounded">OK</span>';
+                        } else {
+                            return '<span class="badge bg-danger rounded">NG</span>';
+                        }
                     })
                     ->filterColumn('check_status', function ($query, $keyword) {
                         $query->where('check_status', 'like', "%{$keyword}%");
                     })
                     ->addColumn('status', function ($row) {
-                        return $row->qrpDetail?->qrpStatus?->name;
+                        return '<span class="'.$row->qrpDetail?->qrpStatus?->class.'">'.$row->qrpDetail?->qrpStatus?->name.'</span>';
                     })
                     ->filterColumn('status', function ($query, $keyword) {
                         $query->whereHas('qrpDetail', function ($q) use ($keyword) {

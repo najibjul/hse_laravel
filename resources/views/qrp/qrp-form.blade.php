@@ -210,8 +210,6 @@
             });
             Webcam.attach('#my_camera');
 
-
-
             const recomendation = document.getElementById("recomendation");
             const description = document.getElementById("description");
 

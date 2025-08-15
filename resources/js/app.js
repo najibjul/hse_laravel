@@ -18,8 +18,6 @@ import '../assets/css/style.css';
 
 const page = document.body.dataset.title;
 
-// console.log(page);
-
 $(function () {
 
     const qrpTable = $('#qrpTable').DataTable({
@@ -88,7 +86,9 @@ $(function () {
     });
 
     if (page == 'Daily Checking') {
-        document.querySelector('.dt-search').innerHTML += `<input type="date" class="form-control w-auto form-control-sm ms-3" id="start_date"><span class="ps-2">s/d</span><input type="date" class="form-control w-auto form-control-sm" id="end_date">`;
+        if (document.querySelector('.dt-search')) {
+            document.querySelector('.dt-search').innerHTML += `<input type="date" class="form-control w-auto form-control-sm ms-3" id="start_date"><span class="ps-2">s/d</span><input type="date" class="form-control w-auto form-control-sm" id="end_date">`;
+        }
     }
 
     $('#start_date').on('change', function () {
@@ -195,12 +195,7 @@ $(function () {
         window.location.href = '/cost-centers/export?param=' + value;
     });
 
-    $('#positionExport').on('click', function (e) {
-        e.preventDefault();
-        let params = $('#positionTable').DataTable().ajax.params();
-        let value = params.search.value;
-        window.location.href = '/positions/export?param=' + value;
-    });
+    
 
     $('#plantExport').on('click', function (e) {
         e.preventDefault();
@@ -281,10 +276,15 @@ $(function () {
         ]
     });
 
-    $('#positionTable').DataTable({
+    const positionTable = $('#positionTable').DataTable({
         processing: false,
         serverSide: true,
-        ajax: "/admin/positions",
+        ajax: {
+            url: "/admin/positions",
+            data: function (d) {
+                d.isQrpEnabled = $('#isQrpEnabled').val();
+            }
+        },
         columns: [{
             data: 'DT_RowIndex',
             name: 'DT_RowIndex',
@@ -297,12 +297,40 @@ $(function () {
             searchable: true
         },
         {
+            data: 'safety_comitee',
+            name: 'safety_comitee',
+            searchable: false
+        },
+        {
             data: 'action',
             name: 'action',
             orderable: false,
             searchable: false
+        }],
+        initComplete: function() {
+            let select = $(
+                `<label>
+                    <select id="isQrpEnabled" class="form-select w-auto form-select-sm ms-3">
+                        <option value="">-Safety Comitee-</option>
+                        <option value="1">Ya</option>
+                        <option value="0">Tidak</option>
+                    </select>
+                </label>`
+            );
+            $('.dt-search').append(select);
+
+            $('#isQrpEnabled').on('change', function() {
+                positionTable.ajax.reload();
+            });
         }
-        ]
+    });
+
+    $('#positionExport').on('click', function (e) {
+        e.preventDefault();
+        let params = $('#positionTable').DataTable().ajax.params();
+        let value = params.search.value;
+        let qrpEnabled = $('#isQrpEnabled').val();
+        window.location.href = '/positions/export?param=' + value + '&isQrpEnabled=' + qrpEnabled;
     });
 
     $('#department-select').select2({

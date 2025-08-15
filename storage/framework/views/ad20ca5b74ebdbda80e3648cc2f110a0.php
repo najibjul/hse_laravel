@@ -8,6 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
 </head>
+
 <body>
     <div class="loader-bg">
         <div class="loader-track">
@@ -30,15 +31,26 @@
                             </div>
                             <div class="form-group mb-3">
                                 <label class="form-label">NIP</label>
-                                <input name="nip" type="text" class="form-control <?php $__errorArgs = ['nip'];
+                                <input name="nip" type="text"
+                                    class="form-control <?php $__errorArgs = ['nip'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>"
-                                    placeholder="User NIP" required>
+unset($__errorArgs, $__bag); ?>" placeholder="User NIP"
+                                    required>
+                                <?php $__errorArgs = ['nip'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <span class="text-danger text-sm"><?php echo e($message); ?></span>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                             </div>
                             <div class="form-group mb-3">
                                 <label class="form-label">Password</label>
@@ -50,13 +62,25 @@ if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>" placeholder="Password" required>
+unset($__errorArgs, $__bag); ?>" placeholder="Password"
+                                    required>
+                                <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <span class="text-danger text-sm"><?php echo e($message); ?></span>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                             </div>
                             <div class="d-flex mt-1 justify-content-between">
                                 <div class="form-check">
                                     <input class="form-check-input input-success" type="checkbox" id="customCheckc1"
                                         name="remember">
-                                    <label class="form-check-label text-muted" for="customCheckc1">Keep me sign in</label>
+                                    <label class="form-check-label text-muted" for="customCheckc1">Keep me sign
+                                        in</label>
                                 </div>
                             </div>
                             <?php if(session()->has('unauthenticated')): ?>
@@ -81,4 +105,5 @@ unset($__errorArgs, $__bag); ?>" placeholder="Password" required>
     </div>
 </body>
 
-</html><?php /**PATH /app/resources/views/login.blade.php ENDPATH**/ ?>
+</html>
+<?php /**PATH C:\laragon\www\hse\resources\views/login.blade.php ENDPATH**/ ?>

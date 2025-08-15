@@ -26,7 +26,7 @@
         </div>
     </div>
 
-    <nav class="pc-sidebar">
+    <nav id="sidebar" class="pc-sidebar">
         <div class="navbar-wrapper">
             <div class="m-header">
                 <a href="#" class="b-brand text-primary">
@@ -99,7 +99,7 @@
             <div class="me-auto pc-mob-drp">
                 <ul class="list-unstyled">
                     <li class="pc-h-item pc-sidebar-collapse">
-                        <a href="#" class="pc-head-link ms-0" id="sidebar-hide">
+                        <a onclick="setSidebar()" href="#" class="pc-head-link ms-0" id="sidebar-hide">
                             <i class="ti ti-menu-2"></i>
                         </a>
                     </li>
@@ -142,8 +142,7 @@
                                             <?php echo method_field('patch'); ?>
                                         </form>
 
-                                        <a href="#"
-                                            onclick="event.preventDefault(); document.getElementById(`notificationUpdate<?php echo e($notification->id); ?>`).submit();"
+                                        <a href="#" onclick="event.preventDefault(); document.getElementById(`notificationUpdate<?php echo e($notification->id); ?>`).submit();"
                                             class="list-group-item list-group-item-action">
                                             <div class="d-flex">
                                                 <div class="flex-shrink-0">
@@ -208,7 +207,6 @@
                                         <?php echo csrf_field(); ?>
                                     </form>
                                 </div>
-
                             </div>
                         </div>
                     </li>
@@ -241,6 +239,21 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            let sidebarLs = localStorage.getItem('sidebarLs');
+            let sidebarComp = document.getElementById('sidebar');
+
+            if (!sidebarLs) {
+                localStorage.setItem('sidebarLs','expand');
+            } else {
+
+                if (sidebarLs == 'expand') {
+                    sidebarComp.classList.remove('pc-sidebar-hide')
+                } else {
+                    sidebarComp.classList.add('pc-sidebar-hide')
+                }
+            }
+
+            
             <?php if(session()->has('success')): ?>
                 Swal.fire({
                     title: "Berhasil",
@@ -265,6 +278,16 @@
             preset_change("preset-1");
             font_change("Public-Sans");
         })
+
+        function setSidebar() {
+            let sidebarLs = localStorage.getItem('sidebarLs');
+            if (sidebarLs == 'expand') {
+                localStorage.setItem('sidebarLs','collapse');
+            } else {
+                localStorage.setItem('sidebarLs','expand');
+            }
+        }
+
     </script>
 
     <?php echo $__env->yieldPushContent('scripts'); ?>
