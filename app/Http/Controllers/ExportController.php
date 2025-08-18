@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\CostCenterExport;
 use App\Exports\DepartmentExport;
+use App\Exports\DeptConfigExport;
 use App\Exports\PlantExport;
 use App\Exports\PositionExport;
 use App\Exports\QrpExport;
@@ -43,6 +44,12 @@ class ExportController extends Controller
     {
         $param = $request->param;        
         return Excel::download(new PlantExport($param), 'plants-exported-at-'.now().'.xlsx');
+    }
+
+    public function deptConfigExport(Request $request)
+    {
+        $param = $request->param;        
+        return Excel::download(new DeptConfigExport($param), 'admin-departments-exported-at-'.now().'.xlsx');
     }
 
     public function qrpExport(Request $request)

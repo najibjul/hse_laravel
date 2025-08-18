@@ -89,6 +89,12 @@
                                 <span class="pc-mtext">Master Plant</span>
                             </a>
                         </li>
+                        <li class="pc-item <?php echo e(Route::is('admin.dept-config.*') ? 'active' : ''); ?>">
+                            <a href="<?php echo e(route('admin.dept-config.index')); ?>" class="pc-link">
+                                <span class="pc-micon"><i class="ti ti-settings"></i></span>
+                                <span class="pc-mtext">Department Configuration</span>
+                            </a>
+                        </li>
                     <?php endif; ?>
                 </ul>
             </div>

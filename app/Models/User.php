@@ -81,4 +81,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(CostCenter::class, 'cost_center_id', 'id');
     }
+
+    public function adminDepts() 
+    {
+        return $this->hasMany(AdminDepartment::class, 'admin_id', 'id');
+    }
 }

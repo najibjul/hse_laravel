@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\CostCenterController;
+use App\Http\Controllers\Admin\DeptConfigController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
@@ -68,6 +69,7 @@ Route::middleware('auth')->group(function () {
             Route::resource('cost-centers', CostCenterController::class);
             Route::resource('positions', PositionController::class);
             Route::resource('plants', PlantController::class);
+            Route::resource('dept-config', DeptConfigController::class);
             
             Route::get('department-master', [MasterController::class, 'department'])->name('department-master');
             Route::get('department-master/{id}', [MasterController::class, 'departmentShow'])->name('department-master-selected');
@@ -83,6 +85,12 @@ Route::middleware('auth')->group(function () {
             
             Route::get('leader-master', [MasterController::class, 'leader'])->name('leader-master');
             Route::get('leader-master/{id}', [MasterController::class, 'leaderShow'])->name('leader-master-selected');
+
+            Route::get('master-departemen-table/{admin}', [DeptConfigController::class, 'masterDepartemenTable']);
+            Route::post('master-departemen-table', [DeptConfigController::class, 'postMasterDepartemenTable']);
+
+            Route::get('akses-departemen-table/{admin}', [DeptConfigController::class, 'aksesDepartemenTable']);
+            Route::delete('akses-departemen-table', [DeptConfigController::class, 'destroyAksesDepartemenTable']);
         });
         
         Route::get('/users/export', [ExportController::class, 'userExport'])->name('users.export');
@@ -90,5 +98,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/cost-centers/export', [ExportController::class, 'costCenterExport'])->name('cost-centers.export');
         Route::get('/positions/export', [ExportController::class, 'positionExport'])->name('positions.export');
         Route::get('/plants/export', [ExportController::class, 'plantExport'])->name('plants.export');
+        Route::get('/dept-config/export', [ExportController::class, 'deptConfigExport'])->name('dept-config.export');
     });
 });

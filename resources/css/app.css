@@ -110,6 +110,10 @@
   border-color: #52c41a !important;
 }
 
+#master-departemen-table td {
+    padding: 4px;   /* or any value you want */
+}
+
 /* 
 .dt-processing-dots {
     display: flex;
