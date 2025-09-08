@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Department;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
@@ -14,7 +15,10 @@ class DepartmentController
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = Department::select('id', 'department_name');
+            $data = Department::select('id', 'department_name')
+                ->when(Auth::user()->role_id == 2, function($q){
+                    $q->whereIn('id', Auth::user()->adminDepts->pluck('department_id'));
+                });
 
             return DataTables::of($data)
                 ->addIndexColumn()

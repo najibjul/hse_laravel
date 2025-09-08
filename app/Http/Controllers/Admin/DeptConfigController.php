@@ -16,7 +16,7 @@ class DeptConfigController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $datas = User::select('id', 'name', 'nip')->where('role_id', '!=',  3);
+            $datas = User::select('id', 'name', 'nip')->where('role_id', 2);
 
             return DataTables::of($datas)
                 ->addIndexColumn()

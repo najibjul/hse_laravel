@@ -24,10 +24,18 @@ class CostCenterController extends Controller
                 ->filterColumn('costCenter', function ($query, $keyword) {
                     $query->where('cost_center_name', 'like', "%{$keyword}%");
                 })
+                ->addColumn('department', function($row) {
+                    return $row->department?->department_name;
+                })
+                ->filterColumn('department', function ($query, $keyword) {
+                    $query->whereHas('department', function($q) use($keyword){
+                        $q->where('department_name', 'like', $keyword);
+                    });
+                })
                 ->addColumn('action', function ($row) {
                     return '<a href="/admin/cost-centers/' . encrypt($row->id) . '/edit" class="text-warning fs-4"><i class="ti ti-edit"></i></a>';
                 })
-                ->rawColumns(['action', 'costCenter'])
+                ->rawColumns(['action', 'costCenter', 'department'])
                 ->make(true);
         }
         return view('admin.cost-centers.index');

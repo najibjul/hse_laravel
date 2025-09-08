@@ -404,6 +404,11 @@ $(function () {
             searchable: true
         },
         {
+            data: 'department',
+            name: 'department',
+            searchable: true
+        },
+        {
             data: 'action',
             name: 'action',
             orderable: false,

@@ -27,13 +27,21 @@
                 @method('PATCH')
                 @csrf
                 <div class="mb-3">
-
-                    <label>Nama Departemen</label>
+                    <label>Nama cost center</label>
                     <input type="text" class="form-control @error('costCenter') is-invalid @enderror "
-                    placeholder="Ketik disini ..." name="costCenter"
-                    value="{{ substr($costCenter->cost_center_name, 0, 3) }}">
+                        placeholder="Ketik disini ..." name="costCenter"
+                        value="{{ substr($costCenter->cost_center_name, 0, 3) }}">
                     @error('costCenter')
-                    <div class="text-danger">{{ $message }}</div>
+                        <div class="text-danger">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="mb-3">
+                    <label>Departemen</label>
+                    <input type="text" class="form-control @error('costCenter') is-invalid @enderror "
+                        placeholder="Ketik disini ..." name="costCenter"
+                        value="{{ substr($costCenter->cost_center_name, 0, 3) }}">
+                    @error('costCenter')
+                        <div class="text-danger">{{ $message }}</div>
                     @enderror
                 </div>
                 <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#update"><i

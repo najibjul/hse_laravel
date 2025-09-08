@@ -7,6 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class CostCenter extends Model
 {
     protected $table = 'cost_centers';
-    protected $fillable = ['cost_center_name'];
+    // protected $fillable = ['cost_center_name'];
+    protected $guarded = [];
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
+
     
 }

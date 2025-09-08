@@ -38,7 +38,12 @@ class UserController extends Controller
                 }])
                 ->with(['leader' => function ($q) {
                     $q->select('id', 'name', 'nip');
-                }]);
+                }])
+                ->when(Auth::user()->role_id == 2, function($q){
+                    $q->whereHas('department', function($q){
+                        $q->whereIn('department_id', Auth::user()->adminDepts->pluck('department_id'));
+                    });
+                });
 
             return DataTables::of($data)
                 ->addIndexColumn()
