@@ -1,7 +1,7 @@
 @extends('layouts.app', ['title' => 'Daily Checking'])
 @section('content')
     @if ($agent->isDesktop())
-        <div class="page-header">
+        <div class="page-header" id="daily-checking">
             <div class="page-block">
                 <div class="row align-items-center">
                     <div class="col-md-12">
@@ -23,9 +23,9 @@
             </div>
             <div class="card-body">
                 <div class="row mb-2">
-                    <div class="d-flex justify-content-end">
+                    <div class="d-flex justify-content-end pe-4">
                         @if (auth()->user()->position?->is_qrp_enabled)
-                            <button type="button" class="btn btn-sm btn-success rounded" data-bs-toggle="modal"
+                            <button type="button" class="btn btn-success rounded" data-bs-toggle="modal"
                                 data-bs-target="#addCheckingModal">
                                 <div class="d-block d-md-none d-lg-none">
                                     <div class="ti ti-plus"></div>
@@ -35,29 +35,80 @@
                                 </div>
                             </button>
                         @endif
-                        <button type="button" id="qrpExport" class="btn btn-sm btn-info ms-2 rounded"><i
+                        <button type="button" id="qrpExport" class="btn btn-info ms-2 rounded"><i
                                 class="ti ti-file-export"></i> Export</button>
                     </div>
 
-                    <form id="formExport" method="POST" action="{{ route('export.store') }}">
+                    <form id="qrpExportForm" action="{{ route('qrp.export') }}" method="post" target="_blank">
                         @csrf
+                        <input type="hidden" name="cari_user" id="export-cari-user">
+                        <input type="hidden" name="cari_aktifitas" id="export-cari-aktifitas">
+                        <input type="hidden" name="cari_area" id="export-cari-area">
+                        <input type="hidden" name="start_date" id="export-start-date">
+                        <input type="hidden" name="end_date" id="export-end-date">
+                        <input type="hidden" name="cari_faktor" id="export-cari-faktor">
+                        <input type="hidden" name="cari_cek" id="export-cari-cek">
+                        <input type="hidden" name="cari_status" id="export-cari-status">
                     </form>
+
+                    {{-- <form id="formExport" method="POST" action="{{ route('export.store') }}">
+                        @csrf
+                    </form> --}}
                 </div>
                 <div class="table-responsive">
-                    <table class="table" id="qrpTable">
+                    <table class="table table-bordered" id="qrpTable">
                         <thead class="table-success">
                             <tr>
-                                <th>No</th>
-                                <th>User</th>
-                                <th>Aktifitas / Problem</th>
-                                <th>Area</th>
-                                <th>Tanggal</th>
-                                <th>Faktor</th>
-                                <th>Status Cek</th>
-                                <th>Status Terakhir</th>
-                                <th>Opsi</th>
+                                <th class="text-center">No</th>
+                                <th class="text-center">User</th>
+                                <th class="text-center">Aktifitas / Problem</th>
+                                <th class="text-center">Area</th>
+                                <th class="text-center">Tanggal</th>
+                                <th class="text-center">Faktor</th>
+                                <th class="text-center">Status Cek</th>
+                                <th class="text-center">Status Terakhir</th>
+                                <th class="text-center">Opsi</th>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><input type="text" id="cari-user" class="form-control form-control-sm"
+                                        placeholder="Cari user ..."></td>
+                                <td><input type="text" id="cari-aktifitas" class="form-control form-control-sm"
+                                        placeholder="Cari aktifitas ..."></td>
+                                <td><input type="text" id="cari-area" class="form-control form-control-sm"
+                                        placeholder="Cari area ..."></td>
+                                <td>
+                                    <input type="date" class="form-control w-auto form-control-sm" id="start_date">
+                                    <div class="py-2 text-center">s/d</div>
+                                    <input type="date" class="form-control w-auto form-control-sm" id="end_date">
+                                </td>
+                                <td>
+                                    <select id="cari-faktor" class="form-select form-select-sm">
+                                        <option value="">-Filter faktor-</option>
+                                        @foreach ($factors as $factor)
+                                            <option value="{{ $factor->id }}">{{ $factor->factor_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td>
+                                    <select id="cari-cek" class="form-select form-select-sm">
+                                        <option value="">-Filter cek-</option>
+                                        <option value="OK">OK</option>
+                                        <option value="NG">NG</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select id="cari-status" class="form-select form-select-sm">
+                                        <option value="">-Filter status-</option>
+                                        @foreach ($statuses as $status)
+                                            <option value="{{ $status->id }}">{{ $status->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td></td>
                             </tr>
                         </thead>
+
                     </table>
                 </div>
             </div>
@@ -68,8 +119,8 @@
         </div>
         <form action="{{ route('qrp.daily-checking') }}" method="GET">
             <div class="d-flex gap-2 mb-4">
-                <input type="text" name="search" class="form-control  search rounded-pill" value="{{ $search }}"
-                    placeholder="Cari...">
+                <input type="text" name="search" class="form-control  search rounded-pill"
+                    value="{{ $search }}" placeholder="Cari...">
                 <button type="submit" class="btn  btn-warning rounded-pill" type="submit">
                     <i class="ti ti-search"></i>
                 </button>
@@ -79,15 +130,58 @@
                         <i class="ti ti-plus"></i>
                     </button>
                 @endif
+                <button type="button" class="btn btn-info rounded-pill" data-bs-toggle="modal"
+                    data-bs-target="#filter">
+                    <i class="ti ti-filter"></i>
+                </button>
             </div>
         </form>
+
+        <div class="modal fade" id="filter" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Filter</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="{{ route('qrp.daily-checking') }}" method="GET">
+                        <div class="modal-body">
+                            <select name="check_status" class="form-control rounded-pill mb-4" autocomplete="off">
+                                <option value="">-Status pengecekan-</option>
+                                <option {{ request('check_status') == 'OK' ? 'selected' : '' }} value="OK">OK</option>
+                                <option {{ request('check_status') == 'NG' ? 'selected' : '' }} value="NG">NG</option>
+                            </select>
+
+                            <select name="safety_comitee_status" class="form-control rounded-pill mb-4" autocomplete="off">
+                                <option value="">-Status safety comitee-</option>
+                                @foreach ($statuses as $status)
+                                    <option {{ request('safety_comitee_status') == $status->id ? 'selected' : '' }} value="{{ $status->id }}">{{ $status->name }}</option>
+                                @endforeach                                
+                            </select>
+
+                            <div class="d-flex">
+                                <input type="date" class="form-control rounded-pill" name="start_date" value="{{ request('start_date') }}">
+                                <div class="mx-3 mt-2 text-nowrap">S/d</div>
+                                <input type="date" class="form-control rounded-pill" name="end_date" value="{{ request('end_date') }}">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Kembali</button>
+                            <button type="submit" class="btn btn-info rounded-pill">Cari</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
         @foreach ($dailyChecks as $dailyCheck)
             <a href="{{ $dailyCheck->check_status == 'NG' ? route('qrp.qrp-form-detail', encrypt($dailyCheck->id)) : 'javascript:void(0)' }}"
                 @if ($dailyCheck->check_status == 'OK') onclick="statusOk(event)" @endif>
                 <div class="card card-hover " style="border-radius: 15px;">
                     <div class="card-body ">
-                        <div><i class="ti ti-user"></i> {{ $dailyCheck->user->name }} ({{ $dailyCheck->user->nip }})</div>
+                        <div><i class="ti ti-user"></i> {{ $dailyCheck->user?->name }} ({{ $dailyCheck->user?->nip }})
+                        </div>
                         <div><i class="ti ti-alert-circle"></i>
                             {{ $dailyCheck->activity ? $dailyCheck->activity : $dailyCheck->qrpDetail->description }}</div>
                         <div><i class="ti ti-building-community"></i> {{ $dailyCheck->area }}</div>

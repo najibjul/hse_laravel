@@ -9,6 +9,7 @@ use App\Exports\PlantExport;
 use App\Exports\PositionExport;
 use App\Exports\QrpExport;
 use App\Exports\SafetyComiteeExport;
+use App\Exports\ShowExport;
 use App\Exports\UsersExport;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -54,15 +55,20 @@ class ExportController extends Controller
 
     public function qrpExport(Request $request)
     {
-        $request->validate([
-            'param' => 'nullable|string',
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date|after_or_equal:start_date',
-        ]);
+        $cari_user = $request->cari_user;
+        $cari_aktifitas = $request->cari_aktifitas;
+        $cari_area = $request->cari_area;
+        $start_date = $request->start_date;
+        $end_date = $request->end_date;
+        $cari_faktor = $request->cari_faktor;
+        $cari_cek = $request->cari_cek;
+        $cari_status = $request->cari_status;
 
-        $param = $request->param;        
-        $start_date = $request->start_date;        
-        $end_date = $request->end_date;        
-        return Excel::download(new QrpExport($param, $start_date, $end_date), 'safety-comitee-exported-at-'.now().'.xlsx');
+        return Excel::download(new QrpExport($cari_user, $cari_aktifitas, $cari_area, $start_date, $end_date, $cari_faktor, $cari_cek, $cari_status), 'safety-comitee-exported-at-'.now().'.xlsx');
+    }
+
+    public function showExport($id)
+    {
+        return Excel::download(new ShowExport($id), 'detail-safety-comitee-exported-at-'.now().'.xlsx');
     }
 }

@@ -114,6 +114,10 @@
     padding: 4px;   /* or any value you want */
 }
 
+#dt-length-0 {
+  margin-bottom: 10px;
+}
+
 /* 
 .dt-processing-dots {
     display: flex;

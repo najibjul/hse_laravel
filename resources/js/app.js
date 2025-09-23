@@ -20,95 +20,9 @@ const page = document.body.dataset.title;
 
 $(function () {
 
-    const qrpTable = $('#qrpTable').DataTable({
-        processing: false,
-        serverSide: true,
-        ajax: {
-            url: '/daily-checking',
-            data: function (d) {
-                d.start_date = $('#start_date').val();
-                d.end_date = $('#end_date').val();
-            }
-        },
-        columns: [{
-            data: 'DT_RowIndex',
-            name: 'DT_RowIndex',
-            orderable: false,
-            searchable: false
-        },
-        {
-            data: 'user',
-            name: 'user',
-            searchable: true
-        },
-        {
-            data: 'description',
-            name: 'description',
-            searchable: true,
-            orderable: false
-        },
-        {
-            data: 'area',
-            name: 'area',
-            searchable: true,
-            orderable: false
-        },
-        {
-            data: 'created_at',
-            name: 'created_at',
-            searchable: true
-        },
-        {
-            data: 'factor',
-            name: 'factor',
-            searchable: true,
-            orderable: false,
-        },
-        {
-            data: 'check_status',
-            name: 'check_status',
-            searchable: true,
-            orderable: false,
-        },
-        {
-            data: 'status',
-            name: 'status',
-            searchable: true,
-            orderable: false,
-        },
-        {
-            data: 'action',
-            name: 'action',
-            orderable: false,
-            searchable: false
-        }
-        ]
-    });
-
-    if (page == 'Daily Checking') {
-        if (document.querySelector('.dt-search')) {
-            document.querySelector('.dt-search').innerHTML += `<input type="date" class="form-control w-auto form-control-sm ms-3" id="start_date"><span class="ps-2">s/d</span><input type="date" class="form-control w-auto form-control-sm" id="end_date">`;
-        }
+    if (document.getElementById('daily-checking')) {
+        import('./pages/dailyChecking');
     }
-
-    $('#start_date').on('change', function () {
-        if ($('#start_date').val != "" && $('#end_date').val != "") {
-            qrpTable.draw();
-        }
-    })
-
-    $('#end_date').on('change', function () {
-        if ($('#start_date').val != "" && $('#end_date').val != "") {
-            qrpTable.draw();
-        }
-    })
-
-    $('#qrpExport').on('click', function (e) {
-        e.preventDefault();
-        let params = $('#qrpTable').DataTable().ajax.params();
-        let value = params.search.value;
-        window.location.href = '/qrp/export?param=' + value + '&start_date=' + $('#start_date').val() + '&end_date=' + $('#end_date').val();
-    });
 
     $('#userTable').DataTable({
         processing: false,

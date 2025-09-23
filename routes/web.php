@@ -48,6 +48,10 @@ Route::middleware('auth')->group(function () {
     Route::post('qrp-form/close/{id}', [QrpController::class, 'close'])->name('qrp.close');
     Route::post('qrp-form/tolak-open/{id}', [QrpController::class, 'tolakOpen'])->name('qrp.tolak-open');
 
+    Route::get('tindak-lanjut/{id}', [QrpController::class, 'tindakLanjut'])->name('qrp.tindak-lanjut');
+    Route::put('tindak-lanjut-live/{id}', [QrpController::class, 'tindakLanjutLive'])->name('qrp.tindak-lanjut-live');
+    Route::put('tindak-lanjut-gallery/{id}', [QrpController::class, 'tindakLanjutGallery'])->name('qrp.tindak-lanjut-gallery');
+
     Route::post('rise-up/{id}', [QrpController::class, 'riseUp'])->name('rise-up');    
 
     Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');
@@ -59,7 +63,8 @@ Route::middleware('auth')->group(function () {
     
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     
-    Route::get('/qrp/export', [ExportController::class, 'qrpExport'])->name('qrp.export');
+    Route::post('/qrp/export', [ExportController::class, 'qrpExport'])->name('qrp.export');
+    Route::post('/qrp/show-export/{id}', [ExportController::class, 'showExport'])->name('qrp.show-export');
 
     Route::middleware('admin')->group(function(){
         Route::prefix('admin')->as('admin.')->group(function () {

@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title' => 'Edit QRP'])
+@extends('layouts.app', ['title' => 'Edit laporan'])
 @section('content')
     @if (!$agent->isMobile())
         <div class="page-header">
@@ -11,8 +11,9 @@
                         <ul class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{ route('qrp.daily-checking') }}">Daily Checking</a></li>
                             <li class="breadcrumb-item"><a
-                                    href="{{ route('qrp.qrp-form-detail', encrypt($dailyCheck->id)) }}">Detail</a></li>
-                            <li class="breadcrumb-item" aria-current="page">Edit</li>
+                                    href="{{ route('qrp.qrp-form-detail', encrypt($dailyCheck->id)) }}">Detail laporan</a>
+                            </li>
+                            <li class="breadcrumb-item" aria-current="page">Edit laporan</li>
                         </ul>
                     </div>
                 </div>
@@ -20,164 +21,167 @@
         </div>
     @endif
 
-    <div class="card ">
-        <div class="card-header">
-            <h4>Edit</h4>
-        </div>
-        <form method="POST" action="{{ route('qrp.qrp-form-update', $dailyCheck->id) }}" enctype="multipart/form-data">
-            @csrf
-            @method('patch')
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-12 col-md-6 mb-4">
-                        <label class="form-label fw-bold">Faktor temuan</label>
-                        <select name="factor" class="form-control" required>
-                            @foreach ($factors as $factor)
-                                <option value="{{ $factor->id }}"
-                                    {{ $factor->id == $dailyCheck->factor_id ? 'selected' : '' }}>
-                                    {{ $factor->factor_name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="col-12 col-md-6 mb-4">
-                        <label class="form-label fw-bold">Area temuan</label>
-                        <input name="area" type="text" class="form-control @error('area') is-invalid @enderror"
-                            placeholder="ketik disini" value="{{ $dailyCheck->area }}" required>
-                        @error('area')
-                            <div class="form-text text-danger mb-3">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="col-12 col-md-6 mb-4">
-                        <label class="form-label fw-bold">Deskripsi temuan</label>
-                        <textarea name="description" id="description" oninput="autoGrowDescription(this)"
-                            class="form-control @error('description') is-invalid @enderror" placeholder="ketik disini" required>{{ $dailyCheck->qrpDetail->description }}</textarea>
-                        @error('description')
-                            <div class="form-text text-danger mb-3">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="col-12 col-md-6 mb-4">
-                        <label class="form-label fw-bold">Kategori</label>
-                        <select name="category" class="form-control" required>
-                            @foreach ($categories as $category)
-                                <option value="{{ $category->id }}"
-                                    {{ $category->id == $dailyCheck->qrpDetail->category_id ? 'selected' : '' }}>
-                                    {{ $category->category_name }}</option>
-                            @endforeach
-                        </select>
-                        @error('category')
-                            <div class="form-text text-danger mb-3">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="col-12 col-md-6 mb-4">
-                        <label class="form-label fw-bold">Gambar temuan</label>
-                        <div class="my-2">
-                            <img src="{{ asset('storage/image/' . $dailyCheck->qrpDetail->before) }}"
-                                alt="{{ $dailyCheck->qrpDetail->before }}"
-                                class="img-fluid @if ($agent->isDesktop()) w-50 @endif">
-                        </div>
-                        <input type="text" name="dataUri" id="dataUri" hidden>
-                        <ul class="nav nav-tabs" id="myTab" role="tablist">
-                            <li class="nav-item" role="presentation" id="fotoLangsung">
-                                <button class="nav-link active" id="direct-tab" data-bs-toggle="tab"
-                                    data-bs-target="#direct" type="button" role="tab" aria-controls="direct"
-                                    aria-selected="true">Foto
-                                    langsung</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="galeri-tab" data-bs-toggle="tab" data-bs-target="#galeri"
-                                    type="button" role="tab" aria-controls="galeri" aria-selected="false">Dari
-                                    Galeri</button>
-                            </li>
-                        </ul>
-                        <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade show active my-3" id="direct" role="tabpanel"
-                                aria-labelledby="direct-tab">
-                                <div id="my_camera"></div>
-
-                                <div id="pre_take_buttons">
-                                    <button type="button" class="btn btn-success mt-3" onClick="preview_snapshot()">
-                                        <i class="ti ti-camera"></i> Ambil gambar
-                                    </button>
-                                </div>
-                                <div id="post_take_buttons" style="display:none">
-                                    <button type="button" class="btn btn-warning mt-3" onClick="cancel_preview()">
-                                        <i class="ti ti-arrow-back-up"></i> Ambil ulang gambar
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade my-3" id="galeri" role="tabpanel" aria-labelledby="galeri-tab">
-                                <input type="file" class="form-control" name="galery" value="{{ old('galery') }}">
-                            </div>
-
-                            @error('dataUri')
-                                <div class="form-text text-danger mb-3">{{ $message }}</div>
-                            @enderror
-                            @error('galery')
-                                <div class="form-text text-danger mb-3">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-6 mb-4">
-                        <label class="form-label fw-bold">Rekomendasi</label>
-                        <textarea name="recomendation" id="recomendation" oninput="autoGrowRecomendation(this)"
-                            class="form-control @error('recomendation') is-invalid @enderror" placeholder="ketik disini" required>@foreach ($dailyCheck->qrpDetail->qrpRecomendations as $qrpRecomendation){{ $qrpRecomendation->recomendation }}@endforeach</textarea>
-                        @error('recomendation')
-                            <div class="form-text text-danger mb-3">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    {{-- <div class="col-12 col-md-6 mb-4">
-                        <div class="form-group mb-4">
-                            <label class="form-label fw-bold">Asst. Dept. Head</label>
-                            <select id="adh" class="form-control @error('adh') is-invalid @enderror required"
-                                name="adh">
-                                @foreach ($adhs as $adh)
-                                    <option value="{{ $adh->id }}"
-                                        {{ $dailyCheck->qrpDetail->adh_id == $adh->id ? 'selected' : '' }}>
-                                        {{ $adh->name }} ({{ $adh->nip }})</option>
-                                @endforeach
-                            </select>
-                            @error('adh')
-                                <div class="form-text text-danger">{{ $message }}</div>
-                            @enderror
-
-                        </div>
-                    </div> --}}
+    <div class="row">
+        <div class="col-12 col-lg-8">
+            <div class="card ">
+                <div class="card-header">
+                    <h4>Edit laporan</h4>
                 </div>
+                <form method="POST" action="{{ route('qrp.qrp-form-update', $dailyCheck->id) }}"
+                    enctype="multipart/form-data">
+                    @csrf
+                    @method('patch')
+                    <div class="card-body">
+                        <div class="row">
+                            <div class=" mb-5">
+                                <label class="form-label fw-bold">Faktor temuan</label>
+                                <select name="factor" class="form-control" required>
+                                    @foreach ($factors as $factor)
+                                        <option value="{{ $factor->id }}"
+                                            {{ $factor->id == $dailyCheck->factor_id ? 'selected' : '' }}>
+                                            {{ $factor->factor_name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
 
-                <div class="form-group mb-4">
-                    <button type="button" class="btn btn-warning w-100" data-bs-toggle="modal"
-                        data-bs-target="#modalSave"><i class="ti ti-edit"></i> Edit</button>
+                            <div class=" mb-5">
+                                <label class="form-label fw-bold">Area temuan</label>
+                                <input name="area" type="text"
+                                    class="form-control @error('area') is-invalid @enderror" placeholder="ketik disini ..."
+                                    value="{{ $dailyCheck->area }}" required>
+                                @error('area')
+                                    <div class="form-text text-danger mb-3">{{ $message }}</div>
+                                @enderror
+                            </div>
 
-                    <div class="modal fade" id="modalSave" tabindex="-1" aria-labelledby="exampleModalLabel"
-                        aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Edit</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
+                            <div class=" mb-5">
+                                <label class="form-label fw-bold">Deskripsi temuan</label>
+                                <textarea name="description" id="description" oninput="autoGrowDescription(this)"
+                                    class="form-control @error('description') is-invalid @enderror" placeholder="ketik disini ..." required>{{ $dailyCheck->qrpDetail->description }}</textarea>
+                                @error('description')
+                                    <div class="form-text text-danger mb-3">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class=" mb-5">
+                                <label class="form-label fw-bold">Kategori</label>
+                                <select name="category" class="form-control" required>
+                                    @foreach ($categories as $category)
+                                        <option value="{{ $category->id }}"
+                                            {{ $category->id == $dailyCheck->qrpDetail->category_id ? 'selected' : '' }}>
+                                            {{ $category->category_name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('category')
+                                    <div class="form-text text-danger mb-3">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class=" mb-5">
+                                <label class="form-label fw-bold">Gambar temuan</label>
+                                <div id="existing-image" class="mt-2 mb-2 bg-light text-center py-3 rounded d-block">
+                                    <img src="{{ asset('storage/image/' . $dailyCheck->qrpDetail->before) }}"
+                                        alt="{{ $dailyCheck->qrpDetail->before }}"
+                                        class="img-fluid @if ($agent->isDesktop()) w-50 @endif">
+                                    <div class="mt-2">
+                                        <button onclick="editimage()" type="button"
+                                            class="btn btn-outline-success rounded-pill">Edit gambar</button>
+                                    </div>
                                 </div>
-                                <div class="modal-body">
-                                    Update data?
+
+                                <div class="d-none" id="edit-image">
+                                    <input type="text" name="dataUri" id="dataUri" hidden>
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                        <li class="nav-item" role="presentation" id="fotoLangsung">
+                                            <button class="nav-link active" id="direct-tab" data-bs-toggle="tab"
+                                                data-bs-target="#direct" type="button" role="tab"
+                                                aria-controls="direct" aria-selected="true">Foto
+                                                langsung</button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link" id="galeri-tab" data-bs-toggle="tab"
+                                                data-bs-target="#galeri" type="button" role="tab"
+                                                aria-controls="galeri" aria-selected="false">Dari
+                                                Galeri</button>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content" id="myTabContent">
+                                        <div class="tab-pane fade show active my-3 text-center" id="direct" role="tabpanel"
+                                            aria-labelledby="direct-tab">
+                                            <div class="d-flex justify-content-center align-item-center pt-3">
+                                                <div id="my_camera"></div>
+                                            </div>
+
+                                            <div id="pre_take_buttons">
+                                                <button type="button" class="btn btn-success mt-3"
+                                                    onClick="preview_snapshot()">
+                                                    <i class="ti ti-camera"></i> Ambil gambar
+                                                </button>
+                                            </div>
+                                            <div id="post_take_buttons" style="display:none">
+                                                <button type="button" class="btn btn-warning mt-3"
+                                                    onClick="cancel_preview()">
+                                                    <i class="ti ti-arrow-back-up"></i> Ambil ulang gambar
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade my-3" id="galeri" role="tabpanel"
+                                            aria-labelledby="galeri-tab">
+                                            <input type="file" class="form-control" name="galery"
+                                                value="{{ old('galery') }}">
+                                        </div>
+
+                                        @error('dataUri')
+                                            <div class="form-text text-danger mb-3">{{ $message }}</div>
+                                        @enderror
+                                        @error('galery')
+                                            <div class="form-text text-danger mb-3">{{ $message }}</div>
+                                        @enderror
+                                    </div>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary"
-                                        data-bs-dismiss="modal">Kembali</button>
-                                    <button type="submit" class="btn btn-warning">Ya</button>
+
+                            </div>
+
+                            <div class=" mb-5">
+                                <label class="form-label fw-bold">Rekomendasi</label>
+                                <textarea name="recomendation" id="recomendation" oninput="autoGrowRecomendation(this)"
+                                    class="form-control @error('recomendation') is-invalid @enderror" placeholder="ketik disini ..." required>@foreach ($dailyCheck->qrpDetail->qrpRecomendations as $qrpRecomendation){{ $qrpRecomendation->recomendation }}@endforeach</textarea>
+                                @error('recomendation')
+                                    <div class="form-text text-danger mb-3">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-5">
+                            <button type="button" class="btn btn-warning w-100" data-bs-toggle="modal"
+                                data-bs-target="#modalSave"><i class="ti ti-edit"></i> Edit</button>
+
+                            <div class="modal fade" id="modalSave" tabindex="-1" aria-labelledby="exampleModalLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Edit</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Update data?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Kembali</button>
+                                            <button type="submit" class="btn btn-warning">Ya</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 @endsection
 
@@ -193,23 +197,29 @@
                 $('#galeri').addClass('show active');
             });
 
-            Webcam.set({
-                width: 240,
-                height: 320,
-                image_format: 'jpeg',
-                jpeg_quality: 90,
-                constraints: {
-                    facingMode: "environment"
-                }
-            });
+            @if ($agent->isMobile())
+                Webcam.set({
+                    width: 240,
+                    height: 320,
+                    image_format: 'jpeg',
+                    jpeg_quality: 90,
+                    constraints: {
+                        facingMode: "environment"
+                    }
+                });
+            @else
+                Webcam.set({
+                    width: 320,
+                    height: 240,
+                    image_format: 'jpeg',
+                    jpeg_quality: 90,
+                    constraints: {
+                        facingMode: "environment"
+                    }
+                });
+            @endif
 
             Webcam.attach('#my_camera');
-
-            const recomendation = document.getElementById("recomendation");
-            const description = document.getElementById("description");
-
-            autoGrowDescription(description);
-            autoGrowRecomendation(recomendation);
 
             @if ($errors->any())
                 let errorList = '';
@@ -265,6 +275,15 @@
         function autoGrowRecomendation(element) {
             element.style.height = "5px";
             element.style.height = (element.scrollHeight) + "px";
+        }
+
+        function editimage(){
+            let editImage = document.getElementById('edit-image');
+            let existingImage = document.getElementById('existing-image');
+            editImage.classList.remove('d-none');
+            editImage.classList.add('d-block');
+            existingImage.classList.remove('d-block');
+            existingImage.classList.add('d-none');
         }
     </script>
 @endpush

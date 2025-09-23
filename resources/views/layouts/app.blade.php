@@ -2,23 +2,19 @@
 <html lang="en">
 
 <head>
-    
+
     <title>{{ isset($title) ? $title . ' • HSE' : 'HSE' }}</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description"
-    content="Mantis is made using Bootstrap 5 design framework. Download the free admin template & use it for your project.">
-    <meta name="keywords"
-    content="Mantis, Dashboard UI Kit, Bootstrap 5, Admin Template, Admin Dashboard, CRM, CMS, Bootstrap Admin Template">
-    <meta name="author" content="CodedThemes">
-    
-    
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @stack('styles')
 </head>
-<body data-title="{{ $title ?? '' }}" data-pc-preset="preset-1" data-pc-direction="ltr" data-pc-theme="light" id="main-font-link" >
+
+<body data-title="{{ $title ?? '' }}" data-pc-preset="preset-1" data-pc-direction="ltr" data-pc-theme="light"
+    id="main-font-link">
 
     <div class="loader-bg">
         <div class="loader-track">
@@ -26,11 +22,11 @@
         </div>
     </div>
 
-    <nav id="sidebar" class="pc-sidebar">
+    <nav id="sidebar" class="pc-sidebar ">
         <div class="navbar-wrapper">
             <div class="m-header">
                 <a href="#" class="b-brand text-primary">
-                    <img src="{{ asset('assets/images/logo-dark.svg') }}" class="img-fluid" alt="logo">
+                    <img src="{{ asset('HSE GT.png') }}" class="img-fluid" style="width: 50%;" alt="logo">
                 </a>
             </div>
             <div class="navbar-content">
@@ -41,7 +37,6 @@
                             <span class="pc-mtext">Dashboard</span>
                         </a>
                     </li>
-
 
                     <li class="pc-item pc-caption">
                         <label>Safety Comitee</label>
@@ -65,36 +60,38 @@
                                 <span class="pc-mtext">Master User</span>
                             </a>
                         </li>
-                        <li class="pc-item {{ Route::is('admin.departments.*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.departments.index') }}" class="pc-link">
-                                <span class="pc-micon"><i class="ti ti-home"></i></span>
-                                <span class="pc-mtext">Master Department</span>
-                            </a>
-                        </li>
-                        <li class="pc-item {{ Route::is('admin.cost-centers.*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.cost-centers.index') }}" class="pc-link">
-                                <span class="pc-micon"><i class="ti ti-currency-dollar"></i></span>
-                                <span class="pc-mtext">Master Cost Center</span>
-                            </a>
-                        </li>
-                        <li class="pc-item {{ Route::is('admin.positions.*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.positions.index') }}" class="pc-link">
-                                <span class="pc-micon"><i class="ti ti-grid-dots"></i></span>
-                                <span class="pc-mtext">Master Position</span>
-                            </a>
-                        </li>
-                        <li class="pc-item {{ Route::is('admin.plants.*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.plants.index') }}" class="pc-link">
-                                <span class="pc-micon"><i class="ti ti-building-skyscraper"></i></span>
-                                <span class="pc-mtext">Master Plant</span>
-                            </a>
-                        </li>
-                        <li class="pc-item {{ Route::is('admin.dept-config.*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.dept-config.index') }}" class="pc-link">
-                                <span class="pc-micon"><i class="ti ti-settings"></i></span>
-                                <span class="pc-mtext">Department Configuration</span>
-                            </a>
-                        </li>
+                        @if (auth()->user()->role_id == 1)
+                            <li class="pc-item {{ Route::is('admin.departments.*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.departments.index') }}" class="pc-link">
+                                    <span class="pc-micon"><i class="ti ti-home"></i></span>
+                                    <span class="pc-mtext">Master Department</span>
+                                </a>
+                            </li>
+                            <li class="pc-item {{ Route::is('admin.cost-centers.*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.cost-centers.index') }}" class="pc-link">
+                                    <span class="pc-micon"><i class="ti ti-currency-dollar"></i></span>
+                                    <span class="pc-mtext">Master Cost Center</span>
+                                </a>
+                            </li>
+                            <li class="pc-item {{ Route::is('admin.positions.*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.positions.index') }}" class="pc-link">
+                                    <span class="pc-micon"><i class="ti ti-grid-dots"></i></span>
+                                    <span class="pc-mtext">Master Position</span>
+                                </a>
+                            </li>
+                            <li class="pc-item {{ Route::is('admin.plants.*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.plants.index') }}" class="pc-link">
+                                    <span class="pc-micon"><i class="ti ti-building-skyscraper"></i></span>
+                                    <span class="pc-mtext">Master Plant</span>
+                                </a>
+                            </li>
+                            <li class="pc-item {{ Route::is('admin.dept-config.*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.dept-config.index') }}" class="pc-link">
+                                    <span class="pc-micon"><i class="ti ti-settings"></i></span>
+                                    <span class="pc-mtext">Department Configuration</span>
+                                </a>
+                            </li>
+                        @endif
                     @endif
                 </ul>
             </div>
@@ -148,16 +145,17 @@
                                             @method('patch')
                                         </form>
 
-                                        <a href="#" onclick="event.preventDefault(); document.getElementById(`notificationUpdate{{ $notification->id }}`).submit();"
-                                            class="list-group-item list-group-item-action">
+                                        <a href="#" onclick="event.preventDefault(); document.getElementById(`notificationUpdate{{ $notification->id }}`).submit();" class="list-group-item list-group-item-action">
                                             <div class="d-flex">
                                                 <div class="flex-shrink-0">
-                                                    <img src=" {{ asset('assets/images/user/avatar-2.jpg') }}"
-                                                        alt="user-image" class="user-avtar">
+                                                    <img src="{{ asset('assets/images/user/avatar-2.jpg') }}" alt="user-image"
+                                                        class="user-avtar">
                                                 </div>
                                                 <div class="flex-grow-1 ms-1">
+                                                    {{-- <span class="float-end text-muted">3:00 AM</span> --}}
                                                     <p class="text-body mb-1">{{ $notification->title }}</p>
                                                     <span class="text-muted">{{ $notification->body }}</span>
+                                                    <div class="text-muted mt-2">{{ \Carbon\Carbon::parse($notification->created_at)->diffForHumans() }}</div>
                                                 </div>
                                             </div>
                                         </a>
@@ -228,7 +226,7 @@
     </div>
 
 
-    <footer class="pc-footer">
+    <footer class="pc-footer d-none d-md-block">
         <div class="footer-wrapper container-fluid">
             <div class="row">
                 <div class="col-sm my-1">
@@ -249,7 +247,7 @@
             let sidebarComp = document.getElementById('sidebar');
 
             if (!sidebarLs) {
-                localStorage.setItem('sidebarLs','expand');
+                localStorage.setItem('sidebarLs', 'expand');
             } else {
 
                 if (sidebarLs == 'expand') {
@@ -259,7 +257,7 @@
                 }
             }
 
-            
+
             @if (session()->has('success'))
                 Swal.fire({
                     title: "Berhasil",
@@ -288,12 +286,11 @@
         function setSidebar() {
             let sidebarLs = localStorage.getItem('sidebarLs');
             if (sidebarLs == 'expand') {
-                localStorage.setItem('sidebarLs','collapse');
+                localStorage.setItem('sidebarLs', 'collapse');
             } else {
-                localStorage.setItem('sidebarLs','expand');
+                localStorage.setItem('sidebarLs', 'expand');
             }
         }
-
     </script>
 
     @stack('scripts')

@@ -28,10 +28,11 @@ class AuthController extends Controller
             ],
         ]);
 
+        
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
-
+        
         $credentials = $request->only('nip', 'password');
         $remember = $request->filled('remember');
 

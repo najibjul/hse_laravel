@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
+    <link rel="shortcut icon" href="<?php echo e(asset('HSE GT.png')); ?>" type="image/x-icon">
 </head>
 
 <body>
@@ -20,7 +21,7 @@
         <div class="auth-wrapper v3">
             <div class="auth-form">
                 <div class="auth-header">
-                    <a href="#"><img src="/assets/images/logo-dark.svg" alt="img"></a>
+                    <a href="#"><img src="<?php echo e(asset('HSE GT.png')); ?>" alt="img"></a>
                 </div>
                 <div class="card my-5 shadow">
                     <form action="<?php echo e(route('login-post')); ?>" method="post">

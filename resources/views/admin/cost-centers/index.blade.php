@@ -17,7 +17,9 @@
         </div>
     </div>
 
-    <div class="card">
+    <div class="row">
+        <div class="col-12 col-lg-9">
+            <div class="card">
         <div class="card-header">
             <h4>Master Cost Center</h4>
         </div>
@@ -36,7 +38,6 @@
                         <tr>
                             <th>No</th>
                             <th>Nama</th>
-                            <th>Departemen</th>
                             <th class="text-center">Opsi</th>
                         </tr>
                     </thead>
@@ -44,13 +45,8 @@
             </div>
         </div>
     </div>
+        </div>
+    </div>
+
+    
 @endsection
-
-
-@push('scripts')
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            $('#myTable').DataTable();
-        })
-    </script>
-@endpush

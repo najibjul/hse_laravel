@@ -1,87 +1,59 @@
-@extends('layouts.app', ['title' => 'Detail'])
+@extends('layouts.app', ['title' => 'Detail laporan'])
 @section('content')
-    @if (!$agent->isMobile())
-        <div class="page-header">
-            <div class="page-block">
-                <div class="row align-items-center">
-                    <div class="col-md-12">
-                        <div class="page-header-title">
-                            <h5 class="m-b-10">Detail</h5>
-                        </div>
-                        <ul class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="javascript: void(0)">Safety Comitee</a></li>
-                            <li class="breadcrumb-item"><a href="{{ route('qrp.daily-checking') }}">Daily Checking</a></li>
-                            <li class="breadcrumb-item" aria-current="page">Detail</li>
+    <div class="page-header d-none d-md-block">
+        <div class="page-block">
+            <div class="row align-items-center">
+                <div class="col-md-12">
+                    <div class="page-header-title">
+                        <h5 class="m-b-10">Detail</h5>
+                    </div>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="javascript: void(0)">Safety Comitee</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('qrp.daily-checking') }}">Daily Checking</a></li>
+                        <li class="breadcrumb-item" aria-current="page">Detail laporan</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <div class="my-2 d-flex justify-content-between">
+                
+                <h4>Detail laporan</h4>
+
+                <div class="d-none d-md-block">
+                    <div class="d-flex justify-content-center gap-3">
+                        @if (auth()->user()->id == $dailyCheck->user_id && $dailyCheck->qrpDetail->qrp_status_id == 1)
+                            <a href="{{ route('qrp.qrp-form-detail.edit', encrypt($dailyCheck->id)) }}"
+                                class="btn btn-warning"><i class="ti ti-edit"></i> Edit Data</a>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete"><i
+                                    class="ti ti-trash"></i> Hapus</button>
+                        @endif
+                        <form id="form-export" action="{{ route('qrp.show-export', $dailyCheck->id) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-info rounded"><i class="ti ti-file-export"></i>
+                                Ekspor</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="d-block d-md-none">
+                    <div class="dropdown">
+                        <a class="btn btn-light border border-success text-success bg-white" href="#" role="button"
+                            id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="ti ti-dots-vertical"></i>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <li><a class="dropdown-item" href="#" onclick="document.getElementById('form-export').submit(); return false;">Ekspor</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
-    @endif
 
-    <div class="card">
-        <div class="card-header">
-            <h4>Detail</h4>
-        </div>
         <div class="card-body">
-
-
-                {{-- <div class="d-flex justify-content-center mb-4 gap-3">
-                    
-                    <a href="#" class="text-center text-success">
-                        <div class="rounded-circle">
-                            <div class="bg-success rounded-circle py-2 px-3">
-                                <h3 class="mt-1">
-                                    <i class="ti ti-writing text-light"></i>
-                                </h3>
-                            </div>
-                        </div>
-                        Dibuat
-                    </a>
-
-                    <div class="align-self-center py-1 px-2 {{ $dailyCheck->qrpDetail->qrp_status_id >= 2 ? 'bg-success border border-success' : 'bg-light border border-secondary' }} rounded"></div>
-                    <a href="#" class="position-relative d-flex justify-content-center ">
-                        <div class="rounded-circle ">
-                            <div class="{{ $dailyCheck->qrpDetail->qrp_status_id >= 2 ? 'bg-success' : 'border border-secondary bg-light' }} rounded-circle py-2 px-3">
-                                <h3 class="mt-1">
-                                    <i class="{{ $dailyCheck->qrpDetail->qrp_status_id >= 2 ? 'text-white' : 'text-dark' }} ti ti-run "></i>
-                                </h3>
-                            </div>
-                        </div>
-                        <div class="position-absolute align-self-end text-success">
-                        Dikerjakan
-                        </div>
-                    </a>
-
-                    <div class="align-self-center py-1 px-2 {{ $dailyCheck->qrpDetail->qrp_status_id >= 4 ? 'bg-success border border-success' : 'bg-light border border-secondary' }} rounded"></div>
-                    <a href="#" class="position-relative d-flex justify-content-center ">
-                        <div class="rounded-circle ">
-                            <div class="{{ $dailyCheck->qrpDetail->qrp_status_id >= 4 ? 'bg-success' : 'border border-secondary bg-light' }} rounded-circle py-2 px-3">
-                                <h3 class="mt-1">
-                                    <i class="{{ $dailyCheck->qrpDetail->qrp_status_id >= 4 ? 'text-white' : 'text-dark' }} ti ti-zoom-check "></i>
-                                </h3>
-                            </div>
-                        </div>
-                        <div class="position-absolute align-self-end text-success">
-                        Konfirmasi
-                        </div>
-                    </a>
-
-                    <div class="align-self-center py-1 px-2 {{ $dailyCheck->qrpDetail->qrp_status_id >= 5 ? 'bg-success border border-success' : 'bg-light border border-secondary' }} rounded"></div>
-                    <a href="#" class="position-relative d-flex justify-content-center ">
-                        <div class="rounded-circle ">
-                            <div class="{{ $dailyCheck->qrpDetail->qrp_status_id >= 5 ? 'bg-success' : 'border border-secondary bg-light' }} rounded-circle py-2 px-3">
-                                <h3 class="mt-1">
-                                    <i class="{{ $dailyCheck->qrpDetail->qrp_status_id >= 5 ? 'text-white' : 'text-dark' }} ti ti-checks "></i>
-                                </h3>
-                            </div>
-                        </div>
-                        <div class="position-absolute align-self-end text-success">
-                        Selesai
-                        </div>
-                    </a>
-                </div>     --}}
-
             @if ($dailyCheck->qrpDetail->closed_at)
                 <div class="text-end">
                     <label class="form-label">Close :
@@ -89,237 +61,71 @@
                 </div>
             @endif
             <div class="row">
-                <div class="col-12 col-md-6 col-lg-6 mb-4">
-                    <label class="form-label fw-bold">User</label>
+                <div class="col-12 col-md-6 col-lg-6 mb-5">
+                    <label class="form-label fw-bold">User pelapor</label>
                     <input type="text" class="form-control" disabled
                         value="{{ $dailyCheck->user->name }} {{ '(' . $dailyCheck->user->nip . ')' }}">
                 </div>
-                <div class="col-12 col-md-6 col-lg-6 mb-4">
+                <div class="col-12 col-md-6 col-lg-6 mb-5">
                     <label class="form-label fw-bold">Tanggal temuan</label>
                     <input type="text" class="form-control" disabled
                         value="{{ \Carbon\Carbon::parse($dailyCheck->created_at)->translatedFormat('d M Y H:i') }}">
                 </div>
-                <div class="col-12 col-md-6 col-lg-6 mb-4">
+                <div class="col-12 col-md-6 col-lg-6 mb-5">
                     <label class="form-label fw-bold">Departemen</label>
                     <input type="text" class="form-control" disabled
                         value="{{ $dailyCheck->department->department_name }}">
                 </div>
-                <div class="col-12 col-md-6 col-lg-6 mb-4">
+                <div class="col-12 col-md-6 col-lg-6 mb-5">
                     <label class="form-label fw-bold">Faktor temuan</label>
                     <input type="text" class="form-control" disabled
                         value="{{ strtoupper($dailyCheck->factor->factor_name) }}">
                 </div>
-                <div class="col-12 col-md-6 col-lg-6 mb-4">
+                <div class="col-12 col-md-6 col-lg-6 mb-5">
                     <label class="form-label fw-bold">Area temuan</label>
                     <input type="text" class="form-control" disabled placeholder="ketik disini"
                         value="{{ $dailyCheck->area }}">
                 </div>
-                <div class="col-12 col-md-6 col-lg-6 mb-4">
+                <div class="col-12 col-md-6 col-lg-6 mb-5">
                     <label class="form-label fw-bold">Deskripsi temuan</label>
                     <textarea class="form-control" disabled oninput="autoGrowDescription(this)" id="description" placeholder="ketik disini">{{ $dailyCheck->qrpDetail->description }}</textarea>
                 </div>
-                <div class="col-12 col-md-6 col-lg-6 mb-4">
+                <div class="col-12 col-md-6 col-lg-6 mb-5">
                     <label class="form-label fw-bold">Kategori</label>
                     <input type="text" class="form-control" disabled placeholder="ketik disini"
                         value="{{ $dailyCheck->qrpDetail->category->category_name }}">
                 </div>
-                <div class="col-12 col-md-6 col-lg-6 mb-4">
+                <div class="col-12 col-md-6 col-lg-6 mb-5">
                     <label class="form-label fw-bold">Rank</label>
                     <input type="text" class="form-control" disabled placeholder="ketik disini"
                         value="{{ $dailyCheck->qrpDetail->rank->rank_name }}">
                 </div>
-                <div class="col-12 col-md-6 col-lg-6 mb-4">
+                <div class="col-12 col-md-6 col-lg-6 mb-5">
                     <label class="form-label fw-bold">Rekomendasi</label>
                     <br>
                     <ul>
                         @foreach ($dailyCheck->qrpDetail->qrpRecomendations->sortByDesc('id') as $qrpRecomendation)
-                        <li>
-                            <div style="text-align: justify;">
-                                {{ $qrpRecomendation->recomendation }}
-                            </div>
-                            <span class="text-sm fst-italic text-secondary">{{ $qrpRecomendation->user->name }} ({{ $qrpRecomendation->user->nip }})
-                            </span>
-                            <br>
-                            <span class="text-sm fst-italic text-secondary">
-                                {{ \Carbon\Carbon::parse($qrpRecomendation->created_at) }}
-                            </span>
-                        </li>
+                            <li>
+                                <div style="text-align: justify;">
+                                    {{ $qrpRecomendation->user->name }}
+                                    ({{ $qrpRecomendation->user->nip }})
+                                </div>
+                                <div class="fst-italic text-secondary">
+                                    {{ $qrpRecomendation->recomendation }}
+                                </div>
+                                <br>
+                            </li>
                         @endforeach
                     </ul>
-                    
+
                 </div>
-                <div class="col-12 col-md-6 col-lg-6 mb-4">
+                <div class="col-12 col-md-6 col-lg-6 mb-5">
                     <label class="form-label fw-bold">Batas perbaikan</label>
                     <input class="form-control" disabled
                         value="{{ \Carbon\Carbon::parse($dailyCheck->qrpDetail->due_date)->format('d M Y') }}">
                 </div>
-                <div class="col-12 col-md-6 col-lg-6 mb-4">
-                    <label class="form-label fw-bold">Temuan sebelum diaction</label>
-                    <div>
-                        <img src="{{ asset('storage/image/' . $dailyCheck->qrpDetail->before) }}" class="img-thumbnail"
-                        alt="{{ $dailyCheck->qrpDetail->before }}">
-                    </div>
-                </div>
-                <div class="col-12 col-md-6 col-lg-6 mb-4">
-                    <label class="form-label fw-bold">Temuan sesudah diaction</label>
-                    @if ($dailyCheck->qrpDetail->after)
-                        <div>
-                            <img src="{{ asset('storage/image/' . $dailyCheck->qrpDetail->after) }}" class="img-thumbnail"
-                            alt="{{ $dailyCheck->qrpDetail->after }}">
-                        </div>
 
-                        <label class="form-label">Tgl. upload : {{ $dailyCheck->qrpDetail->after_uploaded_at }}</label>
-
-                        @if ($dailyCheck->user_id == auth()->user()->id && $dailyCheck->qrpDetail->qrp_status_id == 4)
-                            <br>
-                            <label class="form-label mt-5 fw-bold">Edit penyelesaian</label>
-                            <ul class="nav nav-tabs" id="myTab" role="tablist">
-                                <li class="nav-item" role="presentation" id="fotoLangsung">
-                                    <button class="nav-link active" id="direct-tab" data-bs-toggle="tab"
-                                        data-bs-target="#direct" type="button" role="tab" aria-controls="direct"
-                                        aria-selected="true">Foto langsung</button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="galeri-tab" data-bs-toggle="tab"
-                                        data-bs-target="#galeri" type="button" role="tab" aria-controls="galeri"
-                                        aria-selected="false">Dari
-                                        Galeri</button>
-                                </li>
-                            </ul>
-                            <div class="tab-content" id="myTabContent">
-                                <div class="tab-pane fade show active my-3" id="direct" role="tabpanel"
-                                    aria-labelledby="direct-tab">
-                                    <div id="my_camera"></div>
-
-
-                                    <div id="pre_take_buttons">
-                                        <button type="button" class="btn btn-success mt-3" onClick="preview_snapshot()">
-                                            <i class="ti ti-camera"></i> Ambil gambar
-                                        </button>
-                                    </div>
-
-                                    <div id="post_take_buttons" style="display:none">
-                                        <button type="button" class="btn  btn-warning mt-3" onClick="cancel_preview()">
-                                            <i class="ti ti-arrow-back-up"></i> Ambil ulang gambar
-                                        </button>
-                                        <div>
-                                            <button type="button" class="btn btn-warning mt-3 " data-bs-toggle="modal"
-                                                data-bs-target="#updateClose"><i class="ti ti-device-floppy "></i>
-                                                Update gambar penyelesaian</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade my-3" id="galeri" role="tabpanel"
-                                    aria-labelledby="galeri-tab">
-                                    <form action="{{ route('qrp.upload-close-galery-edit', $dailyCheck->id) }}"
-                                        method="POST" enctype="multipart/form-data">
-                                        @csrf
-                                        <input type="file" required
-                                            class="form-control  @error('galery') is-invalid @enderror" name="galery">
-                                        <button type="submit" class="btn btn-warning mt-3 ">Update gambar</button>
-                                    </form>
-                                </div>
-                            </div>
-
-                            <div class="modal fade" id="updateClose" tabindex="-1" aria-labelledby="exampleModalLabel"
-                                aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Update Penyelesaian</h1>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            Update foto penyelesaian?
-                                        </div>
-                                        <form action="{{ route('qrp.upload-close-edit', $dailyCheck->id) }}"
-                                            method="POST" enctype="multipart/form-data">
-                                            @csrf
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">Tutup</button>
-                                                <input type="text" name="dataUri" id="dataUri" hidden>
-                                                <button type="submit" class="btn btn-warning">Ya</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-                    @else
-                        @if ($dailyCheck->qrpDetail->qrpApprovals->sortByDesc('id')->first()->approved_at)
-                            <h5 class="mt-1">
-                                <span class="badge bg-warning text-white">BELUM ADA ACTION</span>
-                            </h5>
-
-                            @if ($dailyCheck->qrpDetail->qrpApprovals->sortByDesc('id')->first()->approved_at and $dailyCheck->user_id == auth()->user()->id)
-                                <ul class="nav nav-tabs" id="myTab" role="tablist">
-                                    <li class="nav-item" role="presentation" id="fotoLangsung">
-                                        <button class="nav-link active" id="direct-tab" data-bs-toggle="tab"
-                                            data-bs-target="#direct" type="button" role="tab"
-                                            aria-controls="direct" aria-selected="true">Foto langsung</button>
-                                    </li>
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="galeri-tab" data-bs-toggle="tab"
-                                            data-bs-target="#galeri" type="button" role="tab"
-                                            aria-controls="galeri" aria-selected="false">Dari
-                                            Galeri</button>
-                                    </li>
-                                </ul>
-                                <div class="tab-content" id="myTabContent">
-                                    <div class="tab-pane fade show active my-3" id="direct" role="tabpanel"
-                                        aria-labelledby="direct-tab">
-                                        <div id="my_camera"></div>
-                                        <form action="{{ route('qrp.upload-close', $dailyCheck->id) }}" method="POST"
-                                            enctype="multipart/form-data">
-                                            @csrf
-                                            <input type="text" name="dataUri" id="dataUri" hidden>
-
-                                            <div id="pre_take_buttons">
-                                                <button type="button" class="btn btn-success mt-3"
-                                                    onClick="preview_snapshot()">
-                                                    <i class="ti ti-camera"></i> Ambil gambar
-                                                </button>
-                                            </div>
-
-                                            <div id="post_take_buttons" style="display:none">
-                                                <button type="button" class="btn btn-warning mt-3"
-                                                    onClick="cancel_preview()">
-                                                    <i class="ti ti-arrow-back-up"></i> Ambil ulang gambar
-                                                </button>
-                                                <div>
-                                                    <button type="submit" class="btn btn-success mt-3">
-                                                        <i class="ti ti-device-floppy"></i> Simpan gambar penyelesaian
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <div class="tab-pane fade my-3" id="galeri" role="tabpanel"
-                                        aria-labelledby="galeri-tab">
-                                        <form action="{{ route('qrp.upload-close-galery', $dailyCheck->id) }}"
-                                            method="POST" enctype="multipart/form-data">
-                                            @csrf
-                                            <input type="file" required
-                                                class="form-control @error('galery') is-invalid @enderror" name="galery">
-                                            <button type="submit" class="btn btn-success mt-3">Simpan</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            @endif
-                        @endif
-                    @endif
-
-                    @error('dataUri')
-                        <div class="form-text text-danger mb-3">{{ $message }}</div>
-                    @enderror
-                    @error('galery')
-                        <div class="form-text text-danger mb-3">{{ $message }}</div>
-                    @enderror
-
-                </div>
-                <div class="col-12 col-md-6 col-lg-6 mb-4">
+                <div class="col-12 col-md-6 col-lg-6 mb-5">
                     <label class="form-label fw-bold">Approval</label>
                     <ul>
                         @foreach ($dailyCheck->qrpDetail->qrpApprovals->sortByDesc('id') as $qrpApproval)
@@ -331,64 +137,81 @@
                         @endforeach
                     </ul>
                 </div>
+
+
+
             </div>
 
-            @if (auth()->user()->id == $dailyCheck->user_id && $dailyCheck->qrpDetail->qrp_status_id == 1)
-                <div class="d-flex justify-content-center gap-3">
-                    <a href="{{ route('qrp.qrp-form-detail.edit', encrypt($dailyCheck->id)) }}"
-                        class="btn btn-warning"><i class="ti ti-edit"></i> Edit Data</a>
-
-
-                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete"><i
-                            class="ti ti-trash"></i> Hapus</button>
-
-                </div>
-
-                <div class="modal fade" id="delete" tabindex="-1" aria-labelledby="exampleModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Hapus Safety Comitee</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <form action="{{ route('qrp.qrp-form-detail.destroy', $dailyCheck->id) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <div class="modal-body">
-                                    Hapus data safety comitee?
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary"
-                                        data-bs-dismiss="modal">Kembali</button>
-                                    <button type="submit" class="btn btn-danger">Ya</button>
-                                </div>
-                            </form>
-                        </div>
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-6 mb-5">
+                    <label class="form-label fw-bold">Temuan sebelum diaction</label>
+                    <div>
+                        <img src="{{ asset('storage/image/' . $dailyCheck->qrpDetail->before) }}" class="img-thumbnail"
+                            alt="{{ $dailyCheck->qrpDetail->before }}">
                     </div>
                 </div>
-            @endif
 
-            @if ($dailyCheck->qrpDetail->qrp_status_id == 1 && $dailyCheck->qrpDetail->qrpApprovals->sortByDesc('id')->first()->approval_id == auth()->user()->id)
-                <div class="d-flex justify-content-center gap-1 mt-4">
-                    {{-- <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#cancel">Cancel</button> --}}
+                <div class="col-12 col-md-6 col-lg-6 mb-5">
+                    <label class="form-label fw-bold">Temuan sesudah diaction</label>
+                    @if ($dailyCheck->qrpDetail->after)
+                        <div>
+                            <img src="{{ asset('storage/image/' . $dailyCheck->qrpDetail->after) }}"
+                                class="img-thumbnail" alt="{{ $dailyCheck->qrpDetail->after }}">
+                        </div>
 
+                        <label class="form-label">Tgl. upload :
+                            {{ $dailyCheck->qrpDetail->after_uploaded_at }}</label>
+                    @else
+                        {{-- @if ($dailyCheck->qrpDetail->qrpApprovals->sortByDesc('id')->first()->approved_at) --}}
+                        <h5 class="mt-1">
+                            <span class="badge bg-warning text-white">BELUM ADA ACTION</span>
+                        </h5>
+                        {{-- @endif --}}
+                    @endif
 
-                    <button class="btn btn-sm btn-success " data-bs-toggle="modal" data-bs-target="#confirm">Konfirmasi
-                    </button>
-
-                    <button class="btn btn-sm btn-info text-nowrap " data-bs-toggle="modal"
-                        data-bs-target="#confirmationModal">Revisi rekomendasi </button>
-
-                        @if (auth()->user()->leader)
-                    <button class="btn btn-warning btn-sm " data-bs-toggle="modal" data-bs-target="#riseup">Rise
-                        Up</button>
-
-                        @endif
+                    @error('dataUri')
+                        <div class="form-text text-danger mb-3">{{ $message }}</div>
+                    @enderror
+                    @error('galery')
+                        <div class="form-text text-danger mb-3">{{ $message }}</div>
+                    @enderror
 
                 </div>
+            </div>
 
+
+
+
+
+
+
+            <div class="modal fade" id="delete" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Hapus Safety Comitee</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <form action="{{ route('qrp.qrp-form-detail.destroy', $dailyCheck->id) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <div class="modal-body">
+                                Hapus data safety comitee?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kembali</button>
+                                <button type="submit" class="btn btn-danger">Ya</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            @if (
+                $dailyCheck->qrpDetail->qrp_status_id == 1 &&
+                    $dailyCheck->qrpDetail->qrpApprovals->sortByDesc('id')->first()->approval_id == auth()->user()->id)
                 <div class="modal fade" id="confirm" tabindex="-1" aria-labelledby="exampleModalLabel"
                     aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
@@ -426,13 +249,15 @@
                                 @csrf
                                 <div class="modal-body">
                                     <div class="form-group">
-                                        <div>Rise up ke <b><i>{{ auth()->user()->leader?->name }} ({{ auth()->user()->leader?->nip }})</i></b>?</div>
+                                        <div>Rise up ke <b><i>{{ auth()->user()->leader?->name }}
+                                                    ({{ auth()->user()->leader?->nip }})</i></b>?</div>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary"
                                         data-bs-dismiss="modal">Kembali</button>
-                                        <input type="text" name="riseup" class="d-none" value="{{ auth()->user()->leader_id }}">
+                                    <input type="text" name="riseup" class="d-none"
+                                        value="{{ auth()->user()->leader_id }}">
                                     <button type="submit" class="btn btn-warning">Rise Up</button>
                                 </div>
                             </form>
@@ -494,11 +319,40 @@
                 </div>
             @endif
 
-            @if ($dailyCheck->qrpDetail->qrpApprovals->sortByDesc('id')->first()->approval_id == auth()->user()->id and $dailyCheck->qrpDetail->qrp_status_id == 4)
-                <div class="form-group mb-4">
+            @if ($dailyCheck->qrpDetail->qrp_status_id == 1 && $dailyCheck->qrpDetail->qrpApprovals->sortByDesc('id')->first()->approval_id == auth()->user()->id)
+            <div class="row">
+                
+                <div class="col-6 col-lg-4 mb-3">
+                    <button class="btn btn-outline-info btn-lg rounded w-100 rounded-pill" data-bs-toggle="modal"
+                    data-bs-target="#confirmationModal">REVISI REKOMENDASI </button>
+                </div>
+
+                @if (auth()->user()->leader)
+                <div class="col-6 col-lg-4 mb-3">
+                    <button class="btn btn-outline-warning btn-lg rounded w-100 rounded-pill" data-bs-toggle="modal"
+                    data-bs-target="#riseup">RISE UP</button>
+                </div>
+                @endif
+
+                <div class="col-12 col-lg-4 mb-3">
+
+                    <button class="btn btn-success rounded btn-lg w-100 rounded-pill" data-bs-toggle="modal"
+                    data-bs-target="#confirm">KONFIRMASI
+                </button>
+            </div>
+
+            </div>
+
+            @endif
+
+            @if (
+                $dailyCheck->qrpDetail->qrpApprovals->sortByDesc('id')->first()->approval_id == auth()->user()->id and
+                    $dailyCheck->qrpDetail->qrp_status_id == 4)
+                <div class="form-group">
                     <div class="d-flex justify-content-center gap-3">
-                        <button class="btn btn-danger " data-bs-toggle="modal" data-bs-target="#open">TOLAK</button>
-                        <button class="btn btn-success " data-bs-toggle="modal" data-bs-target="#close">CLOSE
+                        <button class="btn btn-danger btn-lg w-100 rounded-pill" data-bs-toggle="modal"
+                            data-bs-target="#open">TOLAK</button>
+                        <button class="btn btn-success btn-lg w-100 rounded-pill" data-bs-toggle="modal" data-bs-target="#close">CLOSE
                             LAPORAN</button>
                     </div>
 
@@ -556,6 +410,35 @@
                 </div>
             @endif
         </div>
+
+
+
+    </div>
+
+
+    <div class="d-block d-md-none d-flex gap-3 mb-2">
+        @if (auth()->user()->id == $dailyCheck->user_id && $dailyCheck->qrpDetail->qrp_status_id == 1)
+            <button type="button" class="btn btn-danger btn-lg rounded-pill shadow-lg w-100" data-bs-toggle="modal"
+                data-bs-target="#delete">
+                HAPUS
+            </button>
+            <a href="{{ route('qrp.qrp-form-detail.edit', encrypt($dailyCheck->id)) }}"
+                class="btn btn-warning btn-lg rounded-pill shadow-lg w-100">
+                EDIT
+            </a>
+        @endif
+        @if (
+            $dailyCheck->qrpDetail->qrpApprovals->sortByDesc('id')->first()->approved_at and
+                $dailyCheck->user_id == auth()->user()->id and ($dailyCheck->qrpDetail->qrp_status_id == 2 or $dailyCheck->qrpDetail->qrp_status_id == 4))
+            <a href="{{ route('qrp.tindak-lanjut', encrypt($dailyCheck->id)) }}"
+                class="btn btn-lg @if (!$dailyCheck->qrpDetail->after) btn-success @else btn-warning @endif rounded-pill shadow-lg w-100">
+                @if (!$dailyCheck->qrpDetail->after)
+                    FOTO TINDAK LANJUT
+                @else
+                    EDIT FOTO TINDAK LANJUT
+                @endif
+            </a>
+        @endif
     </div>
 @endsection
 
@@ -588,9 +471,7 @@
             navigator.mediaDevices.enumerateDevices()
                 .then(devices => {
                     devices.forEach(device => {
-                        if (device.kind === 'videoinput') {
-                            console.log(device.label, device.deviceId);
-                        }
+                        if (device.kind === 'videoinput') {}
                     });
                 });
 

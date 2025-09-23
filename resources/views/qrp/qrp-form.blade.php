@@ -18,47 +18,50 @@
         </div>
     </div>
 
-    <div class="card ">
-        <div class="card-header">
-            <h4>Safety Comitee Form</h4>
-        </div>
-        <form method="POST" action="{{ route('qrp.qrp-form-post') }}" enctype="multipart/form-data">
-            @csrf
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-12 col-md-6">
-                        <div class="form-group mb-4">
+    <div class="col-12 col-lg-9">
+        <div class="card ">
+            <div class="card-header">
+                <h4>Safety Comitee Form</h4>
+            </div>
+            <form method="POST" action="{{ route('qrp.qrp-form-post') }}" enctype="multipart/form-data">
+                @csrf
+                <div class="card-body">
+
+                    <div class="">
+                        <div class="form-group mb-5">
                             <label class="form-label fw-bold">Faktor temuan</label>
                             <input type="text" class="form-control" disabled value="{{ $factor->factor_name }}">
                         </div>
                     </div>
-                    <div class="col-12 col-md-6">
-                        <div class="form-group mb-4">
+                    <div class="">
+                        <div class="form-group mb-5">
                             <label class="form-label fw-bold">Area temuan</label>
                             <input name="area" type="text" class="form-control @error('area') is-invalid @enderror"
-                                placeholder="ketik disini" value="{{ old('area') }}" required>
+                                placeholder="ketik disini ..." value="{{ old('area') }}" required>
                             @error('area')
                                 <div class="form-text text-danger text-md mb-3">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
-                    <div class="col-12 col-md-6">
-                        <div class="form-group mb-4">
+                    <div class="">
+                        <div class="form-group mb-5">
                             <label class="form-label fw-bold">Deskripsi temuan</label>
                             <textarea name="description" id="description" oninput="autoGrowDescription(this)"
-                                class="form-control @error('description') is-invalid @enderror" placeholder="ketik disini" required>{{ old('description') }}</textarea>
+                                class="form-control @error('description') is-invalid @enderror" placeholder="ketik disini ..." required>{{ old('description') }}</textarea>
                             @error('description')
                                 <div class="form-text text-danger text-md mb-3">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
-                    <div class="col-12 col-md-6">
-                        <div class="form-group mb-4">
+                    <div class="">
+                        <div class="form-group mb-5">
                             <label class="form-label fw-bold">Kategori</label>
                             <select name="category" class="form-control" required>
                                 <option value="">--</option>
                                 @foreach ($categories as $category)
-                                    <option value="{{ $category->id }}" {{ old('category') == $category->id ? 'selected' : '' }}>{{ $category->category_name }}</option>
+                                    <option value="{{ $category->id }}"
+                                        {{ old('category') == $category->id ? 'selected' : '' }}>
+                                        {{ $category->category_name }}</option>
                                 @endforeach
                             </select>
                             @error('category')
@@ -66,15 +69,16 @@
                             @enderror
                         </div>
                     </div>
-                    <div class="col-12 col-md-6">
-                        <div class="form-group mb-4">
+                    <div class="">
+                        <div class="form-group mb-5">
                             <label class="form-label fw-bold">Rank</label>
                             @foreach ($ranks as $rank)
-                                <div class="form-check mb-4">
+                                <div class="form-check mb-3 d-flex gap-3">
                                     <input required type="radio" class="form-check-input" name="rank"
                                         id="rank{{ $rank->id }}" value="{{ $rank->id }}"
                                         {{ old('rank') == $rank->id ? 'checked' : '' }}>
-                                    <label for="rank{{ $rank->id }}" class="form-check-label">{{ $rank->rank_name }}.
+                                    <label for="rank{{ $rank->id }}"
+                                        class="form-check-label fw-bold">{{ $rank->rank_name }}.
                                     </label>
                                     <label for="rank{{ $rank->id }}"
                                         class="form-check-label">{{ $rank->rank_description }}</label>
@@ -85,8 +89,8 @@
                             @enderror
                         </div>
                     </div>
-                    <div class="col-12 col-md-6">
-                        <div class="form-group mb-4">
+                    <div class="">
+                        <div class="form-group mb-5">
                             <label class="form-label fw-bold">Gambar temuan</label>
                             <input type="text" name="dataUri" id="dataUri" hidden>
 
@@ -103,16 +107,16 @@
                                 </li>
                             </ul>
                             <div class="tab-content" id="myTabContent">
-                                <div class="tab-pane fade show active my-3" id="direct" role="tabpanel"
+                                <div class="tab-pane fade show active my-1 text-center" id="direct" role="tabpanel"
                                     aria-labelledby="direct-tab">
-                                    <div id="my_camera"></div>
-
+                                    <div class="d-flex justify-content-center align-item-center pt-3" >
+                                        <div id="my_camera"></div>
+                                    </div>
+                                        
                                     <div id="pre_take_buttons">
-
                                         <button type="button" class="btn btn-success mt-3" onClick="preview_snapshot()">
                                             <i class="ti ti-camera"></i> Ambil gambar
                                         </button>
-
                                     </div>
 
                                     <div id="post_take_buttons" style="display:none">
@@ -136,52 +140,55 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6">
-                        <div class="form-group mb-4">
+                    <div class="">
+                        <div class="form-group mb-5">
                             <label class="form-label fw-bold">Rekomendasi</label>
                             <textarea name="recomendation" id="recomendation" oninput="autoGrowRecomendation(this)"
-                                class="form-control @error('recomendation') is-invalid @enderror" placeholder="ketik disini" required>{{ old('recomendation') }}</textarea>
+                                class="form-control @error('recomendation') is-invalid @enderror" placeholder="ketik disini ..." required>{{ old('recomendation') }}</textarea>
                             @error('recomendation')
                                 <div class="form-text text-danger text-md mb-3">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
-                    <div class="col-12 col-md-6">
-                        <div class="form-group mb-4">
+                    <div class="">
+                        <div class="form-group mb-5">
                             <label class="form-label fw-bold" for="leader">Atasan langsung</label>
-                            <input type="text" class="form-control" disabled value="{{ $leader?->name }} {{ $leader ? '(' . $leader->nip . ')' : '' }}">
-                            <input type="text" name="leader" class="d-none" value="{{ $leader->id }}" >
+                            <input type="text" class="form-control" disabled
+                                value="{{ $leader?->name }} {{ $leader ? '(' . $leader->nip . ')' : '' }}">
+                            <input type="text" name="leader" class="d-none" value="{{ $leader->id }}">
                             @error('leader')
                                 <div class="text-danger form-text text-md">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
-                </div>
 
-                <button type="button" class="btn btn-success w-100" data-bs-toggle="modal"
-                    data-bs-target="#modalSave">Simpan</button>
 
-                <div class="modal fade" id="modalSave" tabindex="-1" aria-labelledby="exampleModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Safety Comitee</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                Simpan data safety comitee?
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kembali</button>
-                                <button type="submit" class="btn btn-success">Ya</button>
+                    <button type="button" class="btn btn-success btn-lg rounded-pill w-100" data-bs-toggle="modal"
+                        data-bs-target="#modalSave">SIMPAN</button>
+
+                    <div class="modal fade" id="modalSave" tabindex="-1" aria-labelledby="exampleModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Safety Comitee</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Simpan data safety comitee?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Kembali</button>
+                                    <button type="submit" class="btn btn-success">Ya</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 @endsection
 
@@ -190,8 +197,8 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            
-            
+
+
             Webcam.on('error', function(err) {
                 $('#fotoLangsung').addClass('d-none');
                 $('#galeri-tab').addClass('active');
@@ -199,22 +206,29 @@
                 $('#galeri').addClass('show active');
             });
 
-            Webcam.set({
-                width: 240,
-                height: 320,
-                image_format: 'jpeg',
-                jpeg_quality: 90,
-                constraints: {
-                    facingMode: "environment"
-                }
-            });
+
+            @if ($agent->isMobile())
+                Webcam.set({
+                    width: 240,
+                    height: 320,
+                    image_format: 'jpeg',
+                    jpeg_quality: 90,
+                    constraints: {
+                        facingMode: "environment"
+                    }
+                });
+            @else
+                Webcam.set({
+                    width: 320,
+                    height: 240,
+                    image_format: 'jpeg',
+                    jpeg_quality: 90,
+                    constraints: {
+                        facingMode: "environment"
+                    }
+                });
+            @endif
             Webcam.attach('#my_camera');
-
-            const recomendation = document.getElementById("recomendation");
-            const description = document.getElementById("description");
-
-            autoGrowDescription(description);
-            autoGrowRecomendation(recomendation);
 
             @if ($errors->any())
                 let errorList = '';

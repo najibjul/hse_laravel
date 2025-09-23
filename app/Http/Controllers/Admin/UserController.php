@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Models\Department;
 use App\Models\Position;
@@ -12,7 +11,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Maatwebsite\Excel\Excel;
 use Yajra\DataTables\DataTables;
 
 class UserController extends Controller
@@ -20,6 +18,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
+
             $data = User::select('id', 'name', 'nip', 'email', 'cost_center_id', 'department_id', 'role_id', 'position_id', 'plant_id', 'leader_id')
                 ->with(['costCenter' => function ($q) {
                     $q->select('id', 'cost_center_name');
@@ -44,6 +43,7 @@ class UserController extends Controller
                         $q->whereIn('department_id', Auth::user()->adminDepts->pluck('department_id'));
                     });
                 });
+               
 
             return DataTables::of($data)
                 ->addIndexColumn()
@@ -96,7 +96,33 @@ class UserController extends Controller
                     });
                 })
                 ->addColumn('action', function ($row) {
-                    return '<a href="/admin/users/' . encrypt($row->id) . '/edit" class="text-warning fs-4"><i class="ti ti-edit"></i></a>';
+                    return '
+                    <div class="d-flex gap-2">
+                        <a href="/admin/users/' . encrypt($row->id) . '/edit" class="text-warning fs-4"><i class="ti ti-edit"></i></a>
+                        <a href="#" class="text-danger fs-4" data-bs-toggle="modal" data-bs-target="#trash'.$row->id.'"><i class="ti ti-trash"></i></a>
+                    </div>
+
+                    <div class="modal fade" id="trash'.$row->id.'" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Hapus user</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form method="post" action="'.route('admin.users.destroy', $row->id).'">
+                            '.csrf_field().'
+                            '. method_field('delete') .'
+                            <div class="modal-body">
+                                Hapus user <b><i>'.$row->name.' ('. $row->nip .') </i></b>?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kembali</button>
+                                <button type="submit" class="btn btn-danger">Ya</button>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    ';
                 })
                 ->rawColumns(['costCenter', 'department', 'role', 'position', 'plant', 'leader', 'action'])
 
@@ -204,24 +230,9 @@ class UserController extends Controller
 
     public function destroy($id)
     {
-        $id = decrypt($id);
-
-        DB::beginTransaction();
-
-        try {
-            User::where('id', $id)->delete();
-
-            DB::commit();
-            session()->flash('success', 'User berhasil dihapus');
-            return redirect()->route('admin.users.index');
-        } catch (\Throwable $error) {
-            DB::rollBack();
-            session()->flash('error', $error->getMessage());
-            return redirect()->route('admin.users.index');
-        }
+        User::where('id', $id)->delete();
+   
+        session()->flash('success', 'User berhasil dihapus');
+        return redirect()->route('admin.users.index');        
     }
-
-    
-    
-    
 }

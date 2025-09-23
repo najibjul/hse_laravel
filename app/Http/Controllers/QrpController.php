@@ -9,6 +9,7 @@ use App\Models\Notification;
 use App\Models\QrpApproval;
 use App\Models\QrpDetail;
 use App\Models\QrpRecomendation;
+use App\Models\QrpStatus;
 use App\Models\Rank;
 use App\Models\User;
 use Carbon\Carbon;
@@ -34,7 +35,15 @@ class QrpController extends Controller
 
         session()->put('factor', 1);
 
+        $factors = [];
+
         if ($agent->isMobile()) {
+
+            $check_status = $request->check_status;
+            $safety_comitee_status = $request->safety_comitee_status;
+            $start_date = $request->start_date;
+            $end_date = $request->end_date;
+
             $dailyChecks = DailyCheck::when(Auth::user()->role_id == 3, function ($q) {
                 $q->where('user_id', Auth::user()->id)
                     ->when(Auth::user()->position_id == 2, function ($q) {
@@ -64,13 +73,42 @@ class QrpController extends Controller
                             });
                     });
                 })
+                ->when(isset($check_status) && !empty($check_status), function($q) use($check_status){
+                    $q->where('check_status', $check_status);
+                })
+                ->when(isset($safety_comitee_status) && !empty($safety_comitee_status), function($q) use($safety_comitee_status){
+                    $q->whereHas('qrpDetail', function($q) use($safety_comitee_status){
+                        $q->where('qrp_status_id', $safety_comitee_status);
+                    });
+                })
+                ->when(isset($start_date) && !empty($start_date) && isset($end_date) && !empty($end_date), function($q) use($start_date, $end_date){
+                    $start_date = Carbon::parse($start_date)->startOfDay();
+                    $end_date = Carbon::parse($end_date)->endOfDay();
+                    $q->whereBetween('created_at', [$start_date, $end_date]);
+                })
+                ->whereHas('user')
                 ->latest()
-                ->paginate(10);
+                ->paginate(20);
+
+                $statuses = QrpStatus::select('id', 'name')->get();
+                
         } else {
+            $factors = Factor::select('id', 'factor_name')->get();
+            $statuses = QrpStatus::select('id', 'name')->get();
 
             $dailyChecks = null;
 
             if ($request->ajax()) {
+
+                $cari_user = $request->cari_user;
+                $cari_aktifitas = $request->cari_aktifitas;
+                $cari_area = $request->cari_area;
+                $start_date = $request->start_date;
+                $end_date = $request->end_date;
+                $cari_faktor = $request->cari_faktor;
+                $cari_cek = $request->cari_cek;
+                $cari_status = $request->cari_status;
+
                 $data = DailyCheck::with(['qrpDetail' => function ($q) {
                     $q->select('daily_check_id', 'description', 'qrp_status_id')
                         ->with(['qrpStatus' => function ($q) {
@@ -81,6 +119,7 @@ class QrpController extends Controller
                 }])->with(['factor' => function ($q) {
                     $q->select('id', 'factor_name');
                 }])
+                ->whereHas('user')
                 ->when(Auth::user()->role_id == 3, function ($q) {
                     $user_id = Auth::user()->id;
                     $user_ids[] = $user_id;
@@ -98,48 +137,89 @@ class QrpController extends Controller
 
                     $q->whereIn('user_id', $team_ids);
                 })
+                
+                ->when($cari_user, function($q) use ($cari_user){
+                    $q->whereHas('user', function($q) use($cari_user) {
+                        $q->where('name', 'like', "%$cari_user%")
+                        ->orWhere('nip', 'like', "%$cari_user%");
+                    }); 
+                })
+                
+                ->when($cari_aktifitas, function($q) use ($cari_aktifitas){
+                    $q->where('activity', 'like', "%$cari_aktifitas%")
+                    ->orWhereHas('qrpDetail', function($q) use($cari_aktifitas){
+                        $q->where('description', 'like', "%$cari_aktifitas%");
+                    });
+                })
+                
+                ->when($cari_area, function($q) use ($cari_area){
+                    $q->where('area', 'like', "%$cari_area%");
+                })
+                
+                ->when($start_date && $end_date, function($q) use ($start_date, $end_date){
+                    $q->whereBetween('created_at', [$end_date, $start_date]);
+                })
+
+                ->when($cari_faktor, function($q) use ($cari_faktor){
+                    $q->where('factor_id', $cari_faktor);
+                })
+
+                ->when($cari_faktor, function($q) use ($cari_faktor){
+                    $q->where('factor_id', $cari_faktor);
+                })
+
+                ->when($cari_cek, function($q) use ($cari_cek){
+                    $q->where('check_status', $cari_cek);
+                })
+                
+                ->when($cari_status, function($q) use ($cari_status){
+                    $q->wherehas('qrpDetail', function($q) use ($cari_status){
+                        $q->where('qrp_status_id', $cari_status);
+                    });
+                })
                 ->orderByDesc('id')
                 ->select('id', 'user_id', 'activity', 'area', 'factor_id', 'check_status', 'created_at');
 
-                if ($request->start_date && $request->end_date) {
-                    $data->whereDate('created_at', '>=', $request->start_date)->whereDate('created_at', '<=', $request->end_date);
-                }
+                // if ($request->start_date && $request->end_date) {
+                //     $data->whereDate('created_at', '>=', $request->start_date)->whereDate('created_at', '<=', $request->end_date);
+                // }
+
 
                 return DataTables::of($data)
                     ->addIndexColumn()
                     ->addColumn('user', function ($row) {
                         return $row->user->name . ' (' . $row->user->nip . ')';
                     })
-                    ->filterColumn('user', function ($query, $keyword) {
-                        $query->whereHas('user', function ($q) use ($keyword) {
-                            $q->where('name', 'like', "%{$keyword}%")->orWhere('nip', 'like', "%{$keyword}%");
-                        });
-                    })
+                    // ->filterColumn('user', function ($query, $keyword) {
+                    //     $query->whereHas('user', function ($q) use ($keyword) {
+                    //         $q->where('name', 'like', "%{$keyword}%")->orWhere('nip', 'like', "%{$keyword}%");
+                    //     });
+                    // })
                     ->addColumn('description', function ($row) {
                         return $row->qrpDetail?->description;
                     })
-                    ->filterColumn('description', function ($query, $keyword) {
-                        $query->whereHas('qrpDetail', function ($q) use ($keyword) {
-                            $q->where('description', 'like', "%{$keyword}%");
-                        });
-                    })
+                    // ->filterColumn('description', function ($query, $keyword) {
+                    //     $query->whereHas('qrpDetail', function ($q) use ($keyword) {
+                    //         $q->where('description', 'like', "%{$keyword}%");
+                    //     });
+                    // })
                     ->addColumn('area', function ($row) {
                         return $row->area;
                     })
-                    ->filterColumn('area', function ($query, $keyword) {
-                        $query->where('area', 'like', "%{$keyword}%");
-                    })
+                    // ->filterColumn('area', function ($query, $keyword) {
+                    //     $query->where('area', 'like', "%{$keyword}%");
+                    // })
                     ->addColumn('created_at', function ($row) {
-                        return $row->created_at;
+                        return Carbon::parse($row->created_at)->format('d M Y');
                     })
                     ->addColumn('factor', function ($row) {
                         return $row->factor?->factor_name;
                     })
-                    ->filterColumn('factor', function ($query, $keyword) {
-                        $query->whereHas('factor', function ($q) use ($keyword) {
-                            $q->where('factor_name', 'like', "%{$keyword}%");
-                        });
-                    })
+                    // ->filterColumn('factor', function ($query, $keyword) {
+                    //     $query->whereHas('factor', function ($q) use ($keyword) {
+                    //         $q->where('factor_name', 'like', "%{$keyword}%");
+                    //     });
+                    // })
                     ->addColumn('check_status', function ($row) {
                         if ($row->check_status == "OK") {
                             return '<span class="badge bg-success rounded">OK</span>';
@@ -147,28 +227,28 @@ class QrpController extends Controller
                             return '<span class="badge bg-danger rounded">NG</span>';
                         }
                     })
-                    ->filterColumn('check_status', function ($query, $keyword) {
-                        $query->where('check_status', 'like', "%{$keyword}%");
-                    })
+                    // ->filterColumn('check_status', function ($query, $keyword) {
+                    //     $query->where('check_status', 'like', "%{$keyword}%");
+                    // })
                     ->addColumn('status', function ($row) {
                         return '<span class="'.$row->qrpDetail?->qrpStatus?->class.'">'.$row->qrpDetail?->qrpStatus?->name.'</span>';
                     })
-                    ->filterColumn('status', function ($query, $keyword) {
-                        $query->whereHas('qrpDetail', function ($q) use ($keyword) {
-                            $q->whereHas('qrpStatus', function ($q) use ($keyword) {
-                                $q->where('name', 'like', "%{$keyword}%");
-                            });
-                        });
-                    })
+                    // ->filterColumn('status', function ($query, $keyword) {
+                    //     $query->whereHas('qrpDetail', function ($q) use ($keyword) {
+                    //         $q->whereHas('qrpStatus', function ($q) use ($keyword) {
+                    //             $q->where('name', 'like', "%{$keyword}%");
+                    //         });
+                    //     });
+                    // })
                     ->addColumn('action', function ($row) {
-                        return '<a href="/qrp-form/detail/' . encrypt($row->id) . '" class="text-info"><i class="ti ti-eye"></i></a>';
+                        return '<a href="/qrp-form/detail/' . encrypt($row->id) . '" class="btn btn-sm btn-outline-info rounded"><i class="ti ti-eye"></i></a>';
                     })
                     ->rawColumns(['user', 'description', 'area', 'created_at', 'factor', 'check_status', 'status', 'action'])
                     ->make(true);
             }
         }
 
-        return view('qrp.daily-checking', compact('dailyChecks', 'search', 'agent'));
+        return view('qrp.daily-checking', compact('dailyChecks', 'search', 'agent', 'factors', 'statuses'));
     }
 
     public function dailyCheckingPost(Request $request)
@@ -224,7 +304,8 @@ class QrpController extends Controller
         $categories = Category::get();
         $ranks = Rank::get();
         $leader = User::find(Auth::user()->leader_id);
-        return view('qrp.qrp-form', compact('factor', 'categories', 'ranks', 'leader'));
+        $agent = new Agent();
+        return view('qrp.qrp-form', compact('factor', 'categories', 'ranks', 'leader', 'agent'));
     }
 
     public function qrpFormPost(Request $request)
@@ -604,24 +685,24 @@ class QrpController extends Controller
                 'qrp_status_id' => 4
             ]);
 
-            $dailyCheck = DailyCheck::find($id);
+            // $dailyCheck = DailyCheck::find($id);
 
-            if ($dailyCheck->qrpDetail->adh_id && !$dailyCheck->qrpDetail->dh_id) {
-                $user = $dailyCheck->qrpDetail->adh_id;
-            } elseif ($dailyCheck->qrpDetail->dh_id && !$dailyCheck->qrpDetail->ph_id) {
-                $user = $dailyCheck->qrpDetail->dh_id;
-            } elseif ($dailyCheck->qrpDetail->ph_id) {
-                $user = $dailyCheck->qrpDetail->ph_id;
-            }
+            // if ($dailyCheck->qrpDetail->adh_id && !$dailyCheck->qrpDetail->dh_id) {
+            //     $user = $dailyCheck->qrpDetail->adh_id;
+            // } elseif ($dailyCheck->qrpDetail->dh_id && !$dailyCheck->qrpDetail->ph_id) {
+            //     $user = $dailyCheck->qrpDetail->dh_id;
+            // } elseif ($dailyCheck->qrpDetail->ph_id) {
+            //     $user = $dailyCheck->qrpDetail->ph_id;
+            // }
 
-            Notification::create([
-                'user_id' => $user,
-                'title' => 'Pekerjaan telah dilakukan',
-                'body' => 'Pastikan penyelesaian sesuai dengan rekomendasi',
-                'target' => 'qrp',
-                'target_id' => $dailyCheck->id,
+            // Notification::create([
+            //     'user_id' => $user,
+            //     'title' => 'Pekerjaan telah dilakukan',
+            //     'body' => 'Pastikan penyelesaian sesuai dengan rekomendasi',
+            //     'target' => 'qrp',
+            //     'target_id' => $dailyCheck->id,
 
-            ]);
+            // ]);
 
             DB::commit();
             session()->flash('success', 'Gambar penyelesaian berhasil diupload');
@@ -793,54 +874,43 @@ class QrpController extends Controller
 
     public function tolakOpen(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'recomendation' => 'required|string',
         ]);
 
-        if ($validator->fails()) {
-            return back()->withErrors($validator);
-        }
+        $qrpDetail = QrpDetail::where('daily_check_id', $id)->first();
 
-        DB::beginTransaction();
+        QrpRecomendation::where('qrp_detail_id', $id)->update([
+            'status' => 2
+        ]);
 
-        try {
-            $qrpDetail = QrpDetail::where('daily_check_id', $id)->first();
-            $after = $qrpDetail->after;
-            $oldRecomendation = json_decode($qrpDetail->recomendation);
+        QrpRecomendation::create([
+            'qrp_detail_id' => $qrpDetail->id,
+            'user_id' => Auth::user()->id,
+            'recomendation' => $request->recomendation,
+            'status' => 1
+        ]);
 
-            $recomendation = [
-                'user' => Auth::user()->name . " (" . Auth::user()->nip . ")",
-                'recomendation' => $request->recomendation
-            ];
+        $qrpDetail->update([
+            'qrp_status_id' => 2,
+            'after_uploaded_at' => null,
+            'after' => null
+        ]);
 
-            $oldRecomendation[] = $recomendation;
+        Notification::create([
+            'user_id' => $qrpDetail->dailyCheck->user_id,
+            'title' => 'Laporan ditolak',
+            'body' => 'Mohon ulangi sesuai rekomendasi',
+            'target' => 'qrp',
+            'target_id' => $id,
 
-            QrpDetail::where('daily_check_id', $id)->update([
-                'recomendation' => $oldRecomendation,
-                'qrp_status_id' => 2,
-                'after_uploaded_at' => null,
-                'after' => null
-            ]);
+        ]);
 
-            Notification::create([
-                'user_id' => $qrpDetail->dailyCheck->user_id,
-                'title' => 'Laporan ditolak',
-                'body' => 'Mohon ulangi sesuai rekomendasi',
-                'target' => 'qrp',
-                'target_id' => $id,
+        $after = $qrpDetail->after;
+        Storage::disk('public')->delete("image/{$after}");
 
-            ]);
-
-            Storage::disk('public')->delete("image/{$after}");
-
-            DB::commit();
-            session()->flash('success', 'Laporan ditolak');
-            return redirect()->route('qrp.qrp-form-detail', encrypt($id));
-        } catch (\Exception $error) {
-            DB::rollBack();
-            session()->flash('error', $error->getMessage());
-            return redirect()->route('qrp.qrp-form-detail', encrypt($id));
-        }
+        session()->flash('success', 'Laporan ditolak');
+        return redirect()->route('qrp.qrp-form-detail', encrypt($id));       
     }
 
     public function riseUp($id, Request $request)
@@ -881,5 +951,69 @@ class QrpController extends Controller
             session()->flash('error', $th->getMessage());
             return redirect()->route('qrp.qrp-form-detail', encrypt($id));
         }
+    }
+
+    public function tindakLanjut($id)
+    {
+        $dailyCheck = DailyCheck::findOrFail(decrypt($id));
+        $agent = new Agent();
+        return view('qrp.tindak-lanjut', compact('dailyCheck', 'agent'));
+    }
+
+    public function tindakLanjutLive(Request $request, $id)
+    {
+        $request->validate([
+            'dataUri' => 'required'
+        ]);
+
+        $dataUri = $request->dataUri;
+
+        if (preg_match('/^data:image\/(\w+);base64,/', $dataUri, $type)) {
+            $data = substr($dataUri, strpos($dataUri, ',') + 1);
+            $ext = strtolower($type[1]);
+            $data = base64_decode($data);
+        }
+
+        $filename = time() . '.' . $ext;
+        Storage::disk('public')->put("image/{$filename}", $data);
+
+        $qrpDetail = QrpDetail::where('daily_check_id', $id)->first();
+        $after = $qrpDetail->after;
+
+        $qrpDetail->update([
+            'after' => $filename,
+            'after_uploaded_at' => now(),
+            'qrp_status_id' => 4
+        ]);
+
+        Storage::disk('public')->delete("image/{$after}");
+
+        session()->flash('success', 'Foto tindak lanjut berhasil disimpan');
+        return redirect()->route('qrp.qrp-form-detail', encrypt($id));
+    }
+
+    public function tindakLanjutGallery(Request $request, $id)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,jpg,png|max:5120',
+        ]);
+
+        $qrpDetail = QrpDetail::where('daily_check_id', $id)->first();
+        $after = $qrpDetail->after;
+
+        $file = $request->file('image');
+        $filename = time() . '.' . $file->getClientOriginalExtension();
+        $file->storeAs('image', $filename, 'public');
+
+        $qrpDetail->update([
+            'after' => $filename,
+            'after_uploaded_at' => now(),
+            'qrp_status_id' => 4
+        ]);
+
+        Storage::disk('public')->delete("image/{$after}");
+
+        session()->flash('success', 'Foto tindak lanjut berhasil disimpan');
+        return redirect()->route('qrp.qrp-form-detail', encrypt($id));
     }
 }
