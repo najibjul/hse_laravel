@@ -31,7 +31,7 @@ class PositionController extends Controller
                     }   
                 })
                 ->addColumn('action', function ($row) {
-                    return '<a href="/admin/positions/' . encrypt($row->id) . '/edit" class="text-warning fs-4"><i class="ti ti-edit"></i></a>';
+                    return '<a href="/admin/positions/' . encrypt($row->id) . '/edit" class="btn btn-sm btn-warning"><i class="ti ti-edit"></i></a>';
                 })
                 ->rawColumns(['safety_comitee', 'action' ])
                 ->make(true);

@@ -1,12 +1,10 @@
-@extends('layouts.app')
+@extends('layouts.app', ['title' => 'Tambah User'])
 @section('content')
-    <div class="page-header">
+    <div class="page-header" id="master-user-create">
         <div class="page-block">
             <div class="row align-items-center">
                 <div class="col-md-12">
-                    <div class="page-header-title">
-                        <h5 class="m-b-10">Tambah User</h5>
-                    </div>
+                    
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
                         <li class="breadcrumb-item"><a href="{{ route('admin.users.index') }}">Master User</a></li>

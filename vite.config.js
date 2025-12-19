@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
-import fs from 'fs';
+// import fs from 'fs';
 
 export default defineConfig({
   plugins: [
@@ -14,12 +14,12 @@ export default defineConfig({
     }),
 
   ],
-  resolve: {
-    alias: {
-    }
-  },
+  // resolve: {
+  //   alias: {
+  //   }
+  // },
 
-  server: {
+  // server: {
       // cors: true,
       // host: "0.0.0.0",
       // port: 5173,
@@ -31,6 +31,6 @@ export default defineConfig({
     //     host: 'localhost',
     //     protocol: 'wss'
     // }
-  }
+  // }
 
 });

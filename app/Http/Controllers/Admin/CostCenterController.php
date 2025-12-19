@@ -14,21 +14,20 @@ class CostCenterController extends Controller
     public function index(Request $request) 
     {
         if ($request->ajax()) {
-            $data = CostCenter::select('id', 'cost_center_name');
+            $search = $request->input('search.value', '');
+
+            $data = CostCenter::select('id', 'cost_center_name')
+            ->when($search, fn($q) =>  $q->where('cost_center_name', 'like', "%{$search}%") );
 
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('costCenter', function($row) {
                     return substr($row->cost_center_name,0,3);
                 })
-                ->filterColumn('costCenter', function ($query, $keyword) {
-                    $query->where('cost_center_name', 'like', "%{$keyword}%");
-                })
-                
                 ->addColumn('action', function ($row) {
-                    return '<a href="/admin/cost-centers/' . encrypt($row->id) . '/edit" class="text-warning fs-4"><i class="ti ti-edit"></i></a>';
+                    return '<a href="/admin/cost-centers/' . encrypt($row->id) . '/edit" class="btn btn-warning btn-sm"><i class="ti ti-edit"></i></a>';
                 })
-                ->rawColumns(['action', 'costCenter'])
+                ->rawColumns(['action'])
                 ->make(true);
         }
         return view('admin.cost-centers.index');

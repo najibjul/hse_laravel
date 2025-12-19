@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-    <div class="page-header">
+    <div class="page-header" id="master-user-create">
         <div class="page-block">
             <div class="row align-items-center">
                 <div class="col-md-12">
@@ -18,7 +18,35 @@
     </div>
     <div class="card">
         <div class="card-header">
-            <h4>Edit User</h4>
+            <div class="d-flex justify-content-between">
+                <h4>Edit User</h4>
+                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#mfa"><i class="ti ti-refresh"></i> Reset MFA</button>
+            </div>
+
+            <div class="modal fade" id="mfa" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Reset MFA</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Reset MFA untuk user <b>{{ $user->name }} ({{ $user->nip }})</b>?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kembali</button>
+                                <form method="POST" action="{{ route('mfa.reset', $user->id) }}">
+                                    @csrf
+                                    @method('put')
+                                    <button type="submit" class="btn btn-info">Ya</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
         </div>
         <div class="card-body">
             <form action="{{ route('admin.users.update', $user->id) }}" method="POST">

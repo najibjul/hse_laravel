@@ -15,15 +15,18 @@ class DepartmentController
     public function index(Request $request)
     {
         if ($request->ajax()) {
+            $search = $request->input('search.value', '');
+
             $data = Department::select('id', 'department_name')
                 ->when(Auth::user()->role_id == 2, function($q){
                     $q->whereIn('id', Auth::user()->adminDepts->pluck('department_id'));
-                });
+                })
+                ->when($search, fn($q) => $q->where('department_name', 'like', "%{$search}%"));
 
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    return '<a href="/admin/departments/' . encrypt($row->id) . '/edit" class="text-warning fs-4"><i class="ti ti-edit"></i></a>';
+                    return '<a href="/admin/departments/' . encrypt($row->id) . '/edit" class="btn btn-sm btn-warning"><i class="ti ti-edit"></i></a>';
                 })
                 ->rawColumns(['action'])
                 ->make(true);

@@ -16,7 +16,8 @@ class QrpDetail extends Model
         'after',
         'after_uploaded_at',
         'closed_at',
-        'qrp_status_id'
+        'qrp_status_id',
+        'revision_note'
     ];
 
     public function deptHead()

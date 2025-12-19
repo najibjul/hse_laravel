@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PasswordHistory;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 
 class ProfileController extends Controller
 {
@@ -20,12 +21,11 @@ class ProfileController extends Controller
             'current_password' => ['required'],
             'password' => [
                 'required',
-                'string',
                 'min:8',
                 'regex:/[A-Z]/',     
                 'regex:/[a-z]/',     
                 'regex:/[0-9]/',     
-                'regex:/[@$!%*#?&]/',
+                'regex:/[@$!%*#?&.,]/',
                 'confirmed'
             ],
         ]);
@@ -37,7 +37,31 @@ class ProfileController extends Controller
             return back()->withErrors(['current_password' => 'Password salah.']);
         }
 
-        $user->password = Hash::make($request->password);
+        $passwordHistories = PasswordHistory::where('user_id', $user->id)->get();
+        $countPassword = count($passwordHistories);
+
+        $hashedPassword = Hash::make($request->password);
+
+        
+            foreach ($passwordHistories as $passwordHistory) {
+                if (Hash::check($request->old_password, $passwordHistory->password)) {
+                    return back()->withErrors(['password' => 'Password sudah pernah digunakan.']);
+                }
+            }
+
+            if ($countPassword >= 10) {
+                PasswordHistory::orderBy('id')->first()->delete();    
+            }
+
+            PasswordHistory::create([
+                'user_id' => $user->id,
+                'password' => $hashedPassword
+            ]);
+        
+
+        $user->password = $hashedPassword;
+        $user->must_change_password = true;
+        $user->password_expire_at = Carbon::now()->addDays(90);
         $user->save();
 
         return back()->with('success', 'Password berhasil diubah.');

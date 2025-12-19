@@ -91,7 +91,7 @@ class QrpController extends Controller
                 ->paginate(20);
 
                 $statuses = QrpStatus::select('id', 'name')->get();
-                
+
         } else {
             $factors = Factor::select('id', 'factor_name')->get();
             $statuses = QrpStatus::select('id', 'name')->get();
@@ -137,25 +137,25 @@ class QrpController extends Controller
 
                     $q->whereIn('user_id', $team_ids);
                 })
-                
+
                 ->when($cari_user, function($q) use ($cari_user){
                     $q->whereHas('user', function($q) use($cari_user) {
                         $q->where('name', 'like', "%$cari_user%")
                         ->orWhere('nip', 'like', "%$cari_user%");
-                    }); 
+                    });
                 })
-                
+
                 ->when($cari_aktifitas, function($q) use ($cari_aktifitas){
                     $q->where('activity', 'like', "%$cari_aktifitas%")
                     ->orWhereHas('qrpDetail', function($q) use($cari_aktifitas){
                         $q->where('description', 'like', "%$cari_aktifitas%");
                     });
                 })
-                
+
                 ->when($cari_area, function($q) use ($cari_area){
                     $q->where('area', 'like', "%$cari_area%");
                 })
-                
+
                 ->when($start_date && $end_date, function($q) use ($start_date, $end_date){
                     $q->whereBetween('created_at', [$end_date, $start_date]);
                 })
@@ -171,7 +171,7 @@ class QrpController extends Controller
                 ->when($cari_cek, function($q) use ($cari_cek){
                     $q->where('check_status', $cari_cek);
                 })
-                
+
                 ->when($cari_status, function($q) use ($cari_status){
                     $q->wherehas('qrpDetail', function($q) use ($cari_status){
                         $q->where('qrp_status_id', $cari_status);
@@ -549,7 +549,9 @@ class QrpController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'recomendation' => 'nullable'
+            'recomendation' => 'nullable',
+            'due_date_rev' => 'nullable|date|after_or_equal:today|required_with:due_date_rev_note',
+            'due_date_rev_note' => 'nullable|string|required_with:due_date_rev',
         ]);
 
         if ($validator->fails()) {
@@ -577,9 +579,16 @@ class QrpController extends Controller
                 'status' => 'approved',
             ]);
 
-            QrpDetail::where('daily_check_id', $id)->update([
+            $qrpDetail->update([
                 'qrp_status_id' => 2
             ]);
+
+            if (empty($request->due_date_rev)) {
+                $qrpDetail->update([
+                    'due_date' => $request->due_date_rev,
+                    'revision_note' => $request->due_date_rev_note
+                ]);
+            }
 
             DB::commit();
             session()->flash('success', 'Laporan berhasil diupdate');
@@ -591,8 +600,13 @@ class QrpController extends Controller
         }
     }
 
-    public function confirm($id)
+    public function confirm(Request $request, $id)
     {
+        $request->validate([
+            'due_date_confirm' => 'nullable|date|after_or_equal:today|required_with:due_date_confirm_note',
+            'due_date_confirm_note' => 'nullable|string|required_with:due_date_confirm',
+        ]);
+
         DB::beginTransaction();
 
         try {
@@ -603,9 +617,18 @@ class QrpController extends Controller
                 'status' => 'approved',
             ]);
 
-            QrpDetail::where('daily_check_id', $id)->update([
+            $qrpDetail = QrpDetail::where('daily_check_id', $id)->first();
+
+            $qrpDetail->update([
                 'qrp_status_id' => 2
             ]);
+
+            if (!empty($request->due_date_confirm)) {
+                $qrpDetail->update([
+                    'due_date' => $request->due_date_confirm,
+                    'revision_note' => $request->due_date_confirm_note
+                ]);
+            }
 
             Notification::create([
                 'user_id' => $dailyCheck->user_id,
@@ -910,13 +933,15 @@ class QrpController extends Controller
         Storage::disk('public')->delete("image/{$after}");
 
         session()->flash('success', 'Laporan ditolak');
-        return redirect()->route('qrp.qrp-form-detail', encrypt($id));       
+        return redirect()->route('qrp.qrp-form-detail', encrypt($id));
     }
 
     public function riseUp($id, Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'riseup' => 'required'
+            'riseup' => 'required',
+            'due_date_rise' => 'nullable|date|after_or_equal:today|required_with:due_date_rise_note',
+            'due_date_rise_note' => 'nullable|string|required_with:due_date_rise',
         ]);
 
         if ($validator->fails()) {
@@ -934,6 +959,13 @@ class QrpController extends Controller
                 'approval_id' => $request->riseup,
                 'status' => 'waiting'
             ]);
+
+            if (!empty($request->due_date_rise)) {
+                QrpDetail::where('daily_check_id', $id)->update([
+                    'due_date' => $request->due_date_rise,
+                    'revision_note' => $request->due_date_rise_note
+                ]);
+            }
 
             Notification::create([
                 'user_id' => $request->riseup,

@@ -19,7 +19,7 @@
     <div class="card">
         <div class="card-header">
             <div class="my-2 d-flex justify-content-between">
-                
+
                 <h4>Detail laporan</h4>
 
                 <div class="d-none d-md-block">
@@ -194,12 +194,6 @@ unset($__errorArgs, $__bag); ?>
                 </div>
             </div>
 
-
-
-
-
-
-
             <div class="modal fade" id="delete" tabindex="-1" aria-labelledby="exampleModalLabel"
                 aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
@@ -240,10 +234,22 @@ unset($__errorArgs, $__bag); ?>
                                 <?php echo csrf_field(); ?>
                                 <div class="modal-body">
                                     Lanjut perbaikan sesuai rekomendasi?
+                                    <div class="d-none" id="due-date-confirm-content">
+                                        <hr>
+                                        <div class="my-2">
+                                            <label for="due-date-confirm">Revisi tanggal</label>
+                                            <input type="date" name="due_date_confirm" class="form-control" id="due-date-confirm" min="<?php echo e(\Carbon\Carbon::now()->format('Y-m-d')); ?>">
+                                        </div>
+                                        <div class="my-2">
+                                            <label for="due-date-confirm-note">Catatan revisi tanggal</label>
+                                            <textarea placeholder="Ketik disini ..." name="due_date_confirm_note" id="due-date-confirm-note" rows="3" class="form-control"></textarea>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary"
                                         data-bs-dismiss="modal">Kembali</button>
+                                    <button id="btn-due-date-confirm" type="button" class="btn btn-info" onclick="dueDateConfirm();">Ganti due date</button>
                                     <button type="submit" class="btn btn-success">Konfirmasi</button>
                                 </div>
                             </form>
@@ -268,10 +274,22 @@ unset($__errorArgs, $__bag); ?>
 
                                                     (<?php echo e(auth()->user()->leader?->nip); ?>)</i></b>?</div>
                                     </div>
+                                    <div class="d-none" id="due-date-rise-content">
+                                        <hr>
+                                        <div class="my-2">
+                                            <label for="due-date-rise">Revisi tanggal</label>
+                                            <input type="date" name="due_date_rise" class="form-control" id="due-date-rise" min="<?php echo e(\Carbon\Carbon::now()->format('Y-m-d')); ?>">
+                                        </div>
+                                        <div class="my-2">
+                                            <label for="due-date-rise-note">Catatan revisi tanggal</label>
+                                            <textarea placeholder="Ketik disini ..." name="due_date_rise_note" id="due-date-rise-note" rows="3" class="form-control"></textarea>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary"
                                         data-bs-dismiss="modal">Kembali</button>
+                                    <button id="btn-due-date-rise" type="button" class="btn btn-info" onclick="dueDateRise();">Ganti due date</button>
                                     <input type="text" name="riseup" class="d-none"
                                         value="<?php echo e(auth()->user()->leader_id); ?>">
                                     <button type="submit" class="btn btn-warning">Rise Up</button>
@@ -305,11 +323,24 @@ endif;
 unset($__errorArgs, $__bag); ?>"
                                             placeholder="ketik disini"></textarea>
                                     </div>
+
+                                    <div class="d-none" id="due-date-rev-content">
+                                        <hr>
+                                        <div class="my-2">
+                                            <label for="due-date-rev">Revisi tanggal</label>
+                                            <input type="date" name="due_date_rev" class="form-control" id="due-date-rev" min="<?php echo e(\Carbon\Carbon::now()->format('Y-m-d')); ?>">
+                                        </div>
+                                        <div class="my-2">
+                                            <label for="due-date-rev-note">Catatan revisi tanggal</label>
+                                            <textarea placeholder="Ketik disini ..." name="due_date_rev_note" id="due-date-rev-note" rows="3" class="form-control"></textarea>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary"
                                         data-bs-dismiss="modal">Kembali</button>
-                                    <button type="submit" class="btn btn-info">Revisi</button>
+                                    <button id="btn-due-date-rev" type="button" class="btn btn-success" onclick="dueDateRev();">Ganti due date</button>
+                                    <button type="submit" class="btn btn-info">Simpan</button>
                                 </div>
                             </form>
                         </div>
@@ -351,7 +382,7 @@ unset($__errorArgs, $__bag); ?> "><?php echo e($dailyCheck->qrpDetail->recomenda
 
             <?php if($dailyCheck->qrpDetail->qrp_status_id == 1 && $dailyCheck->qrpDetail->qrpApprovals->sortByDesc('id')->first()->approval_id == auth()->user()->id): ?>
             <div class="row">
-                
+
                 <div class="col-6 col-lg-4 mb-3">
                     <button class="btn btn-outline-info btn-lg rounded w-100 rounded-pill" data-bs-toggle="modal"
                     data-bs-target="#confirmationModal">REVISI REKOMENDASI </button>
@@ -453,14 +484,14 @@ unset($__errorArgs, $__bag); ?>" placeholder="ketik disini"></textarea>
     </div>
 
 
-    <div class="d-block d-md-none d-flex gap-3 mb-2">
+    <div class="d-flex gap-3 mb-2">
         <?php if(auth()->user()->id == $dailyCheck->user_id && $dailyCheck->qrpDetail->qrp_status_id == 1): ?>
-            <button type="button" class="btn btn-danger btn-lg rounded-pill shadow-lg w-100" data-bs-toggle="modal"
+            <button type="button" class="btn btn-danger btn-lg rounded-pill shadow-lg w-100 d-block d-md-none" data-bs-toggle="modal"
                 data-bs-target="#delete">
                 HAPUS
             </button>
             <a href="<?php echo e(route('qrp.qrp-form-detail.edit', encrypt($dailyCheck->id))); ?>"
-                class="btn btn-warning btn-lg rounded-pill shadow-lg w-100">
+                class="btn btn-warning btn-lg rounded-pill shadow-lg w-100 d-block d-md-none">
                 EDIT
             </a>
         <?php endif; ?>
@@ -569,6 +600,21 @@ unset($__errorArgs, $__bag); ?>" placeholder="ketik disini"></textarea>
         function autoGrowDescription(element) {
             element.style.height = "5px";
             element.style.height = (element.scrollHeight) + "px";
+        }
+
+        function dueDateConfirm(){
+            $('#due-date-confirm-content').removeClass("d-none");
+            $('#btn-due-date-confirm').addClass("d-none");
+        }
+
+        function dueDateRise(){
+            $('#due-date-rise-content').removeClass("d-none");
+            $('#btn-due-date-rise').addClass("d-none");
+        }
+
+        function dueDateRev(){
+            $('#due-date-rev-content').removeClass("d-none");
+            $('#btn-due-date-rev').addClass("d-none");
         }
     </script>
 <?php $__env->stopPush(); ?>

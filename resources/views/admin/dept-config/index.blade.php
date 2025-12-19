@@ -1,16 +1,12 @@
 @extends('layouts.app', ['title' => 'Department Configuration'])
 @section('content')
-    <div class="page-header">
+    <div class="page-header" id="master-dept-conf-index">
         <div class="page-block">
             <div class="row align-items-center">
                 <div class="col-md-12">
-                    <div class="page-header-title">
-                        <h5 class="m-b-10">Department Configuration</h5>
-                    </div>
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
                         <li class="breadcrumb-item"><a href="javascript: void(0)">Department Configuration</a></li>
-                        <li class="breadcrumb-item" aria-current="page">Department Configuration</li>
                     </ul>
                 </div>
             </div>
@@ -31,9 +27,9 @@
                 <table class="table" id="dept-config">
                     <thead class="table-success">
                         <tr>
-                            <th>No</th>
+                            <th class="text-center">No</th>
                             <th>Admin</th>
-                            <th>Akses Departemen</th>
+                            <th class="text-center">Akses Departemen</th>
                             <th class="text-center">Opsi</th>
                         </tr>
                     </thead>

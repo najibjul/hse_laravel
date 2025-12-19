@@ -35,7 +35,7 @@
                                 </div>
                             </button>
                         @endif
-                        <button type="button" id="qrpExport" class="btn btn-info ms-2 rounded"><i
+                        <button type="button" id="qrpExport" class="btn btn-success ms-2 rounded"><i
                                 class="ti ti-file-export"></i> Export</button>
                     </div>
 
@@ -157,7 +157,7 @@
                                 <option value="">-Status safety comitee-</option>
                                 @foreach ($statuses as $status)
                                     <option {{ request('safety_comitee_status') == $status->id ? 'selected' : '' }} value="{{ $status->id }}">{{ $status->name }}</option>
-                                @endforeach                                
+                                @endforeach
                             </select>
 
                             <div class="d-flex">

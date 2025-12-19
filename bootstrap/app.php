@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\CheckMfa;
 use App\Http\Middleware\FactorSession;
+use App\Http\Middleware\PasswordMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -16,6 +18,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => AdminMiddleware::class,
             'factor' => FactorSession::class,
+            'check.mfa' => CheckMfa::class,
+            'changePassword' => PasswordMiddleware::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

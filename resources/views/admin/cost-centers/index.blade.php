@@ -1,15 +1,11 @@
 @extends('layouts.app', ['title' => 'Master Cost Center'])
 @section('content')
-    <div class="page-header">
+    <div class="page-header" id="master-cost-center-index">
         <div class="page-block">
             <div class="row align-items-center">
                 <div class="col-md-12">
-                    <div class="page-header-title">
-                        <h5 class="m-b-10">Master Cost Center</h5>
-                    </div>
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="javascript: void(0)">Master Cost Center</a></li>
                         <li class="breadcrumb-item" aria-current="page">Master Cost Center</li>
                     </ul>
                 </div>
@@ -36,7 +32,7 @@
                 <table class="table" id="costCenterTable">
                     <thead class="table-success">
                         <tr>
-                            <th>No</th>
+                            <th class="text-center">No</th>
                             <th>Nama</th>
                             <th class="text-center">Opsi</th>
                         </tr>

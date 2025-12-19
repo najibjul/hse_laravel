@@ -34,7 +34,7 @@
                                 </div>
                             </button>
                         <?php endif; ?>
-                        <button type="button" id="qrpExport" class="btn btn-info ms-2 rounded"><i
+                        <button type="button" id="qrpExport" class="btn btn-success ms-2 rounded"><i
                                 class="ti ti-file-export"></i> Export</button>
                     </div>
 
@@ -154,7 +154,7 @@
                                 <option value="">-Status safety comitee-</option>
                                 <?php $__currentLoopData = $statuses; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $status): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <option <?php echo e(request('safety_comitee_status') == $status->id ? 'selected' : ''); ?> value="<?php echo e($status->id); ?>"><?php echo e($status->name); ?></option>
-                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>                                
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
 
                             <div class="d-flex">

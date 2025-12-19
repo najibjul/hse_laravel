@@ -1,15 +1,11 @@
 @extends('layouts.app', ['title' => 'Master User'])
 @section('content')
-    <div class="page-header">
+    <div class="page-header" id="master-user-index">
         <div class="page-block">
             <div class="row align-items-center">
                 <div class="col-md-12">
-                    <div class="page-header-title">
-                        <h5 class="m-b-10">Master User</h5>
-                    </div>
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="javascript: void(0)">Master User</a></li>
                         <li class="breadcrumb-item" aria-current="page">Master User</li>
                     </ul>
                 </div>
@@ -35,7 +31,7 @@
                 <table class="table" id="userTable">
                     <thead class="table-success">
                         <tr>
-                            <th>No</th>
+                            <th class="text-center">No</th>
                             <th>Nama</th>
                             <th>NIP</th>
                             <th>Email</th>
@@ -45,7 +41,7 @@
                             <th>Position</th>
                             <th>Plant</th>
                             <th>Leader</th>
-                            <th>Opsi</th>
+                            <th class="text-center">Opsi</th>
                         </tr>
                     </thead>
                 </table>

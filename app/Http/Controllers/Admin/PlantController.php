@@ -19,7 +19,7 @@ class PlantController extends Controller
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-                    return '<a href="/admin/plants/' . encrypt($row->id) . '/edit" class="text-warning fs-4"><i class="ti ti-edit"></i></a>';
+                    return '<a href="/admin/plants/' . encrypt($row->id) . '/edit" class="btn btn-warning btn-sm"><i class="ti ti-edit"></i></a>';
                 })
                 ->rawColumns(['action'])
                 ->make(true);

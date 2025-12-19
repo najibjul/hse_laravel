@@ -8,9 +8,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="shortcut icon" href="{{ asset('HSE GT.png') }}" type="image/x-icon">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    @stack('styles')
 </head>
 
 <body data-title="{{ $title ?? '' }}" data-pc-preset="preset-1" data-pc-direction="ltr" data-pc-theme="light"
@@ -64,7 +64,7 @@
                             <li class="pc-item {{ Route::is('admin.departments.*') ? 'active' : '' }}">
                                 <a href="{{ route('admin.departments.index') }}" class="pc-link">
                                     <span class="pc-micon"><i class="ti ti-home"></i></span>
-                                    <span class="pc-mtext">Master Department</span>
+                                    <span class="pc-mtext">Master Departemen</span>
                                 </a>
                             </li>
                             <li class="pc-item {{ Route::is('admin.cost-centers.*') ? 'active' : '' }}">
@@ -76,7 +76,7 @@
                             <li class="pc-item {{ Route::is('admin.positions.*') ? 'active' : '' }}">
                                 <a href="{{ route('admin.positions.index') }}" class="pc-link">
                                     <span class="pc-micon"><i class="ti ti-grid-dots"></i></span>
-                                    <span class="pc-mtext">Master Position</span>
+                                    <span class="pc-mtext">Master Posisi</span>
                                 </a>
                             </li>
                             <li class="pc-item {{ Route::is('admin.plants.*') ? 'active' : '' }}">
@@ -197,14 +197,14 @@
 
                                     <a href="{{ route('profile.index') }}" class="dropdown-item">
                                         <i class="ti ti-user"></i>
-                                        <span>Profile</span>
+                                        <span>Profil</span>
                                     </a>
 
                                     <a href="javascript:void(0)"
                                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                                         class="dropdown-item">
                                         <i class="ti ti-power"></i>
-                                        <span>Logout</span>
+                                        <span>Keluar</span>
                                     </a>
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST"
                                         style="display: none;">
