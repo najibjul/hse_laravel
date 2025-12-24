@@ -1,4 +1,3 @@
-
 <?php $__env->startSection('content'); ?>
     <div class="p-3 text-center">
         <h2>Setup Google Authenticator</h2>

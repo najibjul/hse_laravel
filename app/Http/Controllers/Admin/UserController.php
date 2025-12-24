@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
 
@@ -60,7 +61,7 @@ class UserController extends Controller
             ->addColumn('position', fn($row) => $row->position?->position_name ?? '')
             ->addColumn('plant', fn($row) => $row->plant?->plant_name ?? '')
             ->addColumn('leader', fn($row) => $row->leader ? "{$row->leader->name} ({$row->leader->nip})" : '')
-            ->addColumn('action', fn($row) => 
+            ->addColumn('action', fn($row) =>
                 '<div class="d-flex gap-2">
                     <a href="/admin/users/' . encrypt($row->id) . '/edit" class="btn btn-sm btn-warning"><i class="ti ti-edit"></i></a>
                     <a href="#" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#trash'.$row->id.'"><i class="ti ti-trash"></i></a>
@@ -193,8 +194,24 @@ class UserController extends Controller
     public function destroy($id)
     {
         User::where('id', $id)->delete();
-   
+
         session()->flash('success', 'User berhasil dihapus');
-        return redirect()->route('admin.users.index');        
+        return redirect()->route('admin.users.index');
     }
+
+    public function resetPassword($id)
+    {
+        DB::table('sessions')->where('user_id', $id)->delete();
+        User::where('id', $id)->update([
+            'password' => Hash::make('P@ssw0rd'),
+            'remember_token' => null,
+            'google2fa_secret' => null,
+            'must_change_password' => 0,
+            'password_expire_at' => null
+        ]);
+
+        session()->flash('success', 'Kata sandi berhasil diupdate');
+        return redirect()->route('admin.users.index');
+    }
+
 }

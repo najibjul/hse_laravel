@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('content'); ?>
 <div class="p-3">
 <h2>Verifikasi OTP</h2>

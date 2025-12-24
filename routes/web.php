@@ -28,7 +28,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/mfa/verify', [MFAController::class, 'verify'])->name('mfa.verify');
     Route::get('/mfa/challenge', [MFAController::class, 'challenge'])->name('mfa.challenge');
     Route::put('/mfa/reset/{id}', [MFAController::class, 'reset'])->name('mfa.reset');
-    
+
     Route::get('/change-password', [AuthController::class, 'changePassword'])->name('change-password');
     Route::post('/change-password', [AuthController::class, 'changePasswordPost'])->name('change-password.post');
 
@@ -82,6 +82,8 @@ Route::middleware('auth')->group(function () {
             Route::prefix('admin')->as('admin.')->group(function () {
 
                 Route::resource('users', UserController::class);
+                Route::put('users/reset-password/{id}', [UserController::class, 'resetPassword'])->name('users.reset-password');
+
                 Route::resource('departments', DepartmentController::class);
                 Route::resource('cost-centers', CostCenterController::class);
                 Route::resource('positions', PositionController::class);

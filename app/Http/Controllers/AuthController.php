@@ -42,10 +42,18 @@ class AuthController extends Controller
         $credentials = $request->only('nip', 'password');
         $remember = $request->filled('remember');
 
-
         if (Auth::attempt($credentials, $remember)) {
 
             $user = Auth::user();
+
+            if ($request->is('api/*')) {
+                $token = $user->createToken('halo-hse')->plainTextToken;
+
+                return response()->json([
+                    'token' => $token,
+                    'user' => $user
+                ]);
+            }
 
             if (!$user->google2fa_secret) {
                 return redirect()->route('mfa.setup');

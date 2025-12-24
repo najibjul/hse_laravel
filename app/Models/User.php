@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, SoftDeletes;
+    use HasFactory, Notifiable, SoftDeletes, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -29,6 +30,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'google2fa_secret'
     ];
 
     /**
@@ -51,28 +53,28 @@ class User extends Authenticatable
     public function role () {
         return $this->belongsTo(Role::class);
     }
-    
-    public function position() 
+
+    public function position()
     {
         return $this->belongsTo(Position::class);
     }
 
-    public function plant() 
+    public function plant()
     {
         return $this->belongsTo(Plant::class);
     }
-    
+
     public function leader()
     {
         return $this->belongsTo(User::class, 'leader_id', 'id');
     }
-    
-    public function costCenter() 
+
+    public function costCenter()
     {
         return $this->belongsTo(CostCenter::class, 'cost_center_id', 'id');
     }
 
-    public function adminDepts() 
+    public function adminDepts()
     {
         return $this->hasMany(AdminDepartment::class, 'admin_id', 'id');
     }
