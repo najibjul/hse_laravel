@@ -8,6 +8,7 @@ class QrpDetail extends Model
 {
     protected $fillable = [
         'daily_check_id',
+        'department_id',
         'description',
         'category_id',
         'before',

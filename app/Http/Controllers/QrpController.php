@@ -373,6 +373,7 @@ class QrpController extends Controller
 
             $qrpDetail = QrpDetail::create([
                 'daily_check_id' => $dailyCheck->id,
+                'department_id' => Auth::user()->department_id,
                 'description' => $request->description,
                 'category_id' => $request->category,
                 'before' => $filename,
