@@ -62,6 +62,10 @@ class AuthController extends Controller
             return redirect()->route('mfa.challenge');
         }
 
+        if ($request->is('api/*')) {
+            return response()->json(['message' => 'NIP & Password salah'], 401);
+        }
+
         session()->flash('unauthenticated', 'NIP & Password salah');
         return back();
     }

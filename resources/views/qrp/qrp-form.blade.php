@@ -27,6 +27,10 @@
                 @csrf
                 <div class="card-body">
 
+                    @if(session()->has('error'))
+                    {{ session('error') }}
+                    @endif
+
                     <div class="">
                         <div class="form-group mb-5">
                             <label class="form-label fw-bold">Faktor temuan</label>
@@ -155,13 +159,13 @@
                             <label class="form-label fw-bold" for="leader">Atasan langsung</label>
                             <input type="text" class="form-control" disabled
                                 value="{{ $leader?->name }} {{ $leader ? '(' . $leader->nip . ')' : '' }}">
-                            <input type="text" name="leader" class="d-none" value="{{ $leader->id }}">
+                            <input type="hidden" name="leader" value="{{ $leader->id }}">
                             @error('leader')
                                 <div class="text-danger form-text text-md">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
-                    <div class="col-12 col-md-6">
+                    {{-- <div class="col-12 col-md-6">
                         <div class="form-group mb-4">
                             <label class="form-label">Asst. Dept. Head</label>
                             <select id="adh" class="form-control @error('adh') is-invalid @enderror" name="adh">
@@ -171,7 +175,7 @@
                             @enderror
 
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
 
 

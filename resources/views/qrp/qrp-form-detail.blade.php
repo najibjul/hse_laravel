@@ -25,7 +25,7 @@
 
                 <div class="d-none d-md-block">
                     <div class="d-flex justify-content-center gap-3">
-                        @if (auth()->user()->id == $dailyCheck->user_id && $dailyCheck->qrpDetail->qrp_status_id == 1)
+                        @if (auth()->user()->id == $dailyCheck->user_id && $dailyCheck->qrpDetail?->qrp_status_id == 1)
                             <a href="{{ route('qrp.qrp-form-detail.edit', encrypt($dailyCheck->id)) }}"
                                 class="btn btn-warning"><i class="ti ti-edit"></i> Edit Data</a>
                             <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete"><i
@@ -54,10 +54,10 @@
         </div>
 
         <div class="card-body">
-            @if ($dailyCheck->qrpDetail->closed_at)
+            @if ($dailyCheck->qrpDetail?->closed_at)
                 <div class="text-end">
                     <label class="form-label">Close :
-                        {{ \Carbon\Carbon::parse($dailyCheck->qrpDetail->closed_at)->translatedFormat('d M Y H:i:s') }}</label>
+                        {{ \Carbon\Carbon::parse($dailyCheck->qrpDetail?->closed_at)->translatedFormat('d M Y H:i:s') }}</label>
                 </div>
             @endif
             <div class="row">
@@ -88,23 +88,23 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-6 mb-5">
                     <label class="form-label fw-bold">Deskripsi temuan</label>
-                    <textarea class="form-control" disabled oninput="autoGrowDescription(this)" id="description" placeholder="ketik disini">{{ $dailyCheck->qrpDetail->description }}</textarea>
+                    <textarea class="form-control" disabled oninput="autoGrowDescription(this)" id="description" placeholder="ketik disini">{{ $dailyCheck->qrpDetail?->description }}</textarea>
                 </div>
                 <div class="col-12 col-md-6 col-lg-6 mb-5">
                     <label class="form-label fw-bold">Kategori</label>
                     <input type="text" class="form-control" disabled placeholder="ketik disini"
-                        value="{{ $dailyCheck->qrpDetail->category->category_name }}">
+                        value="{{ $dailyCheck->qrpDetail?->category->category_name }}">
                 </div>
                 <div class="col-12 col-md-6 col-lg-6 mb-5">
                     <label class="form-label fw-bold">Rank</label>
                     <input type="text" class="form-control" disabled placeholder="ketik disini"
-                        value="{{ $dailyCheck->qrpDetail->rank->rank_name }}">
+                        value="{{ $dailyCheck->qrpDetail?->rank->rank_name }}">
                 </div>
                 <div class="col-12 col-md-6 col-lg-6 mb-5">
                     <label class="form-label fw-bold">Rekomendasi</label>
                     <br>
                     <ul>
-                        @foreach ($dailyCheck->qrpDetail->qrpRecomendations->sortByDesc('id') as $qrpRecomendation)
+                        @foreach ($dailyCheck->qrpDetail?->qrpRecomendations->sortByDesc('id') as $qrpRecomendation)
                             <li>
                                 <div style="text-align: justify;">
                                     {{ $qrpRecomendation->user->name }}
@@ -122,13 +122,13 @@
                 <div class="col-12 col-md-6 col-lg-6 mb-5">
                     <label class="form-label fw-bold">Batas perbaikan</label>
                     <input class="form-control" disabled
-                        value="{{ \Carbon\Carbon::parse($dailyCheck->qrpDetail->due_date)->format('d M Y') }}">
+                        value="{{ \Carbon\Carbon::parse($dailyCheck->qrpDetail?->due_date)->format('d M Y') }}">
                 </div>
 
                 <div class="col-12 col-md-6 col-lg-6 mb-5">
                     <label class="form-label fw-bold">Approval</label>
                     <ul>
-                        @foreach ($dailyCheck->qrpDetail->qrpApprovals->sortByDesc('id') as $qrpApproval)
+                        @foreach ($dailyCheck->qrpDetail?->qrpApprovals->sortByDesc('id') as $qrpApproval)
                             <li>
                                 <div>
                                     {{ $qrpApproval->approval->name }} ({{ $qrpApproval->approval->nip }})
@@ -146,23 +146,23 @@
                 <div class="col-12 col-md-6 col-lg-6 mb-5">
                     <label class="form-label fw-bold">Temuan sebelum diaction</label>
                     <div>
-                        <img src="{{ asset('storage/image/' . $dailyCheck->qrpDetail->before) }}" class="img-thumbnail"
-                            alt="{{ $dailyCheck->qrpDetail->before }}">
+                        <img src="{{ asset('storage/image/' . $dailyCheck->qrpDetail?->before) }}" class="img-thumbnail"
+                            alt="{{ $dailyCheck->qrpDetail?->before }}">
                     </div>
                 </div>
 
                 <div class="col-12 col-md-6 col-lg-6 mb-5">
                     <label class="form-label fw-bold">Temuan sesudah diaction</label>
-                    @if ($dailyCheck->qrpDetail->after)
+                    @if ($dailyCheck->qrpDetail?->after)
                         <div>
-                            <img src="{{ asset('storage/image/' . $dailyCheck->qrpDetail->after) }}"
-                                class="img-thumbnail" alt="{{ $dailyCheck->qrpDetail->after }}">
+                            <img src="{{ asset('storage/image/' . $dailyCheck->qrpDetail?->after) }}"
+                                class="img-thumbnail" alt="{{ $dailyCheck->qrpDetail?->after }}">
                         </div>
 
                         <label class="form-label">Tgl. upload :
-                            {{ $dailyCheck->qrpDetail->after_uploaded_at }}</label>
+                            {{ $dailyCheck->qrpDetail?->after_uploaded_at }}</label>
                     @else
-                        {{-- @if ($dailyCheck->qrpDetail->qrpApprovals->sortByDesc('id')->first()->approved_at) --}}
+                        {{-- @if ($dailyCheck->qrpDetail?->qrpApprovals->sortByDesc('id')->first()->approved_at) --}}
                         <h5 class="mt-1">
                             <span class="badge bg-warning text-white">BELUM ADA ACTION</span>
                         </h5>
@@ -204,8 +204,8 @@
             </div>
 
             @if (
-                $dailyCheck->qrpDetail->qrp_status_id == 1 &&
-                    $dailyCheck->qrpDetail->qrpApprovals->sortByDesc('id')->first()->approval_id == auth()->user()->id)
+                $dailyCheck->qrpDetail?->qrp_status_id == 1 &&
+                    $dailyCheck->qrpDetail?->qrpApprovals->sortByDesc('id')->first()->approval_id == auth()->user()->id)
                 <div class="modal fade" id="confirm" tabindex="-1" aria-labelledby="exampleModalLabel"
                     aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
@@ -219,7 +219,7 @@
                                 @csrf
                                 <div class="modal-body">
                                     Lanjut perbaikan sesuai rekomendasi?
-                                    <div class="d-none" id="due-date-confirm-content">
+                                    {{-- <div class="d-none" id="due-date-confirm-content">
                                         <hr>
                                         <div class="my-2">
                                             <label for="due-date-confirm">Revisi tanggal</label>
@@ -229,12 +229,12 @@
                                             <label for="due-date-confirm-note">Catatan revisi tanggal</label>
                                             <textarea placeholder="Ketik disini ..." name="due_date_confirm_note" id="due-date-confirm-note" rows="3" class="form-control"></textarea>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary"
                                         data-bs-dismiss="modal">Kembali</button>
-                                    <button id="btn-due-date-confirm" type="button" class="btn btn-info" onclick="dueDateConfirm();">Ganti due date</button>
+                                    {{-- <button id="btn-due-date-confirm" type="button" class="btn btn-info" onclick="dueDateConfirm();">Ganti due date</button> --}}
                                     <button type="submit" class="btn btn-success">Konfirmasi</button>
                                 </div>
                             </form>
@@ -273,7 +273,7 @@
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary"
                                         data-bs-dismiss="modal">Kembali</button>
-                                    <button id="btn-due-date-rise" type="button" class="btn btn-info" onclick="dueDateRise();">Ganti due date</button>
+                                    {{-- <button id="btn-due-date-rise" type="button" class="btn btn-info" onclick="dueDateRise();">Ganti due date</button> --}}
                                     <input type="text" name="riseup" class="d-none"
                                         value="{{ auth()->user()->leader_id }}">
                                     <button type="submit" class="btn btn-warning">Rise Up</button>
@@ -337,7 +337,7 @@
                                 @csrf
                                 <div class="modal-body">
                                     Berikan rekomendasi & alasan?
-                                    <textarea name="recomendation" class="form-control @error('recomendation') is-invalid @enderror ">{{ $dailyCheck->qrpDetail->recomendation }}</textarea>
+                                    <textarea name="recomendation" class="form-control @error('recomendation') is-invalid @enderror ">{{ $dailyCheck->qrpDetail?->recomendation }}</textarea>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary"
@@ -350,7 +350,7 @@
                 </div>
             @endif
 
-            @if ($dailyCheck->qrpDetail->qrp_status_id == 1 && $dailyCheck->qrpDetail->qrpApprovals->sortByDesc('id')->first()->approval_id == auth()->user()->id)
+            @if ($dailyCheck->qrpDetail?->qrp_status_id == 1 && $dailyCheck->qrpDetail?->qrpApprovals->sortByDesc('id')->first()->approval_id == auth()->user()->id)
             <div class="row">
 
                 <div class="col-6 col-lg-4 mb-3">
@@ -377,8 +377,8 @@
             @endif
 
             @if (
-                $dailyCheck->qrpDetail->qrpApprovals->sortByDesc('id')->first()->approval_id == auth()->user()->id and
-                    $dailyCheck->qrpDetail->qrp_status_id == 4)
+                $dailyCheck->qrpDetail?->qrpApprovals->sortByDesc('id')->first()->approval_id == auth()->user()->id and
+                    $dailyCheck->qrpDetail?->qrp_status_id == 4)
                 <div class="form-group">
                     <div class="d-flex justify-content-center gap-3">
                         <button class="btn btn-danger btn-lg w-100 rounded-pill" data-bs-toggle="modal"
@@ -448,7 +448,7 @@
 
 
     <div class="d-flex gap-3 mb-2">
-        @if (auth()->user()->id == $dailyCheck->user_id && $dailyCheck->qrpDetail->qrp_status_id == 1)
+        @if (auth()->user()->id == $dailyCheck->user_id && $dailyCheck->qrpDetail?->qrp_status_id == 1)
             <button type="button" class="btn btn-danger btn-lg rounded-pill shadow-lg w-100 d-block d-md-none" data-bs-toggle="modal"
                 data-bs-target="#delete">
                 HAPUS
@@ -459,11 +459,11 @@
             </a>
         @endif
         @if (
-            $dailyCheck->qrpDetail->qrpApprovals->sortByDesc('id')->first()->approved_at and
-                $dailyCheck->user_id == auth()->user()->id and ($dailyCheck->qrpDetail->qrp_status_id == 2 or $dailyCheck->qrpDetail->qrp_status_id == 4))
+            $dailyCheck->qrpDetail?->qrpApprovals->sortByDesc('id')->first()->approved_at and
+                $dailyCheck->user_id == auth()->user()->id and ($dailyCheck->qrpDetail?->qrp_status_id == 2 or $dailyCheck->qrpDetail?->qrp_status_id == 4))
             <a href="{{ route('qrp.tindak-lanjut', encrypt($dailyCheck->id)) }}"
-                class="btn btn-lg @if (!$dailyCheck->qrpDetail->after) btn-success @else btn-warning @endif rounded-pill shadow-lg w-100">
-                @if (!$dailyCheck->qrpDetail->after)
+                class="btn btn-lg @if (!$dailyCheck->qrpDetail?->after) btn-success @else btn-warning @endif rounded-pill shadow-lg w-100">
+                @if (!$dailyCheck->qrpDetail?->after)
                     FOTO TINDAK LANJUT
                 @else
                     EDIT FOTO TINDAK LANJUT

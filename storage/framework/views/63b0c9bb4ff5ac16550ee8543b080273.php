@@ -26,6 +26,11 @@
                 <?php echo csrf_field(); ?>
                 <div class="card-body">
 
+                    <?php if(session()->has('error')): ?>
+                    <?php echo e(session('error')); ?>
+
+                    <?php endif; ?>
+
                     <div class="">
                         <div class="form-group mb-5">
                             <label class="form-label fw-bold">Faktor temuan</label>
@@ -153,7 +158,7 @@ unset($__errorArgs, $__bag); ?>
                                     <div class="d-flex justify-content-center align-item-center pt-3" >
                                         <div id="my_camera"></div>
                                     </div>
-                                        
+
                                     <div id="pre_take_buttons">
                                         <button type="button" class="btn btn-success mt-3" onClick="preview_snapshot()">
                                             <i class="ti ti-camera"></i> Ambil gambar
@@ -224,7 +229,7 @@ unset($__errorArgs, $__bag); ?>
                             <label class="form-label fw-bold" for="leader">Atasan langsung</label>
                             <input type="text" class="form-control" disabled
                                 value="<?php echo e($leader?->name); ?> <?php echo e($leader ? '(' . $leader->nip . ')' : ''); ?>">
-                            <input type="text" name="leader" class="d-none" value="<?php echo e($leader->id); ?>">
+                            <input type="hidden" name="leader" value="<?php echo e($leader->id); ?>">
                             <?php $__errorArgs = ['leader'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -237,6 +242,11 @@ endif;
 unset($__errorArgs, $__bag); ?>
                         </div>
                     </div>
+                    
+                </div>
+
+
+
 
 
                     <button type="button" class="btn btn-success btn-lg rounded-pill w-100" data-bs-toggle="modal"

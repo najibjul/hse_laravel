@@ -24,7 +24,7 @@
 
                 <div class="d-none d-md-block">
                     <div class="d-flex justify-content-center gap-3">
-                        <?php if(auth()->user()->id == $dailyCheck->user_id && $dailyCheck->qrpDetail->qrp_status_id == 1): ?>
+                        <?php if(auth()->user()->id == $dailyCheck->user_id && $dailyCheck->qrpDetail?->qrp_status_id == 1): ?>
                             <a href="<?php echo e(route('qrp.qrp-form-detail.edit', encrypt($dailyCheck->id))); ?>"
                                 class="btn btn-warning"><i class="ti ti-edit"></i> Edit Data</a>
                             <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete"><i
@@ -53,10 +53,10 @@
         </div>
 
         <div class="card-body">
-            <?php if($dailyCheck->qrpDetail->closed_at): ?>
+            <?php if($dailyCheck->qrpDetail?->closed_at): ?>
                 <div class="text-end">
                     <label class="form-label">Close :
-                        <?php echo e(\Carbon\Carbon::parse($dailyCheck->qrpDetail->closed_at)->translatedFormat('d M Y H:i:s')); ?></label>
+                        <?php echo e(\Carbon\Carbon::parse($dailyCheck->qrpDetail?->closed_at)->translatedFormat('d M Y H:i:s')); ?></label>
                 </div>
             <?php endif; ?>
             <div class="row">
@@ -87,23 +87,23 @@
                 </div>
                 <div class="col-12 col-md-6 col-lg-6 mb-5">
                     <label class="form-label fw-bold">Deskripsi temuan</label>
-                    <textarea class="form-control" disabled oninput="autoGrowDescription(this)" id="description" placeholder="ketik disini"><?php echo e($dailyCheck->qrpDetail->description); ?></textarea>
+                    <textarea class="form-control" disabled oninput="autoGrowDescription(this)" id="description" placeholder="ketik disini"><?php echo e($dailyCheck->qrpDetail?->description); ?></textarea>
                 </div>
                 <div class="col-12 col-md-6 col-lg-6 mb-5">
                     <label class="form-label fw-bold">Kategori</label>
                     <input type="text" class="form-control" disabled placeholder="ketik disini"
-                        value="<?php echo e($dailyCheck->qrpDetail->category->category_name); ?>">
+                        value="<?php echo e($dailyCheck->qrpDetail?->category->category_name); ?>">
                 </div>
                 <div class="col-12 col-md-6 col-lg-6 mb-5">
                     <label class="form-label fw-bold">Rank</label>
                     <input type="text" class="form-control" disabled placeholder="ketik disini"
-                        value="<?php echo e($dailyCheck->qrpDetail->rank->rank_name); ?>">
+                        value="<?php echo e($dailyCheck->qrpDetail?->rank->rank_name); ?>">
                 </div>
                 <div class="col-12 col-md-6 col-lg-6 mb-5">
                     <label class="form-label fw-bold">Rekomendasi</label>
                     <br>
                     <ul>
-                        <?php $__currentLoopData = $dailyCheck->qrpDetail->qrpRecomendations->sortByDesc('id'); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $qrpRecomendation): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php $__currentLoopData = $dailyCheck->qrpDetail?->qrpRecomendations->sortByDesc('id'); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $qrpRecomendation): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <li>
                                 <div style="text-align: justify;">
                                     <?php echo e($qrpRecomendation->user->name); ?>
@@ -123,13 +123,13 @@
                 <div class="col-12 col-md-6 col-lg-6 mb-5">
                     <label class="form-label fw-bold">Batas perbaikan</label>
                     <input class="form-control" disabled
-                        value="<?php echo e(\Carbon\Carbon::parse($dailyCheck->qrpDetail->due_date)->format('d M Y')); ?>">
+                        value="<?php echo e(\Carbon\Carbon::parse($dailyCheck->qrpDetail?->due_date)->format('d M Y')); ?>">
                 </div>
 
                 <div class="col-12 col-md-6 col-lg-6 mb-5">
                     <label class="form-label fw-bold">Approval</label>
                     <ul>
-                        <?php $__currentLoopData = $dailyCheck->qrpDetail->qrpApprovals->sortByDesc('id'); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $qrpApproval): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php $__currentLoopData = $dailyCheck->qrpDetail?->qrpApprovals->sortByDesc('id'); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $qrpApproval): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <li>
                                 <div>
                                     <?php echo e($qrpApproval->approval->name); ?> (<?php echo e($qrpApproval->approval->nip); ?>)
@@ -147,21 +147,21 @@
                 <div class="col-12 col-md-6 col-lg-6 mb-5">
                     <label class="form-label fw-bold">Temuan sebelum diaction</label>
                     <div>
-                        <img src="<?php echo e(asset('storage/image/' . $dailyCheck->qrpDetail->before)); ?>" class="img-thumbnail"
-                            alt="<?php echo e($dailyCheck->qrpDetail->before); ?>">
+                        <img src="<?php echo e(asset('storage/image/' . $dailyCheck->qrpDetail?->before)); ?>" class="img-thumbnail"
+                            alt="<?php echo e($dailyCheck->qrpDetail?->before); ?>">
                     </div>
                 </div>
 
                 <div class="col-12 col-md-6 col-lg-6 mb-5">
                     <label class="form-label fw-bold">Temuan sesudah diaction</label>
-                    <?php if($dailyCheck->qrpDetail->after): ?>
+                    <?php if($dailyCheck->qrpDetail?->after): ?>
                         <div>
-                            <img src="<?php echo e(asset('storage/image/' . $dailyCheck->qrpDetail->after)); ?>"
-                                class="img-thumbnail" alt="<?php echo e($dailyCheck->qrpDetail->after); ?>">
+                            <img src="<?php echo e(asset('storage/image/' . $dailyCheck->qrpDetail?->after)); ?>"
+                                class="img-thumbnail" alt="<?php echo e($dailyCheck->qrpDetail?->after); ?>">
                         </div>
 
                         <label class="form-label">Tgl. upload :
-                            <?php echo e($dailyCheck->qrpDetail->after_uploaded_at); ?></label>
+                            <?php echo e($dailyCheck->qrpDetail?->after_uploaded_at); ?></label>
                     <?php else: ?>
                         
                         <h5 class="mt-1">
@@ -219,8 +219,8 @@ unset($__errorArgs, $__bag); ?>
             </div>
 
             <?php if(
-                $dailyCheck->qrpDetail->qrp_status_id == 1 &&
-                    $dailyCheck->qrpDetail->qrpApprovals->sortByDesc('id')->first()->approval_id == auth()->user()->id): ?>
+                $dailyCheck->qrpDetail?->qrp_status_id == 1 &&
+                    $dailyCheck->qrpDetail?->qrpApprovals->sortByDesc('id')->first()->approval_id == auth()->user()->id): ?>
                 <div class="modal fade" id="confirm" tabindex="-1" aria-labelledby="exampleModalLabel"
                     aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
@@ -234,22 +234,12 @@ unset($__errorArgs, $__bag); ?>
                                 <?php echo csrf_field(); ?>
                                 <div class="modal-body">
                                     Lanjut perbaikan sesuai rekomendasi?
-                                    <div class="d-none" id="due-date-confirm-content">
-                                        <hr>
-                                        <div class="my-2">
-                                            <label for="due-date-confirm">Revisi tanggal</label>
-                                            <input type="date" name="due_date_confirm" class="form-control" id="due-date-confirm" min="<?php echo e(\Carbon\Carbon::now()->format('Y-m-d')); ?>">
-                                        </div>
-                                        <div class="my-2">
-                                            <label for="due-date-confirm-note">Catatan revisi tanggal</label>
-                                            <textarea placeholder="Ketik disini ..." name="due_date_confirm_note" id="due-date-confirm-note" rows="3" class="form-control"></textarea>
-                                        </div>
-                                    </div>
+                                    
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary"
                                         data-bs-dismiss="modal">Kembali</button>
-                                    <button id="btn-due-date-confirm" type="button" class="btn btn-info" onclick="dueDateConfirm();">Ganti due date</button>
+                                    
                                     <button type="submit" class="btn btn-success">Konfirmasi</button>
                                 </div>
                             </form>
@@ -289,7 +279,7 @@ unset($__errorArgs, $__bag); ?>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary"
                                         data-bs-dismiss="modal">Kembali</button>
-                                    <button id="btn-due-date-rise" type="button" class="btn btn-info" onclick="dueDateRise();">Ganti due date</button>
+                                    
                                     <input type="text" name="riseup" class="d-none"
                                         value="<?php echo e(auth()->user()->leader_id); ?>">
                                     <button type="submit" class="btn btn-warning">Rise Up</button>
@@ -367,7 +357,7 @@ if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?> "><?php echo e($dailyCheck->qrpDetail->recomendation); ?></textarea>
+unset($__errorArgs, $__bag); ?> "><?php echo e($dailyCheck->qrpDetail?->recomendation); ?></textarea>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary"
@@ -380,7 +370,7 @@ unset($__errorArgs, $__bag); ?> "><?php echo e($dailyCheck->qrpDetail->recomenda
                 </div>
             <?php endif; ?>
 
-            <?php if($dailyCheck->qrpDetail->qrp_status_id == 1 && $dailyCheck->qrpDetail->qrpApprovals->sortByDesc('id')->first()->approval_id == auth()->user()->id): ?>
+            <?php if($dailyCheck->qrpDetail?->qrp_status_id == 1 && $dailyCheck->qrpDetail?->qrpApprovals->sortByDesc('id')->first()->approval_id == auth()->user()->id): ?>
             <div class="row">
 
                 <div class="col-6 col-lg-4 mb-3">
@@ -407,8 +397,8 @@ unset($__errorArgs, $__bag); ?> "><?php echo e($dailyCheck->qrpDetail->recomenda
             <?php endif; ?>
 
             <?php if(
-                $dailyCheck->qrpDetail->qrpApprovals->sortByDesc('id')->first()->approval_id == auth()->user()->id and
-                    $dailyCheck->qrpDetail->qrp_status_id == 4): ?>
+                $dailyCheck->qrpDetail?->qrpApprovals->sortByDesc('id')->first()->approval_id == auth()->user()->id and
+                    $dailyCheck->qrpDetail?->qrp_status_id == 4): ?>
                 <div class="form-group">
                     <div class="d-flex justify-content-center gap-3">
                         <button class="btn btn-danger btn-lg w-100 rounded-pill" data-bs-toggle="modal"
@@ -485,7 +475,7 @@ unset($__errorArgs, $__bag); ?>" placeholder="ketik disini"></textarea>
 
 
     <div class="d-flex gap-3 mb-2">
-        <?php if(auth()->user()->id == $dailyCheck->user_id && $dailyCheck->qrpDetail->qrp_status_id == 1): ?>
+        <?php if(auth()->user()->id == $dailyCheck->user_id && $dailyCheck->qrpDetail?->qrp_status_id == 1): ?>
             <button type="button" class="btn btn-danger btn-lg rounded-pill shadow-lg w-100 d-block d-md-none" data-bs-toggle="modal"
                 data-bs-target="#delete">
                 HAPUS
@@ -496,11 +486,11 @@ unset($__errorArgs, $__bag); ?>" placeholder="ketik disini"></textarea>
             </a>
         <?php endif; ?>
         <?php if(
-            $dailyCheck->qrpDetail->qrpApprovals->sortByDesc('id')->first()->approved_at and
-                $dailyCheck->user_id == auth()->user()->id and ($dailyCheck->qrpDetail->qrp_status_id == 2 or $dailyCheck->qrpDetail->qrp_status_id == 4)): ?>
+            $dailyCheck->qrpDetail?->qrpApprovals->sortByDesc('id')->first()->approved_at and
+                $dailyCheck->user_id == auth()->user()->id and ($dailyCheck->qrpDetail?->qrp_status_id == 2 or $dailyCheck->qrpDetail?->qrp_status_id == 4)): ?>
             <a href="<?php echo e(route('qrp.tindak-lanjut', encrypt($dailyCheck->id))); ?>"
-                class="btn btn-lg <?php if(!$dailyCheck->qrpDetail->after): ?> btn-success <?php else: ?> btn-warning <?php endif; ?> rounded-pill shadow-lg w-100">
-                <?php if(!$dailyCheck->qrpDetail->after): ?>
+                class="btn btn-lg <?php if(!$dailyCheck->qrpDetail?->after): ?> btn-success <?php else: ?> btn-warning <?php endif; ?> rounded-pill shadow-lg w-100">
+                <?php if(!$dailyCheck->qrpDetail?->after): ?>
                     FOTO TINDAK LANJUT
                 <?php else: ?>
                     EDIT FOTO TINDAK LANJUT

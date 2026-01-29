@@ -13,6 +13,7 @@ use App\Models\QrpStatus;
 use App\Models\Rank;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Console\View\Components\Alert;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -336,8 +337,6 @@ class QrpController extends Controller
         if ($validator->fails()) {
             return back()->withInput()->withErrors($validator);
         }
-
-        DB::beginTransaction();
 
         try {
             if ($request->dataUri != "") {
@@ -942,8 +941,8 @@ class QrpController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'riseup' => 'required',
-            'due_date_rise' => 'nullable|date|after_or_equal:today|required_with:due_date_rise_note',
-            'due_date_rise_note' => 'nullable|string|required_with:due_date_rise',
+            // 'due_date_rise' => 'nullable|date|after_or_equal:today|required_with:due_date_rise_note',
+            // 'due_date_rise_note' => 'nullable|string|required_with:due_date_rise',
         ]);
 
         if ($validator->fails()) {
