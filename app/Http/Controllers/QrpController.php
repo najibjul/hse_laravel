@@ -13,7 +13,6 @@ use App\Models\QrpStatus;
 use App\Models\Rank;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Console\View\Components\Alert;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
