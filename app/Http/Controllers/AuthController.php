@@ -32,7 +32,7 @@ class AuthController extends Controller
                 ],
             ],
             [
-                'nip.required' => 'NIP lama wajib diisi',
+                'nip.required' => 'NIP wajib diisi',
                 'password.required' => 'Password wajib diisi',
                 'password.min' => 'Password minimal 8 karakter',
                 'password.regex' => 'Password harus mengandung huruf besar, huruf kecil, angka, dan simbol',

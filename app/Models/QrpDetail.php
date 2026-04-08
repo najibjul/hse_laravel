@@ -85,5 +85,4 @@ class QrpDetail extends Model
     {
         return $this->hasMany(QrpApproval::class);
     }
-
 }

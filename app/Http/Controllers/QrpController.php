@@ -954,6 +954,11 @@ class QrpController extends Controller
 
         try {
 
+            QrpApproval::where('qrp_detail_id', $dailyCheck->qrpDetail->id)->update([
+                'status' => 'riseup',
+                'approved_at' => now()
+            ]);
+
             QrpApproval::create([
                 'qrp_detail_id' => $dailyCheck->qrpDetail->id,
                 'approval_id' => $request->riseup,
