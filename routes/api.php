@@ -40,5 +40,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/change-password', [App\Http\Controllers\Api\AuthController::class, 'changePasswordPost']);
 
     Route::post('/logout', [App\Http\Controllers\Api\AuthController::class, 'logout']);
+
+    Route::post('/reports/close/{id}', [App\Http\Controllers\Api\CheckController::class, 'closeReport']);
 });
 

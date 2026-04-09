@@ -83,9 +83,19 @@ class CheckController extends Controller
     public function confirmationReports(Request $request)
     {
         $reports = DailyCheck::select('id', 'user_id', 'activity', 'area', 'factor_id', 'check_status', 'created_at')
-            ->whereHas('qrpDetail.qrpApprovals', function ($q) use ($request) {
+            ->where(function($q) use ($request) {
+                $q->whereHas('qrpDetail.qrpApprovals', function ($q) use ($request) {
                 $q->where('approval_id', $request->user()->id)->where('status', 'waiting');
+            });
             })
+            ->orWhere(function($q) use ($request) {
+                $q->whereHas('qrpDetail', function ($q) use ($request) {
+                    $q->where('qrp_status_id', 4)->whereHas('qrpApprovals', function ($q) use ($request) {
+                        $q->where('approval_id', $request->user()->id)->where('status', 'approved');
+                    });
+                });
+            })
+
             ->with(['factor' => fn($q) => $q->select('id', 'factor_name')])
             ->with(['user' => fn($q) => $q->select('id', 'name', 'nip')])
             ->with([
@@ -96,8 +106,6 @@ class CheckController extends Controller
                         ->with([
                             'qrpApprovals' => fn($q) => $q
                                 ->select('id', 'qrp_detail_id', 'approval_id', 'status', 'approved_at', 'created_at')
-                                ->where('approval_id', $request->user()->id)
-                                ->where('status', 'waiting')
                                 ->orderBy('created_at')
                                 ->with(['approval' => fn($q) => $q->select('id', 'name', 'nip')])
                         ])
@@ -342,5 +350,25 @@ class CheckController extends Controller
             'message' => $oldAfter ? 'Bukti penyelesaian berhasil diupdate' : 'Bukti penyelesaian berhasil diupload',
             'after' => Storage::url("image/{$filename}"),
         ]);
+    }
+
+    public function closeReport($id)
+    {
+        QrpDetail::where('daily_check_id', $id)->update([
+            'closed_at' => now(),
+            'qrp_status_id' => 5
+        ]);
+
+        $dailyCheck = DailyCheck::find($id);
+
+        Notification::create([
+            'user_id' => $dailyCheck->user_id,
+            'title' => 'Laporan Close',
+            'body' => 'Pekerjaan telah selesai',
+            'target' => 'qrp',
+            'target_id' => $dailyCheck->id
+        ]);
+
+        return response()->json(['message' => 'Laporan berhasil ditutup'], 200);
     }
 }
