@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Jenssegers\Agent\Agent;
+use Mockery\Matcher\Not;
 use Yajra\DataTables\DataTables;
 
 class QrpController extends Controller
@@ -45,12 +46,29 @@ class QrpController extends Controller
             $end_date = $request->end_date;
 
             $dailyChecks = DailyCheck::when(Auth::user()->role_id == 3, function ($q) {
-                $q->where('user_id', Auth::user()->id)
-                    ->when(Auth::user()->position_id == 2, function ($q) {
-                        $q->orWherehas('user', function ($q) {
-                            $q->where('department_id', Auth::user()->department_id);
-                        });
-                    });
+                // $q->where('user_id', Auth::user()->id);
+                    // ->when(Auth::user()->position_id == 2, function ($q) {
+                    //     $q->orWherehas('user', function ($q) {
+                    //         $q->where('department_id', Auth::user()->department_id);
+                    //     });
+                    // });
+
+                    $user_id = Auth::user()->id;
+                    $user_ids[] = $user_id;
+                    $team_ids = [$user_id];
+
+                    for ($i = 0; $i < User::count(); $i++) {
+                        $teams = User::whereIn('leader_id', $user_ids)->select('id')->get();
+                        if (count($teams) == 0) {
+                            break;
+                        } else {
+                            $user_ids = $teams->pluck('id')->toArray();
+                            $team_ids = array_merge($team_ids, $user_ids);
+                        }
+                    }
+
+                    $q->whereIn('user_id', $team_ids);
+
             })
                 ->when($search, function ($q) use ($search) {
                     $q->where(function ($q) use ($search) {
@@ -549,7 +567,7 @@ class QrpController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'recomendation' => 'nullable',
+            'recomendation' => 'required',
             'due_date_rev' => 'nullable|date|after_or_equal:today|required_with:due_date_rev_note',
             'due_date_rev_note' => 'nullable|string|required_with:due_date_rev',
         ]);
@@ -583,12 +601,20 @@ class QrpController extends Controller
                 'qrp_status_id' => 2
             ]);
 
-            if (empty($request->due_date_rev)) {
+            if (!empty($request->due_date_rev)) {
                 $qrpDetail->update([
                     'due_date' => $request->due_date_rev,
                     'revision_note' => $request->due_date_rev_note
                 ]);
             }
+
+            Notification::create([
+                'user_id' => $qrpDetail->dailyCheck->user_id,
+                'title' => 'Laporan telah dikonfirmasi',
+                'body' => 'Rekomendasi pekerjaan: ' . $request->recomendation,
+                'target' => 'qrp',
+                'target_id' => $qrpDetail->dailyCheck->id,
+            ]);
 
             DB::commit();
             session()->flash('success', 'Laporan berhasil diupdate');
@@ -1025,6 +1051,14 @@ class QrpController extends Controller
 
         Storage::disk('public')->delete("image/{$after}");
 
+        Notification::create([
+            'user_id' => $qrpDetail->qrpApprovals->where('status', 'approved')->first()->approval_id,
+            'title' => 'Pekerjaan telah dilakukan',
+            'body' => 'Pastikan penyelesaian sesuai dengan rekomendasi',
+            'target' => 'qrp',
+            'target_id' => $qrpDetail->dailyCheck->id,
+        ]);
+
         session()->flash('success', 'Foto tindak lanjut berhasil disimpan');
         return redirect()->route('qrp.qrp-form-detail', encrypt($id));
     }
@@ -1049,6 +1083,14 @@ class QrpController extends Controller
         ]);
 
         Storage::disk('public')->delete("image/{$after}");
+
+        Notification::create([
+            'user_id' => $qrpDetail->qrpApprovals->where('status', 'approved')->first()->approval_id,
+            'title' => 'Pekerjaan telah dilakukan',
+            'body' => 'Pastikan penyelesaian sesuai dengan rekomendasi',
+            'target' => 'qrp',
+            'target_id' => $qrpDetail->dailyCheck->id,
+        ]);
 
         session()->flash('success', 'Foto tindak lanjut berhasil disimpan');
         return redirect()->route('qrp.qrp-form-detail', encrypt($id));

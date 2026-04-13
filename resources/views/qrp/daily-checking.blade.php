@@ -183,7 +183,7 @@
                         <div><i class="ti ti-user"></i> {{ $dailyCheck->user?->name }} ({{ $dailyCheck->user?->nip }})
                         </div>
                         <div><i class="ti ti-alert-circle"></i>
-                            {{ $dailyCheck->activity ? $dailyCheck->activity : $dailyCheck->qrpDetail->description }}</div>
+                            {{ $dailyCheck->activity ? $dailyCheck->activity : $dailyCheck->qrpDetail?->description }}</div>
                         <div><i class="ti ti-building-community"></i> {{ $dailyCheck->area }}</div>
                         <div><i class="ti ti-calendar-event"></i>
                             {{ \Carbon\Carbon::parse($dailyCheck->created_at)->translatedFormat('d M Y H:i') }}</div>

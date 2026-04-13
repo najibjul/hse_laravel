@@ -106,12 +106,15 @@
                     <ul>
                         @foreach ($dailyCheck->qrpDetail?->qrpRecomendations->sortByDesc('id') as $qrpRecomendation)
                             <li>
-                                <div style="text-align: justify;">
+                                <div style="text-align: justify;" class="text-secondary">
                                     {{ $qrpRecomendation->user->name }}
                                     ({{ $qrpRecomendation->user->nip }})
                                 </div>
-                                <div class="fst-italic text-secondary">
+                                <div class="">
                                     {{ $qrpRecomendation->recomendation }}
+                                </div>
+                                <div style="font-size: 10px;" class="">
+                                    <i class="bi bi-clock"></i> {{ \Carbon\Carbon::parse($qrpRecomendation->created_at)->translatedFormat('d M Y H:i') }}
                                 </div>
                                 <br>
                             </li>
@@ -578,7 +581,16 @@
         function dueDateRev(){
             $('#due-date-rev-content').removeClass("d-none");
             $('#btn-due-date-rev').addClass("d-none");
+            $('#due-date-rev').prop('required', true);
+            $('#due-date-rev-note').prop('required', true);
         }
+
+        document.getElementById('confirmationModal')?.addEventListener('hidden.bs.modal', function () {
+            $('#due-date-rev-content').addClass("d-none");
+            $('#btn-due-date-rev').removeClass("d-none");
+            $('#due-date-rev').val('').prop('required', false);
+            $('#due-date-rev-note').val('').prop('required', false);
+        });
     </script>
 @endpush
 
