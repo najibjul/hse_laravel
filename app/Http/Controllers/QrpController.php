@@ -214,7 +214,7 @@ class QrpController extends Controller
                     //     });
                     // })
                     ->addColumn('description', function ($row) {
-                        return $row->qrpDetail?->description;
+                        return $row->qrpDetail?->description ?? $row->activity;
                     })
                     // ->filterColumn('description', function ($query, $keyword) {
                     //     $query->whereHas('qrpDetail', function ($q) use ($keyword) {
@@ -259,7 +259,11 @@ class QrpController extends Controller
                     //     });
                     // })
                     ->addColumn('action', function ($row) {
-                        return '<a href="/qrp-form/detail/' . encrypt($row->id) . '" class="btn btn-sm btn-outline-info rounded"><i class="ti ti-eye"></i></a>';
+                        if ($row->check_status == 'NG') {
+                            return '<a href="/qrp-form/detail/' . encrypt($row->id) . '" class="btn btn-sm btn-outline-info rounded"><i class="ti ti-eye"></i></a>';
+                        } else {
+                            return '';
+                        }
                     })
                     ->rawColumns(['user', 'description', 'area', 'created_at', 'factor', 'check_status', 'status', 'action'])
                     ->make(true);

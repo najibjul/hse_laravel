@@ -50,6 +50,7 @@
                     </div>
                 </div>
             </div>
+            <div class="<?php echo e($dailyCheck->qrpDetail?->qrpStatus?->class); ?>"><?php echo e($dailyCheck->qrpDetail?->qrpStatus?->name); ?></div>
         </div>
 
         <div class="card-body">
@@ -105,13 +106,17 @@
                     <ul>
                         <?php $__currentLoopData = $dailyCheck->qrpDetail?->qrpRecomendations->sortByDesc('id'); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $qrpRecomendation): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <li>
-                                <div style="text-align: justify;">
+                                <div style="text-align: justify;" class="text-secondary">
                                     <?php echo e($qrpRecomendation->user->name); ?>
 
                                     (<?php echo e($qrpRecomendation->user->nip); ?>)
                                 </div>
-                                <div class="fst-italic text-secondary">
+                                <div class="">
                                     <?php echo e($qrpRecomendation->recomendation); ?>
+
+                                </div>
+                                <div style="font-size: 10px;" class="">
+                                    <i class="bi bi-clock"></i> <?php echo e(\Carbon\Carbon::parse($qrpRecomendation->created_at)->translatedFormat('d M Y H:i')); ?>
 
                                 </div>
                                 <br>
@@ -124,18 +129,40 @@
                     <label class="form-label fw-bold">Batas perbaikan</label>
                     <input class="form-control" disabled
                         value="<?php echo e(\Carbon\Carbon::parse($dailyCheck->qrpDetail?->due_date)->format('d M Y')); ?>">
+                        <?php if($dailyCheck->qrpDetail?->revision_note): ?>
+                        <div class="mt-5">
+                            <label class="form-label fw-bold">Note perubahan batas perbaikan</label>
+                            <div>
+
+                                <i class="text-secondary">
+                                    <?php echo e($dailyCheck->qrpDetail?->revision_note); ?>
+
+                                </i>
+                            </div>
+                        </div>
+                        <?php endif; ?>
                 </div>
 
                 <div class="col-12 col-md-6 col-lg-6 mb-5">
                     <label class="form-label fw-bold">Approval</label>
                     <ul>
                         <?php $__currentLoopData = $dailyCheck->qrpDetail?->qrpApprovals->sortByDesc('id'); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $qrpApproval): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                            <li>
+                            <li class="d-flex justify-content-between  mb-3">
                                 <div>
-                                    <?php echo e($qrpApproval->approval->name); ?> (<?php echo e($qrpApproval->approval->nip); ?>)
+                                    <div>
+                                        <?php echo e($qrpApproval->approval->name); ?> (<?php echo e($qrpApproval->approval->nip); ?>)
+                                    </div>
+                                    <div style="font-size: 10px;" class="text-secondary">
+                                        <?php echo e($qrpApproval->created_at->translatedFormat('d M Y H:i')); ?>
+
+                                    </div>
                                 </div>
-                            </li>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                <div>
+
+                                    <div class="rounded <?php echo e($qrpApproval->status == 'approved' || $qrpApproval->status == 'waiting' ? 'badge bg-success' : 'badge bg-warning'); ?>"><?php echo e($qrpApproval->status == 'approved' || $qrpApproval->status == 'waiting' ? 'approver' : $qrpApproval->status); ?></div>
+                                </div>
+                                </li>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </ul>
                 </div>
 
@@ -605,7 +632,16 @@ unset($__errorArgs, $__bag); ?>" placeholder="ketik disini"></textarea>
         function dueDateRev(){
             $('#due-date-rev-content').removeClass("d-none");
             $('#btn-due-date-rev').addClass("d-none");
+            $('#due-date-rev').prop('required', true);
+            $('#due-date-rev-note').prop('required', true);
         }
+
+        document.getElementById('confirmationModal')?.addEventListener('hidden.bs.modal', function () {
+            $('#due-date-rev-content').addClass("d-none");
+            $('#btn-due-date-rev').removeClass("d-none");
+            $('#due-date-rev').val('').prop('required', false);
+            $('#due-date-rev-note').val('').prop('required', false);
+        });
     </script>
 <?php $__env->stopPush(); ?>
 

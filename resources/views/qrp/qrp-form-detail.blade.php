@@ -51,6 +51,7 @@
                     </div>
                 </div>
             </div>
+            <div class="{{ $dailyCheck->qrpDetail?->qrpStatus?->class }}">{{ $dailyCheck->qrpDetail?->qrpStatus?->name }}</div>
         </div>
 
         <div class="card-body">
@@ -126,18 +127,38 @@
                     <label class="form-label fw-bold">Batas perbaikan</label>
                     <input class="form-control" disabled
                         value="{{ \Carbon\Carbon::parse($dailyCheck->qrpDetail?->due_date)->format('d M Y') }}">
+                        @if ($dailyCheck->qrpDetail?->revision_note)
+                        <div class="mt-5">
+                            <label class="form-label fw-bold">Note perubahan batas perbaikan</label>
+                            <div>
+
+                                <i class="text-secondary">
+                                    {{ $dailyCheck->qrpDetail?->revision_note }}
+                                </i>
+                            </div>
+                        </div>
+                        @endif
                 </div>
 
                 <div class="col-12 col-md-6 col-lg-6 mb-5">
                     <label class="form-label fw-bold">Approval</label>
                     <ul>
                         @foreach ($dailyCheck->qrpDetail?->qrpApprovals->sortByDesc('id') as $qrpApproval)
-                            <li>
+                            <li class="d-flex justify-content-between  mb-3">
                                 <div>
-                                    {{ $qrpApproval->approval->name }} ({{ $qrpApproval->approval->nip }})
+                                    <div>
+                                        {{ $qrpApproval->approval->name }} ({{ $qrpApproval->approval->nip }})
+                                    </div>
+                                    <div style="font-size: 10px;" class="text-secondary">
+                                        {{ $qrpApproval->created_at->translatedFormat('d M Y H:i') }}
+                                    </div>
                                 </div>
-                            </li>
-                        @endforeach
+                                <div>
+
+                                    <div class="rounded {{ $qrpApproval->status == 'approved' || $qrpApproval->status == 'waiting' ? 'badge bg-success' : 'badge bg-warning' }}">{{ $qrpApproval->status == 'approved' || $qrpApproval->status == 'waiting' ? 'approver' : $qrpApproval->status }}</div>
+                                </div>
+                                </li>
+                                @endforeach
                     </ul>
                 </div>
 

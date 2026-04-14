@@ -180,7 +180,7 @@
                         <div><i class="ti ti-user"></i> <?php echo e($dailyCheck->user?->name); ?> (<?php echo e($dailyCheck->user?->nip); ?>)
                         </div>
                         <div><i class="ti ti-alert-circle"></i>
-                            <?php echo e($dailyCheck->activity ? $dailyCheck->activity : $dailyCheck->qrpDetail->description); ?></div>
+                            <?php echo e($dailyCheck->activity ? $dailyCheck->activity : $dailyCheck->qrpDetail?->description); ?></div>
                         <div><i class="ti ti-building-community"></i> <?php echo e($dailyCheck->area); ?></div>
                         <div><i class="ti ti-calendar-event"></i>
                             <?php echo e(\Carbon\Carbon::parse($dailyCheck->created_at)->translatedFormat('d M Y H:i')); ?></div>

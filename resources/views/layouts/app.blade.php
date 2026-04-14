@@ -148,8 +148,9 @@
                                         <a href="#" onclick="event.preventDefault(); document.getElementById(`notificationUpdate{{ $notification->id }}`).submit();" class="list-group-item list-group-item-action">
                                             <div class="d-flex">
                                                 <div class="flex-shrink-0">
-                                                    <img src="{{ asset('assets/images/user/avatar-2.jpg') }}" alt="user-image"
-                                                        class="user-avtar">
+                                                    {{-- <img src="{{ asset('assets/images/user/avatar-2.jpg') }}" alt="user-image"
+                                                        class="user-avtar"> --}}
+                                                        <i class="ti ti-mail user-avtar"></i>
                                                 </div>
                                                 <div class="flex-grow-1 ms-1">
                                                     {{-- <span class="float-end text-muted">3:00 AM</span> --}}
@@ -173,16 +174,14 @@
                         <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown"
                             href="#" role="button" aria-haspopup="false" data-bs-auto-close="outside"
                             aria-expanded="false">
-                            <img src="{{ asset('assets/images/user/avatar-2.jpg') }}" alt="user-image"
-                                class="user-avtar">
+
+                                <i class="ti ti-user user-avtar"></i>
                             <span>{{ auth()->user()->name }}</span>
                         </a>
                         <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
                             <div class="dropdown-header">
                                 <div class="d-flex mb-1">
                                     <div class="flex-shrink-0">
-                                        <img src="{{ asset('/assets/images/user/avatar-2.jpg') }}" alt="user-image"
-                                            class="user-avtar wid-35">
                                     </div>
                                     <div class="flex-grow-1 ms-3">
                                         <h6 class="mb-1">{{ auth()->user()->name }}</h6>

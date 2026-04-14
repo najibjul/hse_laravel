@@ -17,13 +17,13 @@
             <div class="form-group mb-3">
                 <label for="password" class="form-label">Kata sandi</label>
                 <input name="password" id="password" type="password" class="form-control @error('password') is-invalid @enderror"
-                    placeholder="Masukan kata sandi disini..." required oninput="validatePassword()">
+                    placeholder="Masukan kata sandi disini..." required >
                 @error('password')
                     <span class="text-danger text-sm">{{ $message }}</span>
                 @enderror
-                <div id="passwordValidation" class="mt-2">
+                {{-- <div id="passwordValidation" class="mt-2">
                     <small id="validationMessage" class="text-danger"></small>
-                </div>
+                </div> --}}
             </div>
             <div class="d-flex mt-1 justify-content-between">
                 <div class="form-check">
@@ -37,14 +37,15 @@
                 </div>
             @endif
             <div class="d-grid mt-4">
-                <button type="submit" id="submitBtn" class="btn btn-success" disabled>Login</button>
+                {{-- <button type="submit" id="submitBtn" class="btn btn-success" disabled>Login</button> --}}
+                <button type="submit" id="submitBtn" class="btn btn-success" >Login</button>
             </div>
         </div>
     </form>
 @endsection
 
 @push('scripts')
-    <script>
+    {{-- <script>
         function validatePassword() {
             const nip = document.getElementById('nip').value.trim();
             const password = document.getElementById('password').value;
@@ -85,5 +86,5 @@
         document.getElementById('nip').addEventListener('input', validatePassword);
 
         document.addEventListener('DOMContentLoaded', validatePassword);
-    </script>
+    </script> --}}
 @endpush
