@@ -29,7 +29,9 @@ unset($__errorArgs, $__bag); ?>
             </div>
             <div class="form-group mb-3">
                 <label for="password" class="form-label">Kata sandi</label>
-                <input name="password" id="password" type="password" class="form-control <?php $__errorArgs = ['password'];
+                <div class="position-relative">
+                    <input name="password" id="password" type="password"
+                        class="form-control <?php $__errorArgs = ['password'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -37,7 +39,14 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                    placeholder="Masukan kata sandi disini..." required >
+                        placeholder="Masukan kata sandi disini..." required style="padding-right: 2.75rem;">
+                    <span id="togglePassword"
+                        class="position-absolute top-50 end-0 translate-middle-y me-3 text-muted"
+                        style="cursor: pointer; line-height: 1;" aria-label="Tampilkan kata sandi"
+                        aria-pressed="false" role="button" tabindex="0">
+                        <i class="ti ti-eye" id="togglePasswordIcon"></i>
+                    </span>
+                </div>
                 <?php $__errorArgs = ['password'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -71,6 +80,36 @@ unset($__errorArgs, $__bag); ?>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startPush('scripts'); ?>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('password');
+            const toggleButton = document.getElementById('togglePassword');
+            const toggleIcon = document.getElementById('togglePasswordIcon');
+
+            if (!passwordInput || !toggleButton || !toggleIcon) {
+                return;
+            }
+
+            toggleButton.addEventListener('click', function() {
+                const isHidden = passwordInput.type === 'password';
+
+                passwordInput.type = isHidden ? 'text' : 'password';
+                toggleIcon.className = isHidden ? 'ti ti-eye-off' : 'ti ti-eye';
+                toggleButton.setAttribute('aria-label', isHidden ? 'Sembunyikan kata sandi' :
+                    'Tampilkan kata sandi');
+                toggleButton.setAttribute('aria-pressed', isHidden ? 'true' : 'false');
+            });
+
+            toggleButton.addEventListener('keydown', function(event) {
+                if (event.key !== 'Enter' && event.key !== ' ') {
+                    return;
+                }
+
+                event.preventDefault();
+                toggleButton.click();
+            });
+        });
+    </script>
     
 <?php $__env->stopPush(); ?>
 

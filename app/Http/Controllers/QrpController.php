@@ -322,10 +322,15 @@ class QrpController extends Controller
 
     public function qrpForm()
     {
+        if (Auth::user()->leader_id == null) {
+            session()->flash('error', 'Belum ada atasan langsung, harap menghubungi admin');
+            return redirect()->back();
+        }
+
+        $leader = User::find(Auth::user()->leader_id);
         $factor = Factor::find(session('factor'));
         $categories = Category::get();
         $ranks = Rank::get();
-        $leader = User::find(Auth::user()->leader_id);
         $agent = new Agent();
         return view('qrp.qrp-form', compact('factor', 'categories', 'ranks', 'leader', 'agent'));
     }
